@@ -376,6 +376,67 @@
       "note": "The script stopped after the profile step on a variable-scope bug in the script itself (fixed); these last two steps were then run by scripts' same code paths and appended here.",
       "finished": "2026-10-10T19:43:49.096Z",
       "failures": 0
+    },
+    {
+      "site": "https://genlayergamehub.vercel.app",
+      "started": "2026-10-10T20:38:17.888Z",
+      "steps": [
+        {
+          "step": "oracle: submit relayed, hash returned at once",
+          "pass": true,
+          "at": "2026-10-10T20:38:24.030Z",
+          "round": "2",
+          "status": 200,
+          "hash": "0x932f1796d4dcd0dbd76fafe405a9dbdf6855267bead33d97b03fee8437e628e9",
+          "body": {
+            "value": "16"
+          }
+        },
+        {
+          "step": "oracle: a second entry in the same round is blocked",
+          "pass": true,
+          "at": "2026-10-10T20:38:24.346Z",
+          "status": 409,
+          "error": "you already played this round"
+        },
+        {
+          "step": "oracle: decided on chain",
+          "pass": true,
+          "at": "2026-10-10T20:38:30.617Z",
+          "status": "ACCEPTED",
+          "result": "FINISHED_WITH_RETURN",
+          "agree": 3,
+          "voters": 3,
+          "seconds": 6,
+          "explorer": "https://explorer-studio.genlayer.com/tx/0x932f1796d4dcd0dbd76fafe405a9dbdf6855267bead33d97b03fee8437e628e9"
+        },
+        {
+          "step": "oracle: entry read back from the contract",
+          "pass": true,
+          "at": "2026-10-10T20:38:33.459Z",
+          "entry": {
+            "player": "e2e_10101941",
+            "guess": 16
+          }
+        },
+        {
+          "step": "profile renders level, badges and daily history",
+          "pass": true,
+          "at": "2026-10-10T20:38:34.720Z"
+        },
+        {
+          "step": "status refuses hashes the hub did not send",
+          "pass": true,
+          "at": "2026-10-10T20:38:35.045Z",
+          "status": 404
+        }
+      ],
+      "daily": [
+        "oracle"
+      ],
+      "reused": "e2e_10101941",
+      "finished": "2026-10-10T20:38:35.047Z",
+      "failures": 0
     }
   ]
 }
