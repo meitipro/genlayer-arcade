@@ -1,0 +1,43 @@
+{
+  "deployments": {
+    "studionet": {
+      "BRIDGE_CONTRACT": {
+        "address": "0xa6814A76Ad4342925fCbEFD93abd7b83A00e164e",
+        "deployed_at": "2026-10-10T18:50:31Z",
+        "file": "contracts/word_bridge.py",
+        "sha256": "0ba20a89d96396f41e92a56d962efdc15ebb8a6f39e84ad6ebf2cdb82fb480b8",
+        "sha256_note": "sha256 of the LF bytes sent; first recorded as the CRLF working copy 296daac3320f2ff7..., corrected by scripts/verify.py evidence",
+        "tx": "0xffbc2d43312d2af59f0136c152fd5d83e947b158ab60edc765196d0d7246ac9b"
+      },
+      "LEDGER_CONTRACT": {
+        "address": "0xF6131DAd378A53F7c6241028c72428A08684547C",
+        "deployed_at": "2026-10-10T18:51:52Z",
+        "file": "contracts/season_ledger.py",
+        "sha256": "8df102d9a145c5456c98f35d0f146feccb6c1e9185a0c7cf29110aadaf556d77",
+        "sha256_note": "sha256 of the LF bytes sent; first recorded as the CRLF working copy bab209f8df15d72d..., corrected by scripts/verify.py evidence",
+        "tx": "0xd4dbb600921911cd2f2e5a323d008d21ba82d321bdf66fe0c34fc203be87901b"
+      },
+      "ORACLE_CONTRACT": {
+        "address": "0x13Ec1296DaE361c0Bb8481f3d6CA51b6f7be0Dc2",
+        "deployed_at": "2026-10-10T18:51:12Z",
+        "file": "contracts/oracle_guess.py",
+        "sha256": "634114cd9f856f8ff22d6e92dca3574330ace88b83a5e923d8921dc36bfbf4de",
+        "sha256_note": "sha256 of the LF bytes sent; first recorded as the CRLF working copy 699ae2f7d6b94aef..., corrected by scripts/verify.py evidence",
+        "tx": "0x907d3e2909fb4d2d8a33860ce8bab4329f999aaea703b096b723d4be3d54298b"
+      },
+      "VERDICT_CONTRACT": {
+        "address": "0xABD5009490d39f05BB7284eC61BcD34666516A09",
+        "deployed_at": "2026-10-10T18:49:50Z",
+        "file": "contracts/daily_verdict.py",
+        "sha256": "70981251d84c0cb2cffbacb8964dc460e2a17deae661ee5238ccac85379fc5d2",
+        "sha256_note": "sha256 of the LF bytes sent; first recorded as the CRLF working copy ab5c63f06e4be558..., corrected by scripts/verify.py evidence",
+        "tx": "0xd71a7ea5745bd2a362b90831be68a8afe5edbf87aad43fa9c97ec5f0a987916b"
+      },
+      "chain_id": 61999,
+      "explorer": "https://explorer-studio.genlayer.com",
+      "owner": "0x71E5653471E2d4e1E17814A6123384B567Ea59dE",
+      "rpc": "https://studio.genlayer.com/api",
+      "runtime": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6"
+    }
+  }
+}

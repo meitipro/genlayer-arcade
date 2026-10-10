@@ -1,0 +1,22 @@
+{
+  "pairs": [
+    ["the price is $100", "it costs one hundred dollars"],
+    ["the match ended 2:1", "they won by one goal, two to one"],
+    ["it will rain tomorrow", "tomorrow's forecast is rainy"],
+    ["the contract was paid", "payment for the contract went through"],
+    ["she arrived before noon", "she got there in the morning"],
+    ["the store is closed on Sundays", "no opening hours on Sunday"],
+    ["the validator went offline", "the node stopped responding"],
+    ["most validators agreed", "a majority reached consensus"],
+    ["the bridge is 2 km long", "the bridge measures 2000 metres"],
+    ["he is not wrong", "he is right"],
+    ["the file is half done", "the file is 50% complete"],
+    ["Tehran is the capital of Iran", "Iran's capital city is Tehran"]
+  ],
+  "decoys": [
+    ["the price is $100", "it costs about a hundred, give or take"],
+    ["most validators agreed", "every validator agreed"],
+    ["she arrived before noon", "she arrived at noon"],
+    ["the bridge is 2 km long", "the bridge is 2 miles long"]
+  ]
+}

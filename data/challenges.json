@@ -1,0 +1,16 @@
+[
+  {"challenge": "Explain optimistic democracy to a 10 year old in one sentence.", "criteria": "accurate, simple words, one sentence, charming"},
+  {"challenge": "Write a 6-word story about a validator who disagrees.", "criteria": "exactly six words, real tension, about validators"},
+  {"challenge": "Pitch a GenLayer app in under 20 words.", "criteria": "clear problem, plausible use of AI consensus, under 20 words"},
+  {"challenge": "Describe a blockchain without using the letter e.", "criteria": "no letter e anywhere, accurate, readable"},
+  {"challenge": "Write the shortest possible convincing appeal for a wrongly rejected answer.", "criteria": "persuasive, polite, under 30 words"},
+  {"challenge": "Give a job title for an AI that settles disputes, plus one-line job description.", "criteria": "original, funny or sharp, coherent"},
+  {"challenge": "Explain consensus to a 10 year old.", "criteria": "accurate, simple words, short, charming"},
+  {"challenge": "Write a two-line poem about finality.", "criteria": "exactly two lines, about transactions becoming final, has rhythm"},
+  {"challenge": "Describe what a leader validator does using only words of one syllable.", "criteria": "one-syllable words only, accurate, readable"},
+  {"challenge": "Write a fortune cookie message for a smart contract.", "criteria": "under 15 words, witty, sounds like a fortune cookie"},
+  {"challenge": "Explain why two honest AIs might give different answers, in one sentence.", "criteria": "accurate, one sentence, plain words"},
+  {"challenge": "Write a weather forecast for a blockchain network.", "criteria": "under 30 words, uses weather language, mentions real network ideas"},
+  {"challenge": "Name a dispute an Intelligent Contract could settle better than a court, and say why in one line.", "criteria": "plausible, specific, one line"},
+  {"challenge": "Write a polite rejection letter from a validator, in under 25 words.", "criteria": "under 25 words, polite, clearly a rejection, gives a reason"}
+]

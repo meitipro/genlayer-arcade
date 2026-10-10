@@ -1,0 +1,6 @@
+[
+  {"question": "BTC price in USD at 18:00 UTC?", "url": "https://api.coinbase.com/v2/prices/BTC-USD/spot", "path": "data.amount", "unit": "USD"},
+  {"question": "Tehran temperature at 18:00 UTC?", "url": "https://api.open-meteo.com/v1/forecast?latitude=35.69&longitude=51.39&current=temperature_2m", "path": "current.temperature_2m", "unit": "\u00b0C"},
+  {"question": "ETH price in USD at 18:00 UTC?", "url": "https://api.coinbase.com/v2/prices/ETH-USD/spot", "path": "data.amount", "unit": "USD"},
+  {"question": "Dubai temperature at 18:00 UTC?", "url": "https://api.open-meteo.com/v1/forecast?latitude=25.20&longitude=55.27&current=temperature_2m", "path": "current.temperature_2m", "unit": "\u00b0C"}
+]
