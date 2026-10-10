@@ -33,7 +33,7 @@ export function contractAddress(name: ContractVar): `0x${string}` | null {
   return v && /^0x[0-9a-fA-F]{40}$/.test(v) ? (v as `0x${string}`) : null;
 }
 
-const RETRYABLE = /ECONNRESET|ETIMEDOUT|fetch failed|socket|-32029|429|502|503|504|rate/i;
+const RETRYABLE = /ECONNRESET|ETIMEDOUT|fetch failed|socket|-32029|429|502|503|504|rate limit/i;
 
 async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
   let last: unknown;
@@ -42,8 +42,10 @@ async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
       return await fn();
     } catch (e) {
       last = e;
-      if (!RETRYABLE.test(String((e as Error)?.message ?? e))) throw e;
-      await new Promise((r) => setTimeout(r, 600 * (i + 1)));
+      const m = String((e as Error)?.message ?? e);
+      if (!RETRYABLE.test(m)) throw e;
+      // a per-minute rate limit needs seconds, a dropped socket does not
+      await new Promise((r) => setTimeout(r, (/rate limit|-32029|429/i.test(m) ? 6000 : 600) * (i + 1)));
     }
   }
   throw last;
@@ -73,18 +75,33 @@ export async function relayWrite(address: string, functionName: string, args: un
   const client = relayer();
   const lock = "relayer:lock";
   const deadline = Date.now() + 20000;
-  while (!(await redis.set(lock, Date.now(), { nx: true, ex: 30 }))) {
+  while (!(await redis.set(lock, Date.now(), { nx: true, ex: 90 }))) {
     if (Date.now() > deadline) throw new Error("relayer busy (503): not sent, try again in a minute");
     await new Promise((r) => setTimeout(r, 300));
   }
   try {
-    const hash = await client.writeContract({
-      address: address as `0x${string}`,
-      functionName,
-      args: args as never,
-      value: BigInt(0),
-    });
-    return hash as `0x${string}`;
+    // Studionet allows ~30 RPC requests a minute per IP and one write costs
+    // about six. A rate-limited write is retried only while the nonce proves
+    // it was never sent; a write whose nonce moved is never sent again.
+    const from = client.account!.address;
+    for (let attempt = 0; ; attempt++) {
+      const before = await withRetry(() => client.getCurrentNonce({ address: from }), 4);
+      try {
+        const hash = await client.writeContract({
+          address: address as `0x${string}`,
+          functionName,
+          args: args as never,
+          value: BigInt(0),
+        });
+        return hash as `0x${string}`;
+      } catch (e) {
+        const m = String((e as Error)?.message ?? e);
+        if (!RETRYABLE.test(m) || attempt >= 2) throw e;
+        await new Promise((r) => setTimeout(r, 8000 * (attempt + 1)));
+        const after = await withRetry(() => client.getCurrentNonce({ address: from }), 4);
+        if (Number(after) > Number(before)) throw new Error(`sent, but the answer was lost (nonce ${before} -> ${after}); not resending`);
+      }
+    }
   } finally {
     await redis.del(lock);
   }

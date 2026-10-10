@@ -18,8 +18,15 @@ export type Sent = { action: string; game?: string; hash: string; detail?: strin
 
 const ADMIN_TX = (hash: string) => `admin:tx:${hash}`;
 
+/** Admin flows send several writes in a row; a pause keeps them under Studionet's per-IP request budget. */
+let lastSend = 0;
+const PACE_MS = 6000;
+
 async function send(game: string, address: string, fn: string, args: unknown[], detail?: string): Promise<Sent> {
+  const wait = lastSend + PACE_MS - Date.now();
+  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
   const hash = await relayWrite(address, fn, args);
+  lastSend = Date.now();
   const rec: Sent = { action: fn, game, hash, detail };
   await redis.set(ADMIN_TX(hash), JSON.stringify({ ...rec, at: new Date().toISOString() }), { ex: 30 * 86400 });
   await redis.lpush("admin:log", JSON.stringify({ ...rec, at: new Date().toISOString() }));
@@ -96,7 +103,7 @@ export async function resolveOracle(rid: string): Promise<Sent> {
 }
 
 /** Wait (bounded) for a write to be decided, so a dependent write can follow. */
-export async function waitDecided(hash: `0x${string}`, ms = 40000): Promise<TxView | null> {
+export async function waitDecided(hash: `0x${string}`, ms = 90000): Promise<TxView | null> {
   const end = Date.now() + ms;
   while (Date.now() < end) {
     try {
@@ -105,7 +112,7 @@ export async function waitDecided(hash: `0x${string}`, ms = 40000): Promise<TxVi
     } catch {
       /* keep waiting */
     }
-    await new Promise((r) => setTimeout(r, 4000));
+    await new Promise((r) => setTimeout(r, 6000));
   }
   return null;
 }

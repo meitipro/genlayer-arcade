@@ -28,5 +28,136 @@
       "step": "/seasons read both records back from the chain",
       "pass": true
     }
-  ]
+  ],
+  "rollover_contracts": {
+    "VERDICT_CONTRACT": {
+      "address": "0xa30997EA640F4eaed2127fFfb290bcF6b0EcC560",
+      "deploy_tx": "https://explorer-studio.genlayer.com/tx/0xbccb3386c6c77e16eb5a46c66f64b8cfe2036f05c937fd26473c3b597c0e945d"
+    },
+    "BRIDGE_CONTRACT": {
+      "address": "0xf32016D039f3F8798407b6BC5BA435e1bCa13964",
+      "deploy_tx": "https://explorer-studio.genlayer.com/tx/0x3fa80fef2cbccec385c5b6f8f5f08966189e070dfa4554a4db8c599e298d48e4"
+    },
+    "ORACLE_CONTRACT": {
+      "address": "0x6beA9de36F854fcF89f29dA75bDe6032488A304C",
+      "deploy_tx": "https://explorer-studio.genlayer.com/tx/0xc3301df725f9e2484d8c3059a0fb8c791540138fe18325de8597f8c859264e09"
+    }
+  },
+  "rollover_purpose": "relayer-owned test copies of the three daily contracts, for running the 00:00 rollover and 18:00 deadline (the cron actions) without touching production rounds",
+  "rollover_runs": [
+    {
+      "call": "GET /api/cron/daily (Bearer CRON_SECRET) on empty contracts",
+      "expect": "open all three",
+      "sent": [
+        {
+          "action": "open_round",
+          "game": "verdict",
+          "detail": "Pitch a GenLayer app in under 20 words.",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xf67b5869d6faf2f2cdcd9d9b54ed3305f36bc2bab4ee5c95fcb0b8e5b4c6a63c"
+        },
+        {
+          "action": "open_round",
+          "game": "bridge",
+          "detail": "moon to pie",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x557d58551fb250fa9673f2adacf9f1d74837dd2e3cb70f4a23e5ee6e87842cff"
+        },
+        {
+          "action": "open_round",
+          "game": "oracle",
+          "detail": "BTC price in USD at 18:00 UTC?",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xed668c2c6fba5e718e3aca9cf63c42d77752f8fed26b5d2cf00731f1a1eb1dee"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "call": "GET /api/cron/daily again",
+      "expect": "close and reopen Verdict and Bridge; the open Oracle round keeps running",
+      "sent": [
+        {
+          "action": "close_round",
+          "game": "verdict",
+          "detail": "round 1",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x77f9f1053196ac1314c0dde889ccf42cedff38d3c6fa456ef47c10057cdf355c"
+        },
+        {
+          "action": "open_round",
+          "game": "verdict",
+          "detail": "Pitch a GenLayer app in under 20 words.",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xbb216ea639bb833878fd8951ee3ce85b634e250f2b6b657fbb7713c21d40498b"
+        },
+        {
+          "action": "close_round",
+          "game": "bridge",
+          "detail": "round 1",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x1ab0f574fabf73e086daac18618d70a0da64c1fa234863f3206000abf646a5c6"
+        },
+        {
+          "action": "open_round",
+          "game": "bridge",
+          "detail": "moon to pie",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xcd477ea9d9f0022d627a90b6faf4532de6bac2f3742c425a5aeb3eec58122a21"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "call": "GET /api/cron/oracle",
+      "expect": "lock, wait for the lock to be decided, resolve",
+      "sent": [
+        {
+          "action": "lock_round",
+          "game": "oracle",
+          "detail": "round 1",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x925d28ddc02494eb068b8e4ea5f2a59db894a82a0b1795e1f0cf09be9d7aa6c7"
+        },
+        {
+          "action": "resolve",
+          "game": "oracle",
+          "detail": "round 1",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x828b49438bcd68fdb53655db6099866fe3fbcac48be63d763615b23cd603e8a9"
+        }
+      ],
+      "result": "round 1 resolved, answer 83005 (BTC USD)",
+      "pass": true
+    },
+    {
+      "call": "GET /api/cron/daily a third time",
+      "expect": "close and reopen Verdict and Bridge; Oracle resolved, so a new one opens",
+      "sent": [
+        {
+          "action": "close_round",
+          "game": "verdict",
+          "detail": "round 2",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xe9b3a092bc581dab1a68fa1d36f908efdd9710ff9d4794b8159d5901adcc8469"
+        },
+        {
+          "action": "open_round",
+          "game": "verdict",
+          "detail": "Pitch a GenLayer app in under 20 words.",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xdbdc34170211e3cdc8bc1bff617cf23e7040242db2cdd9db53d8c8d6fc9ff1a2"
+        },
+        {
+          "action": "close_round",
+          "game": "bridge",
+          "detail": "round 2",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xc74a83db58b46cc36861da10e6a477ac061b28fe2ce092a880fdc5b0ce001795"
+        },
+        {
+          "action": "open_round",
+          "game": "bridge",
+          "detail": "moon to pie",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xf942bb05bb695f1f24b2444ec0964e2d7a8f0640f89a5b5cae9bae17a98606b0"
+        },
+        {
+          "action": "open_round",
+          "game": "oracle",
+          "detail": "BTC price in USD at 18:00 UTC?",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xa39872700800410831b359e611509d306bc90a1e7c3da490fee271022fa00949"
+        }
+      ],
+      "pass": true
+    }
+  ],
+  "rollover_note": "The first attempt failed with Studionet's 'Rate limit exceeded: 30 requests per minute' before sending anything. Fixed: admin writes are paced 6 s apart, a rate-limited write is retried only while the relayer nonce proves it was not sent, and reads back off for seconds on a rate limit. The four runs above are after the fix; the cron without the secret answered 401."
 }
