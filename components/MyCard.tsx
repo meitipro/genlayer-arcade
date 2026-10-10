@@ -1,12 +1,13 @@
 "use client";
 // My Card: connect Discord (roles from the GenLayer server), verify X and
 // GitHub with a bio code, and see the card others see on /p/<name>.
+// The empty state and the actions mirror meitipro/genlayer-cards.
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import type { PlayerCard } from "@/lib/card";
+import type { PlayerCard } from "@/lib/cardTypes";
 import { postJson, usePlayer } from "@/lib/client/player";
+import CredentialCard from "./CredentialCard";
 import { NicknameGate } from "./NicknameGate";
-import { PlayerCardView } from "./PlayerCard";
 
 const OUTCOMES: Record<string, string> = {
   ok: "Discord connected. Your GenLayer server roles are on your card.",
@@ -18,17 +19,52 @@ const OUTCOMES: Record<string, string> = {
   "bad-request": "Discord sent back an incomplete answer. Start again.",
 };
 
+/** What a card looks like, for someone who has not connected Discord yet. Labelled as a preview where it is shown. */
+function sample(name: string): PlayerCard {
+  return {
+    name,
+    since: null,
+    level: 3,
+    xp: 540,
+    badges: 2,
+    dailies: 4,
+    best: null,
+    discord: {
+      id: "preview",
+      username: "your_discord",
+      avatar: null,
+      isMember: true,
+      highestRole: "Synapse",
+      roles: ["Synapse", "Molecule", "Mindbender"],
+      joinedAt: "2025-03-01T00:00:00Z",
+      connectedAt: "2026-01-01T00:00:00Z",
+    },
+    x: null,
+    github: null,
+    wallet: null,
+    config: { discord: true, x: false },
+    tier: { n: "II", name: "Ember" },
+    standing: "Synapse",
+    credentialNo: "0000-0000",
+    recordHash: "0x" + "0".repeat(40),
+    seed: `preview#${name}`,
+  };
+}
+
 export function MyCard() {
   const player = usePlayer();
   const [card, setCard] = useState<PlayerCard | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [flip, setFlip] = useState(0);
 
   const load = useCallback(async () => {
     if (!player) return;
     const r = await fetch(`/api/card/${encodeURIComponent(player.name)}`, { cache: "no-store" });
     if (r.ok) setCard(await r.json());
+    setLoaded(true);
   }, [player]);
 
   useEffect(() => {
@@ -59,51 +95,68 @@ export function MyCard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {notice && (
         <p className="card p-4 text-sm" role="status">
           {notice}
         </p>
       )}
-      {card && <PlayerCardView card={card} />}
 
-      <section className="card space-y-3 p-5" aria-labelledby="discord">
-        <h2 id="discord" className="font-semibold">
-          Discord
-        </h2>
-        <p className="text-sm text-muted">
-          Connecting reads who you are and your roles in the GenLayer Discord server (scopes: identify, guilds.members.read). The roles set your tier on the card. Nothing is posted and the access token is not kept.
-          {card?.config.discord ? " Playing on this hub needs a connected Discord." : ""}
-        </p>
-        {!card?.config.discord ? (
-          <p className="text-sm text-danger">Discord connect is not configured on this site yet.</p>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            <button className="btn btn-primary" disabled={busy} onClick={() => void connect()}>
-              {card?.discord ? "Reconnect to refresh roles" : "Connect Discord"}
+      {card?.discord ? (
+        <section aria-label="Your card">
+          <div className="vault-cardstage">
+            <CredentialCard data={card} hideFlipButton flipSignal={flip} />
+          </div>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <button className="btn btn-primary" onClick={() => setFlip((n) => n + 1)}>
+              Flip
             </button>
-            {card?.discord && (
-              <button className="btn btn-ghost" onClick={() => void disconnect()}>
-                Disconnect
+            {card.config.discord && (
+              <button className="btn btn-ghost" disabled={busy} onClick={() => void connect()}>
+                Refresh roles
               </button>
             )}
+            <Link href={`/p/${player.name}`} className="btn btn-ghost">
+              Public page
+            </Link>
+            <button className="btn btn-ghost" onClick={() => void disconnect()}>
+              Disconnect Discord
+            </button>
           </div>
-        )}
-        {error && <p className="text-sm text-danger">{error}</p>}
-      </section>
+          <p className="mx-auto mt-4 max-w-xl text-center text-xs text-muted">
+            Roles are read from the GenLayer Discord server when you connect (scopes: identify, guilds.members.read). Nothing is posted and the access token is not kept. Refresh roles reads them again.
+          </p>
+        </section>
+      ) : (
+        <section className="flex flex-col items-center gap-3 py-10 text-center" aria-label="Your card">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden>
+            <path d="M22 3l16 9v20L22 41 6 32V12z" stroke="var(--accent)" strokeWidth="1.5" opacity=".7" />
+          </svg>
+          <h2 className="text-xl font-semibold">Your card appears here</h2>
+          <p className="max-w-sm text-sm text-muted">Connect Discord and build your card. It shows up right here, with your GenLayer server roles and your tier.</p>
+          {!loaded ? (
+            <div className="h-11" />
+          ) : card && !card.config.discord ? (
+            <p className="text-sm text-danger">Discord connect is not configured on this site yet.</p>
+          ) : (
+            <button className="btn btn-primary" disabled={busy} onClick={() => void connect()}>
+              Get your card
+            </button>
+          )}
+          {error && <p className="text-sm text-danger">{error}</p>}
+          <div className="mt-8 w-full">
+            <p className="mono mb-1 text-xs uppercase tracking-widest text-muted">preview, not a real record</p>
+            <div className="vault-cardstage">
+              <CredentialCard data={sample(player.name)} />
+            </div>
+          </div>
+        </section>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2">
         <SocialLink network="x" label="X (Twitter)" enabled={card?.config.x ?? false} linked={card?.x?.handle} onDone={load} />
         <SocialLink network="github" label="GitHub" enabled linked={card?.github?.handle} onDone={load} />
       </div>
-
-      <p className="text-sm text-muted">
-        Your public card is at{" "}
-        <Link href={`/p/${player.name}`} className="text-accent">
-          /p/{player.name}
-        </Link>
-        .
-      </p>
     </div>
   );
 }

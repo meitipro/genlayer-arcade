@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { CSSProperties } from "react";
 import { DeviceSecret } from "@/components/DeviceSecret";
-import { PlayerCardView } from "@/components/PlayerCard";
+import CredentialCard from "@/components/CredentialCard";
 import { cardFor } from "@/lib/card";
 import { historyOf } from "@/lib/daily";
 import { txUrl } from "@/lib/explorer";
@@ -47,9 +47,9 @@ export default async function Profile({ params }: { params: Promise<{ name: stri
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-10">
-      {card && (
-        <div className="max-w-2xl">
-          <PlayerCardView card={card} />
+      {card?.discord && (
+        <div className="vault-cardstage">
+          <CredentialCard data={card} />
         </div>
       )}
       <section className="space-y-3">

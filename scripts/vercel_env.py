@@ -29,6 +29,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 HOME = pathlib.Path.home() / ".genlayer-arcade"
 SECRETS = HOME / "vercel-secrets.json"
 SITE = os.environ.get("ARCADE_SITE_URL", "https://genlayergamehub.vercel.app")
+# optional names read from ~/.genlayer-arcade/keys.json; anything else in that file is ignored
+ALLOWED_EXTRA = ("DISCORD_CLIENT_ID", "DISCORD_CLIENT_SECRET", "DISCORD_GUILD_ID", "DISCORD_REDIRECT_URI", "ARCADE_REQUIRE_DISCORD", "TWITTERAPI_KEY")
 
 
 def vercel() -> list[str]:
@@ -61,6 +63,13 @@ def main() -> int:
         "NEXT_PUBLIC_SITE_URL": SITE,
         **{k: v for k, v in dep["contracts"].items() if v},
     }
+    # keys the user hands over by writing them to a file outside the repository
+    extra = HOME / "keys.json"
+    if extra.exists():
+        given = json.loads(extra.read_text(encoding="utf-8"))
+        for name in ALLOWED_EXTRA:
+            if given.get(name):
+                values[name] = str(given[name]).strip()
     listed = subprocess.run([*vercel(), "env", "ls", "production"], cwd=ROOT, capture_output=True, text=True).stdout
     present = {line.split()[0] for line in listed.splitlines() if line.strip() and line.split()[0].isupper()}
     for name, value in values.items():
@@ -69,7 +78,7 @@ def main() -> int:
             continue
         if name in present:
             subprocess.run([*vercel(), "env", "rm", name, "production", "--yes"], cwd=ROOT, capture_output=True, text=True)
-        sensitive = name not in ("GENLAYER_NETWORK", "NEXT_PUBLIC_EXPLORER", "NEXT_PUBLIC_SITE_URL") and not name.endswith("_CONTRACT")
+        sensitive = name not in ("GENLAYER_NETWORK", "NEXT_PUBLIC_EXPLORER", "NEXT_PUBLIC_SITE_URL", "DISCORD_CLIENT_ID", "DISCORD_GUILD_ID", "DISCORD_REDIRECT_URI", "ARCADE_REQUIRE_DISCORD") and not name.endswith("_CONTRACT")
         args = [*vercel(), "env", "add", name, "production"]
         if sensitive:
             args.append("--sensitive")

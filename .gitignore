@@ -54,3 +54,4 @@ accounts.json
 
 .vercel
 .env*
+!.env.example

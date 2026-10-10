@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import "./globals.css";
 
 const FONTS =
-  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&family=Instrument+Serif&family=Geist:wght@400;500;600&display=swap";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://genlayergamehub.vercel.app";
 
 export const metadata: Metadata = {
