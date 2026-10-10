@@ -45,9 +45,14 @@ Every number below comes from a log in this repository.
 
 **Web suite**: `npm test`, **29 passed**. Bots play each arcade scene headless with the real physics and timing, checking the numbers from section 10 and that an honest bot's score rate stays under the server's limit. The suite also covers seasons, signed sessions, input validation, XP, and the claim, score and leaderboard routes.
 
-**Admin path**: season finalize was exercised against a separate test ledger owned by the relayer, so no test data reached the production ledger ([`docs/admin-test.studionet.json`](docs/admin-test.studionet.json)). Two `record_season` writes went out back to back; both FINALIZED and `/seasons` read them back.
+**Admin path and crons**: season finalize was exercised against a separate test ledger owned by the relayer, so no test data reached the production ledger. Two `record_season` writes went out back to back; both FINALIZED and `/seasons` read them back. The cron cycle ran on relayer-owned test copies of the three daily contracts: rollover, rollover again, the 18:00 deadline (BTC resolved at 83005), then a third rollover. Every write was correct. The first attempt hit Studionet's 30 requests per minute before sending anything, which led to pacing and nonce-guarded retries in `lib/genlayer.ts` and `lib/admin.ts`. Details: [`docs/admin-test.studionet.json`](docs/admin-test.studionet.json).
 
-**Live site, end to end**: [`scripts/e2e-live.mjs`](scripts/e2e-live.mjs) ran against genlayergamehub.vercel.app from a fresh nickname; the results are in [`docs/e2e-live.json`](docs/e2e-live.json) and the section below.
+**Live site, end to end**: [`scripts/e2e-live.mjs`](scripts/e2e-live.mjs) on genlayergamehub.vercel.app from a fresh nickname ([`docs/e2e-live.json`](docs/e2e-live.json)).
+- Run 1 found a production bug and was stopped: the status route answered "unknown transaction" for every relayed hash, because Upstash returns HGETALL as a flat array when automatic deserialization is off. The transaction itself was FINALIZED. This is fixed in `lib/redis.ts`.
+- Run 2: **25 steps, 0 failures**. Claim; the same name in another case is taken; no token, a short run, another device's secret, an impossible score and a reused token are all refused. Scores were accepted on all six boards. Daily Verdict ACCEPTED 3 of 3, scored **9/10**. Word Bridge `moon sky pie` was ACCEPTED as **invalid** (3 of 4 agree; the sky to pie link was judged false). Second entries were blocked. The profile shows the history, and status refuses unknown hashes. The pipeline scores were then removed from the public boards. The script itself crashed on a variable-scope bug after the profile step; the last two steps were run separately and appended to the same run.
+- Oracle Guess runs separately as `--daily=oracle --reuse`, because the site allows three daily submissions per hour from one network.
+
+**Section 21 checklist**, pass or fail per item: [`docs/CHECKLIST.md`](docs/CHECKLIST.md). Lighthouse on mobile scored performance 99, 96 and 91 and accessibility 100 on `/`, `/play/validator-run` and `/daily/verdict`.
 
 ## Where the build differs from the spec, and why
 
@@ -91,7 +96,7 @@ Python scripts need genlayer-py 0.18 (`pip install genlayer-py==0.18.0`). Test a
 
 Open `/admin` and paste `ADMIN_TOKEN` (stored in `~/.genlayer-arcade/vercel-secrets.json`). The panel has one card per daily game, with open (from the content pack or custom), close, lock and resolve. It can also run the 00:00 rollover and the 18:00 Oracle deadline by hand, finalize a season, remove a score, and list every admin transaction with its status and explorer link.
 
-Vercel Cron (`vercel.json`) runs the same actions: `/api/cron/daily` at 00:00 UTC closes yesterday's Verdict and Bridge rounds and opens new ones; `/api/cron/oracle` at 18:00 UTC locks and resolves the Oracle round; `/api/cron/season` on Mondays at 00:05 UTC records last week's top 10.
+Vercel Cron (`vercel.json`) runs the same actions: `/api/cron/daily` at 00:00 UTC closes yesterday's Verdict and Bridge rounds and opens new ones; `/api/cron/oracle` at 18:00 UTC locks and resolves the Oracle round; `/api/cron/season` on Mondays at 00:05 UTC records last week's top 10. On the Hobby plan, Vercel runs each daily cron at some point within its scheduled hour. Oracle guesses stay open until the lock lands, and the admin panel can run any of these by hand.
 
 ## Layout
 
