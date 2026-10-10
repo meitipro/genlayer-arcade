@@ -23,8 +23,8 @@ Pass or fail per item, with the evidence. Run on 2026-10-10 against Studionet an
 
 | Item | Result | Evidence |
 |---|---|---|
-| Community game submissions reviewed on-chain | **Pass on chain, not yet on the live site** | GameReview deployed and verified; 5 real pages judged as expected ([studio-tests.studionet.json](studio-tests.studionet.json)); 13 offline tests; 32/32 mutants |
-| Tournament mode (rooms scope an event board) | **Pass offline** | `tests/web/features.test.ts`: unknown, upcoming and wrong-game rooms refused, a live room ranks the run on `lb:event:<id>` |
+| Community game submissions reviewed on-chain | **Pass, on chain and on the live site** | 5 real pages judged as expected ([studio-tests.studionet.json](studio-tests.studionet.json)); live: this hub's Chain Snake page PLAYABLE 3 of 3, listed, then delisted with a reason ([day2-live.json](day2-live.json)); 13 offline tests; 32/32 mutants |
+| Tournament mode (rooms scope an event board) | **Pass, offline and on the live site** | `tests/web/features.test.ts`; live: event created, duplicate code, unknown code and wrong game refused, run ranked #1 on the event board, event deleted ([day2-live.json](day2-live.json)) |
 | Wallet mode for the dailies | **Pass against the local site with the real chain** | [wallet-e2e.json](wallet-e2e.json): faucet, wallet-sent submit, hub verified and recorded it, ACCEPTED 3 of 3, entry read back. **Not tried with a real browser wallet** |
 | UNDETERMINED teaser level | **Pass** | `tests/web/teaser.test.ts`: a beam search over a person's moves finishes it with no fall |
 | Five new arcade games (Sky Hop, Fee Flap, Whack-a-Node, Node Defender, Stake Merge) | **Pass in bot tests, not played by hand** | `tests/web/games2.test.ts`: seeded levels survived, scores under each limit; derivations in `lib/games.ts` |

@@ -1,0 +1,187 @@
+{
+  "runs": [
+    {
+      "site": "https://genlayergamehub.vercel.app",
+      "started": "2026-10-10T23:42:41.859Z",
+      "steps": [
+        {
+          "step": "claim a fresh nickname",
+          "pass": true,
+          "at": "2026-10-10T23:42:42.713Z",
+          "name": "d2_10102342"
+        },
+        {
+          "step": "a bad title and an http link are refused before any fee",
+          "pass": true,
+          "at": "2026-10-10T23:42:43.342Z",
+          "error": "title must be 3 to 60 characters"
+        },
+        {
+          "step": "another device's secret cannot submit",
+          "pass": true,
+          "at": "2026-10-10T23:42:43.845Z",
+          "status": 401
+        },
+        {
+          "step": "a real game page is sent to the GameReview contract, hash at once",
+          "pass": true,
+          "at": "2026-10-10T23:42:44.622Z",
+          "status": 200,
+          "hash": "0xa3171e80f805af55cca4b555ca6469c475493b1457b6029153faef5cf8d4c004"
+        },
+        {
+          "step": "the same link again is refused",
+          "pass": true,
+          "at": "2026-10-10T23:42:44.894Z",
+          "status": 409,
+          "error": "that link was already submitted"
+        },
+        {
+          "step": "the validators decided on chain",
+          "pass": true,
+          "at": "2026-10-10T23:43:02.183Z",
+          "status": "ACCEPTED",
+          "result": "FINISHED_WITH_RETURN",
+          "agree": 3,
+          "voters": 3,
+          "seconds": 17,
+          "explorer": "https://explorer-studio.genlayer.com/tx/0xa3171e80f805af55cca4b555ca6469c475493b1457b6029153faef5cf8d4c004"
+        },
+        {
+          "step": "the verdict is in the list: PLAYABLE and listed",
+          "pass": true,
+          "at": "2026-10-10T23:43:05.584Z",
+          "review": {
+            "id": "1",
+            "title": "Chain Snake (this hub)",
+            "url": "https://genlayergamehub.vercel.app/play/chain-snake",
+            "player": "d2_10102342",
+            "label": "PLAYABLE",
+            "reason": "Snake game with canvas, Start button, Space key, WASD controls, score, and season ranking.",
+            "listed": true,
+            "rechecked": false,
+            "reviewed_by": "0x71E5653471E2d4e1E17814A6123384B567Ea59dE",
+            "hash": "0xa3171e80f805af55cca4b555ca6469c475493b1457b6029153faef5cf8d4c004"
+          }
+        },
+        {
+          "step": "admin delists it with a reason",
+          "pass": true,
+          "at": "2026-10-10T23:43:06.702Z",
+          "status": 200,
+          "body": {
+            "sent": {
+              "action": "delist",
+              "game": "review",
+              "hash": "0x39507e6366d1a4671ff923a6ccfc29163af8d5f12b2a17a3ba4fae967b73b60a",
+              "detail": "review 1"
+            }
+          }
+        },
+        {
+          "step": "the delisting is on the contract, with the reason",
+          "pass": true,
+          "at": "2026-10-10T23:43:40.063Z",
+          "review": {
+            "id": "1",
+            "title": "Chain Snake (this hub)",
+            "url": "https://genlayergamehub.vercel.app/play/chain-snake",
+            "player": "d2_10102342",
+            "label": "PLAYABLE",
+            "reason": "Snake game with canvas, Start button, Space key, WASD controls, score, and season ranking.",
+            "listed": false,
+            "rechecked": false,
+            "reviewed_by": "0x71E5653471E2d4e1E17814A6123384B567Ea59dE",
+            "delisted": "end-to-end test of the live site, not a real submission",
+            "hash": "0xa3171e80f805af55cca4b555ca6469c475493b1457b6029153faef5cf8d4c004"
+          }
+        },
+        {
+          "step": "admin creates a live event with a room code",
+          "pass": true,
+          "at": "2026-10-10T23:43:40.558Z",
+          "status": 200,
+          "event": "live-test-10102342-t-10102342"
+        },
+        {
+          "step": "a room code cannot be used twice",
+          "pass": true,
+          "at": "2026-10-10T23:43:40.861Z",
+          "error": "room code already used by Live test 10102342"
+        },
+        {
+          "step": "the room code finds the event, and it is live",
+          "pass": true,
+          "at": "2026-10-10T23:43:41.382Z",
+          "state": "live"
+        },
+        {
+          "step": "an unknown room code is refused",
+          "pass": true,
+          "at": "2026-10-10T23:43:41.655Z",
+          "status": 404
+        },
+        {
+          "step": "a room for another game is refused",
+          "pass": true,
+          "at": "2026-10-10T23:43:41.918Z",
+          "status": 400,
+          "error": "that room code is for chain-snake"
+        },
+        {
+          "step": "a session starts in the room",
+          "pass": true,
+          "at": "2026-10-10T23:43:42.182Z",
+          "status": 200,
+          "room": "live-test-10102342-t-10102342"
+        },
+        {
+          "step": "the score lands on the season board and the event board",
+          "pass": true,
+          "at": "2026-10-10T23:43:49.783Z",
+          "status": 200,
+          "body": {
+            "ok": true,
+            "season": "2026-W41",
+            "best": 60,
+            "rank": 2,
+            "xp": 15,
+            "badges": [
+              "first-block"
+            ],
+            "event": {
+              "id": "live-test-10102342-t-10102342",
+              "rank": 1
+            }
+          }
+        },
+        {
+          "step": "the event page shows the player on the event board",
+          "pass": true,
+          "at": "2026-10-10T23:43:50.186Z"
+        },
+        {
+          "step": "Connect Discord says it is not configured (no keys yet)",
+          "pass": true,
+          "at": "2026-10-10T23:43:50.445Z",
+          "status": 503,
+          "error": "Discord connect is not configured on this site yet"
+        },
+        {
+          "step": "the event is deleted",
+          "pass": true,
+          "at": "2026-10-10T23:43:51.032Z",
+          "status": 200
+        },
+        {
+          "step": "the test score is removed from the public boards",
+          "pass": true,
+          "at": "2026-10-10T23:43:51.303Z",
+          "removed": 2
+        }
+      ],
+      "finished": "2026-10-10T23:43:51.304Z",
+      "failures": 0
+    }
+  ]
+}
