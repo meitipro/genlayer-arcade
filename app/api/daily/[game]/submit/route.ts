@@ -37,6 +37,8 @@ export async function POST(req: Request, ctx: { params: Promise<{ game: string }
     return NextResponse.json({ error: `not sent: ${chainBusy(e)}` }, { status: 503 });
   }
 
+  // a second entry is refused before it spends the hourly quota
+  if (await redis.get(doneKey(g, rid, player))) return NextResponse.json({ error: "you already played this round" }, { status: 409 });
   if (!(await limits.daily.limit(clientIp(req))).success)
     return NextResponse.json({ error: "three daily submissions per hour from one network, try again later" }, { status: 429 });
 

@@ -1,0 +1,32 @@
+{
+  "purpose": "a separate SeasonLedger owned by the relayer, for testing the site's finalize-season path without writing test data to the production ledger",
+  "address": "0x69f4095027eBf58f1089946FaC1D504304a71e12",
+  "deploy_tx": "https://explorer-studio.genlayer.com/tx/0x9f7c4bde0b740e4dcf20cb4f6a2263363191643c6debbe0f0c08428d81e9d5c7",
+  "deployed_at": "2026-10-10T19:30:18Z",
+  "steps": [
+    {
+      "step": "two test scores posted locally for season 2026-W41 (season_tester: consensus-stack 90, chain-snake 90), then POST /api/admin/finalize-season {season: 2026-W41} with LEDGER_CONTRACT pointed at this ledger",
+      "pass": true
+    },
+    {
+      "step": "record_season consensus-stack:2026-W41",
+      "tx": "https://explorer-studio.genlayer.com/tx/0x0e6118f2eddea746e06d672f6b42e3096dfa11779eaa73e8eb90b3a72b3b9f5a",
+      "status": "FINALIZED FINISHED_WITH_RETURN, 4 of 4 agree",
+      "pass": true
+    },
+    {
+      "step": "record_season chain-snake:2026-W41 (sent right after the first from the same relayer)",
+      "tx": "https://explorer-studio.genlayer.com/tx/0xe19604a6dd2c74635987ad4418c600bce0901d48392519ab7526a0fcbf4202b5",
+      "status": "FINALIZED FINISHED_WITH_RETURN, 3 of 3 agree",
+      "pass": true
+    },
+    {
+      "step": "finalize again: both keys skipped as already recorded, four games skipped with no scores",
+      "pass": true
+    },
+    {
+      "step": "/seasons read both records back from the chain",
+      "pass": true
+    }
+  ]
+}

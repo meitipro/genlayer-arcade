@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { Suspense, type CSSProperties } from "react";
 import events from "@/data/events.json";
 import { Cover } from "@/components/Cover";
 import { DailyCard } from "@/components/DailyCard";
@@ -23,36 +23,13 @@ async function yesterdayTop(game: "verdict" | "bridge") {
   }
 }
 
-export default async function Home() {
-  const season = seasonId();
-  const week = Math.floor(Date.now() / (7 * 86400000));
-  const featured = CORE_ARCADE[week % CORE_ARCADE.length];
-  const [dailies, tops, yVerdict, yBridge] = await Promise.all([
+async function LiveDailies() {
+  const [dailies, yVerdict, yBridge] = await Promise.all([
     Promise.all(ONCHAIN_GAMES.map((g) => today(g.slug as OnchainGame))),
-    Promise.all(ARCADE.map((g) => redis.ztop(`lb:${g.slug}:${season}`, 3))),
     yesterdayTop("verdict"),
     yesterdayTop("bridge"),
   ]);
-  const upcoming = (events as { id: string; title: string; startsAt: string; roomCode: string }[]).filter((e) => new Date(e.startsAt).getTime() > Date.now());
-
   return (
-    <div className="mx-auto max-w-6xl space-y-14 px-4 py-10">
-      <section className="space-y-5">
-        <p className="mono text-xs uppercase tracking-widest text-accent">community gaming hub</p>
-        <h1 className="max-w-3xl text-[44px] font-bold leading-[1.05] sm:text-[64px]">Play, compete, get judged by consensus.</h1>
-        <p className="max-w-2xl text-muted">
-          Nine games built around how GenLayer works. Arcade scores are instant. Three daily games are settled on-chain by Intelligent Contracts, with an explorer link on every result.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/games" className="btn btn-primary">
-            Play now
-          </Link>
-          <Link href="/daily" className="btn btn-ghost">
-            Today&apos;s dailies
-          </Link>
-        </div>
-      </section>
-
       <section aria-labelledby="dailies" className="space-y-4">
         <div className="flex items-baseline justify-between">
           <h2 id="dailies" className="text-xl font-semibold">
@@ -95,24 +72,13 @@ export default async function Home() {
           </div>
         ) : null}
       </section>
+  );
+}
 
-      <section aria-labelledby="featured" className="grid items-center gap-6 md:grid-cols-[3fr_2fr]" style={{ "--accent": featured.accent } as CSSProperties}>
-        <Link href={featured.href} className="card block overflow-hidden hover:border-accent">
-          <Cover game={featured} className="block aspect-video w-full" />
-        </Link>
-        <div className="space-y-3">
-          <p className="mono text-xs uppercase tracking-widest text-accent">featured this week</p>
-          <h2 id="featured" className="text-[28px] font-bold">
-            {featured.title}
-          </h2>
-          <p className="text-muted">{featured.blurb}</p>
-          <p className="text-sm">{featured.idea}</p>
-          <Link href={featured.href} className="btn btn-primary">
-            Play {featured.title}
-          </Link>
-        </div>
-      </section>
-
+async function SeasonStrip() {
+  const season = seasonId();
+  const tops = await Promise.all(ARCADE.map((g) => redis.ztop(`lb:${g.slug}:${season}`, 3)));
+  return (
       <section aria-labelledby="season" className="space-y-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 id="season" className="text-xl font-semibold">
@@ -144,6 +110,68 @@ export default async function Home() {
           ))}
         </div>
       </section>
+  );
+}
+
+function Skeleton({ label, rows }: { label: string; rows: number }) {
+  return (
+    <section className="space-y-4" aria-busy>
+      <h2 className="text-xl font-semibold">{label}</h2>
+      <div className="grid gap-4 md:grid-cols-3">
+        {Array.from({ length: rows * 3 }).map((_, i) => (
+          <div key={i} className="card h-32 animate-pulse" />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default function Home() {
+  const week = Math.floor(Date.now() / (7 * 86400000));
+  const featured = CORE_ARCADE[week % CORE_ARCADE.length];
+  const upcoming = (events as { id: string; title: string; startsAt: string; roomCode: string }[]).filter((e) => new Date(e.startsAt).getTime() > Date.now());
+  return (
+    <div className="mx-auto max-w-6xl space-y-14 px-4 py-10">
+      <section className="space-y-5">
+        <p className="mono text-xs uppercase tracking-widest text-accent">community gaming hub</p>
+        <h1 className="max-w-3xl text-[44px] font-bold leading-[1.05] sm:text-[64px]">Play, compete, get judged by consensus.</h1>
+        <p className="max-w-2xl text-muted">
+          Nine games built around how GenLayer works. Arcade scores are instant. Three daily games are settled on-chain by Intelligent Contracts, with an explorer link on every result.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/games" className="btn btn-primary">
+            Play now
+          </Link>
+          <Link href="/daily" className="btn btn-ghost">
+            Today&apos;s dailies
+          </Link>
+        </div>
+      </section>
+
+      <Suspense fallback={<Skeleton label="Today on-chain" rows={1} />}>
+        <LiveDailies />
+      </Suspense>
+
+      <section aria-labelledby="featured" className="grid items-center gap-6 md:grid-cols-[3fr_2fr]" style={{ "--accent": featured.accent } as CSSProperties}>
+        <Link href={featured.href} className="card block overflow-hidden hover:border-accent">
+          <Cover game={featured} className="block aspect-video w-full" />
+        </Link>
+        <div className="space-y-3">
+          <p className="mono text-xs uppercase tracking-widest text-accent">featured this week</p>
+          <h2 id="featured" className="text-[28px] font-bold">
+            {featured.title}
+          </h2>
+          <p className="text-muted">{featured.blurb}</p>
+          <p className="text-sm">{featured.idea}</p>
+          <Link href={featured.href} className="btn btn-primary">
+            Play {featured.title}
+          </Link>
+        </div>
+      </section>
+
+      <Suspense fallback={<Skeleton label="Season" rows={2} />}>
+        <SeasonStrip />
+      </Suspense>
 
       <section className="grid gap-6 md:grid-cols-[1fr_2fr]">
         <div className="card space-y-2 p-5">

@@ -2,7 +2,8 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import type { Game } from "@/lib/games";
 import type { AnyRound, BridgeRound, OracleRound, VerdictRound } from "@/lib/onchain";
-import { Countdown, nextUtc } from "./Countdown";
+import { nextUtc } from "@/lib/time";
+import { Countdown } from "./Countdown";
 
 export function DailyCard({ game, round, error }: { game: Game; round: AnyRound | null; error?: string }) {
   let line = "next round opens at 00:00 UTC";

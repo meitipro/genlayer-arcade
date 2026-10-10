@@ -3,6 +3,8 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import "./globals.css";
 
+const FONTS =
+  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://genlayergamehub.vercel.app";
 
 export const metadata: Metadata = {
@@ -28,11 +30,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Google Fonts by link: next/font cannot reach gstatic from the build machine */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font -- App Router root layout, loads on every page */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap"
-        />
+        {/* loaded as print, switched to all once it arrives, so the fonts never block the first paint */}
+        <link rel="stylesheet" href={FONTS} media="print" data-font="" suppressHydrationWarning />
+        <noscript>
+          <link rel="stylesheet" href={FONTS} />
+        </noscript>
       </head>
       <body className="flex min-h-dvh flex-col">
         <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-[10px] focus:bg-accent focus:px-3 focus:py-2 focus:text-bg">
@@ -43,6 +45,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "document.querySelectorAll('link[data-font]').forEach(function(l){if(l.sheet)l.media='all';else l.addEventListener('load',function(){l.media='all'})})",
+          }}
+        />
       </body>
     </html>
   );

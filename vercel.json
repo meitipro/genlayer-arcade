@@ -1,8 +1,18 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
   "crons": [
-    { "path": "/api/cron/daily", "schedule": "0 0 * * *" },
-    { "path": "/api/cron/oracle", "schedule": "0 18 * * *" },
-    { "path": "/api/cron/season", "schedule": "5 0 * * 1" }
+    {
+      "path": "/api/cron/daily",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/oracle",
+      "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/cron/season",
+      "schedule": "5 0 * * 1"
+    }
   ]
 }

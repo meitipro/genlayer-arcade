@@ -63,7 +63,17 @@ function upstash(url: string, token: string): Store {
     expire: (key, s) => r.expire(k(key), s),
     hset: (key, values) => r.hset(k(key), values),
     hget: async (key, field) => (await r.hget(k(key), field)) as never,
-    hgetall: async (key) => (await r.hgetall(k(key))) as never,
+    // with automaticDeserialization off, HGETALL comes back as a flat [field, value, ...] array
+    hgetall: async (key) => {
+      const raw = (await r.hgetall(k(key))) as unknown;
+      if (Array.isArray(raw)) {
+        if (!raw.length) return null as never;
+        const o: Record<string, string> = {};
+        for (let i = 0; i < raw.length; i += 2) o[String(raw[i])] = String(raw[i + 1]);
+        return o as never;
+      }
+      return (raw && Object.keys(raw as object).length ? raw : null) as never;
+    },
     hincrby: (key, field, by) => r.hincrby(k(key), field, by),
     sadd: (key, ...members) => (r.sadd as (key: string, ...m: string[]) => Promise<number>)(k(key), ...members),
     smembers: (key) => r.smembers(k(key)),

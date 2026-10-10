@@ -8,7 +8,8 @@ import { useEffect, useMemo, useState } from "react";
 import { postJson, usePlayer } from "@/lib/client/player";
 import { txUrl } from "@/lib/explorer";
 import type { BridgeEntry, BridgeRound, OnchainGame, OracleRound, VerdictEntry, VerdictRound } from "@/lib/onchain";
-import { Countdown, nextUtc } from "./Countdown";
+import { nextUtc } from "@/lib/time";
+import { Countdown } from "./Countdown";
 import { NicknameGate } from "./NicknameGate";
 import { isDecided, isSuccess, TxStatus, useTx } from "./TxStatus";
 

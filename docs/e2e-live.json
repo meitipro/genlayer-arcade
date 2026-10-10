@@ -1,0 +1,381 @@
+{
+  "runs": [
+    {
+      "site": "https://genlayergamehub.vercel.app",
+      "started": "2026-10-10T19:35:24.902Z",
+      "steps": [
+        {
+          "step": "claim a fresh nickname",
+          "pass": true,
+          "at": "2026-10-10T19:35:26.074Z",
+          "name": "e2e_10101935",
+          "status": 200
+        },
+        {
+          "step": "the same name in another case is taken",
+          "pass": true,
+          "at": "2026-10-10T19:35:26.503Z",
+          "status": 409,
+          "error": "that name is taken, pick another"
+        },
+        {
+          "step": "score without a session token is refused",
+          "pass": true,
+          "at": "2026-10-10T19:35:27.175Z",
+          "status": 400,
+          "error": "bad session"
+        },
+        {
+          "step": "a run shorter than minMs is refused",
+          "pass": true,
+          "at": "2026-10-10T19:35:27.871Z",
+          "status": 422,
+          "error": "implausible score"
+        },
+        {
+          "step": "consensus-stack: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:35:34.507Z",
+          "score": 105,
+          "status": 200,
+          "rank": 1,
+          "badges": [
+            "first-block"
+          ]
+        },
+        {
+          "step": "validator-run: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:35:35.495Z",
+          "score": 252,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "another device's secret cannot post under this name",
+          "pass": true,
+          "at": "2026-10-10T19:35:36.654Z",
+          "status": 401,
+          "error": "bad player"
+        },
+        {
+          "step": "an impossible score is refused",
+          "pass": true,
+          "at": "2026-10-10T19:35:44.436Z",
+          "status": 422,
+          "error": "implausible score"
+        },
+        {
+          "step": "chain-snake: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:35:45.011Z",
+          "score": 63,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "a reused session token is refused",
+          "pass": true,
+          "at": "2026-10-10T19:35:45.286Z",
+          "status": 409,
+          "error": "session used"
+        },
+        {
+          "step": "appeal-breaker: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:35:45.614Z",
+          "score": 422,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "equivalence: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:35:46.364Z",
+          "score": 397,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "leader-rotation: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:36:26.529Z",
+          "score": 2052,
+          "status": 200,
+          "rank": 1,
+          "badges": [
+            "online"
+          ]
+        },
+        {
+          "step": "the season board shows the player",
+          "pass": true,
+          "at": "2026-10-10T19:36:26.825Z",
+          "you": {
+            "rank": 1,
+            "player": "e2e_10101935",
+            "score": 252
+          }
+        },
+        {
+          "step": "verdict: submit relayed, hash returned at once",
+          "pass": true,
+          "at": "2026-10-10T19:36:29.982Z",
+          "round": "1",
+          "status": 200,
+          "hash": "0xea5ec8533dc3e6f4eabda58fab20f91f1248c44c98e91dedaa230932a6907295",
+          "body": {
+            "entry": "Dispute desk: freelancers and clients upload brief and delivery, AI validators agree on who gets paid."
+          }
+        },
+        {
+          "step": "verdict: a second entry in the same round is blocked",
+          "pass": true,
+          "at": "2026-10-10T19:36:30.268Z",
+          "status": 409,
+          "error": "you already played this round"
+        }
+      ],
+      "stopped": "Stopped by hand after the Verdict submit. The live status route answered 'unknown transaction' for a hash it had sent: with automaticDeserialization off, Upstash returns HGETALL as a flat [field, value, ...] array, which lib/redis.ts passed on as if it were an object. The tx itself was FINALIZED with SUCCESS on chain. Fixed in lib/redis.ts; the next run repeats the whole path."
+    },
+    {
+      "site": "https://genlayergamehub.vercel.app",
+      "started": "2026-10-10T19:41:26.377Z",
+      "steps": [
+        {
+          "step": "claim a fresh nickname",
+          "pass": true,
+          "at": "2026-10-10T19:41:27.131Z",
+          "name": "e2e_10101941",
+          "status": 200
+        },
+        {
+          "step": "the same name in another case is taken",
+          "pass": true,
+          "at": "2026-10-10T19:41:27.400Z",
+          "status": 409,
+          "error": "that name is taken, pick another"
+        },
+        {
+          "step": "score without a session token is refused",
+          "pass": true,
+          "at": "2026-10-10T19:41:27.961Z",
+          "status": 400,
+          "error": "bad session"
+        },
+        {
+          "step": "a run shorter than minMs is refused",
+          "pass": true,
+          "at": "2026-10-10T19:41:28.580Z",
+          "status": 422,
+          "error": "implausible score"
+        },
+        {
+          "step": "consensus-stack: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:41:34.469Z",
+          "score": 105,
+          "status": 200,
+          "rank": 1,
+          "badges": [
+            "first-block"
+          ]
+        },
+        {
+          "step": "validator-run: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:41:36.279Z",
+          "score": 252,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "another device's secret cannot post under this name",
+          "pass": true,
+          "at": "2026-10-10T19:41:37.258Z",
+          "status": 401,
+          "error": "bad player"
+        },
+        {
+          "step": "an impossible score is refused",
+          "pass": true,
+          "at": "2026-10-10T19:41:44.363Z",
+          "status": 422,
+          "error": "implausible score"
+        },
+        {
+          "step": "chain-snake: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:41:44.911Z",
+          "score": 63,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "a reused session token is refused",
+          "pass": true,
+          "at": "2026-10-10T19:41:45.171Z",
+          "status": 409,
+          "error": "session used"
+        },
+        {
+          "step": "appeal-breaker: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:41:45.469Z",
+          "score": 403,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "equivalence: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:41:47.337Z",
+          "score": 397,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "leader-rotation: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-10T19:42:27.102Z",
+          "score": 2052,
+          "status": 200,
+          "rank": 1,
+          "badges": [
+            "online"
+          ]
+        },
+        {
+          "step": "the season board shows the player",
+          "pass": true,
+          "at": "2026-10-10T19:42:27.370Z",
+          "you": {
+            "rank": 1,
+            "player": "e2e_10101941",
+            "score": 252
+          }
+        },
+        {
+          "step": "verdict: submit relayed, hash returned at once",
+          "pass": true,
+          "at": "2026-10-10T19:42:31.708Z",
+          "round": "1",
+          "status": 200,
+          "hash": "0xeac94a316714a333e08c416790a02f500eda0d4a675f2adeef6f531a8f8ac651",
+          "body": {
+            "entry": "Dispute desk: freelancers and clients upload brief and delivery, AI validators agree on who gets paid."
+          }
+        },
+        {
+          "step": "verdict: a second entry in the same round is blocked",
+          "pass": true,
+          "at": "2026-10-10T19:42:32.012Z",
+          "status": 409,
+          "error": "you already played this round"
+        },
+        {
+          "step": "verdict: decided on chain",
+          "pass": true,
+          "at": "2026-10-10T19:42:50.626Z",
+          "status": "ACCEPTED",
+          "result": "FINISHED_WITH_RETURN",
+          "agree": 3,
+          "voters": 3,
+          "seconds": 19,
+          "explorer": "https://explorer-studio.genlayer.com/tx/0xeac94a316714a333e08c416790a02f500eda0d4a675f2adeef6f531a8f8ac651"
+        },
+        {
+          "step": "verdict: entry read back from the contract",
+          "pass": true,
+          "at": "2026-10-10T19:42:53.561Z",
+          "entry": {
+            "player": "e2e_10101941",
+            "entry": "Dispute desk: freelancers and clients upload brief and delivery, AI validators agree on who gets paid.",
+            "score": 9,
+            "reason": "Clear dispute problem, natural AI consensus use, concise delivery under 20 words."
+          }
+        },
+        {
+          "step": "bridge: submit relayed, hash returned at once",
+          "pass": true,
+          "at": "2026-10-10T19:42:55.844Z",
+          "round": "1",
+          "status": 200,
+          "hash": "0x3635b14eaa5bf1e7e3f0d723597035046cc86b75fe72223a207c57f5449af373",
+          "body": {
+            "chain": "moon sky pie"
+          }
+        },
+        {
+          "step": "bridge: a second entry in the same round is blocked",
+          "pass": true,
+          "at": "2026-10-10T19:42:56.141Z",
+          "status": 409,
+          "error": "you already played this round"
+        },
+        {
+          "step": "bridge: decided on chain",
+          "pass": true,
+          "at": "2026-10-10T19:43:25.940Z",
+          "status": "ACCEPTED",
+          "result": "FINISHED_WITH_RETURN",
+          "agree": 3,
+          "voters": 4,
+          "seconds": 30,
+          "explorer": "https://explorer-studio.genlayer.com/tx/0x3635b14eaa5bf1e7e3f0d723597035046cc86b75fe72223a207c57f5449af373"
+        },
+        {
+          "step": "bridge: entry read back from the contract",
+          "pass": true,
+          "at": "2026-10-10T19:43:28.813Z",
+          "entry": {
+            "player": "e2e_10101941",
+            "chain": [
+              "moon",
+              "sky",
+              "pie"
+            ],
+            "links": [
+              true,
+              false
+            ],
+            "valid": false,
+            "score": 0
+          }
+        },
+        {
+          "step": "profile renders level, badges and daily history",
+          "pass": true,
+          "at": "2026-10-10T19:43:29.233Z"
+        },
+        {
+          "step": "status refuses hashes the hub did not send",
+          "pass": true,
+          "at": "2026-10-10T19:43:46.929Z",
+          "status": 404
+        },
+        {
+          "step": "pipeline scores removed from the public boards (admin remove-score)",
+          "pass": true,
+          "at": "2026-10-10T19:43:49.096Z",
+          "removed": 12
+        }
+      ],
+      "daily": [
+        "verdict",
+        "bridge"
+      ],
+      "note": "The script stopped after the profile step on a variable-scope bug in the script itself (fixed); these last two steps were then run by scripts' same code paths and appended here.",
+      "finished": "2026-10-10T19:43:49.096Z",
+      "failures": 0
+    }
+  ]
+}

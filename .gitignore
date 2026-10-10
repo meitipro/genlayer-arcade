@@ -51,3 +51,6 @@ accounts.json
 
 # local tooling
 .claude/
+
+.vercel
+.env*
