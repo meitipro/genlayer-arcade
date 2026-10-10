@@ -7,7 +7,7 @@ import { EventsPanel, ReviewsPanel } from "./AdminExtras";
 type Sent = { action: string; game?: string; hash: string; detail?: string; at?: string };
 type Props = { challenges: { challenge: string; criteria: string }[]; bridges: { start: string; end: string }[]; oracles: string[]; lastSeason: string };
 
-const ARCADE = ["validator-run", "consensus-stack", "leader-rotation", "equivalence", "chain-snake", "appeal-breaker"];
+const ARCADE = ["validator-run", "consensus-stack", "leader-rotation", "equivalence", "chain-snake", "appeal-breaker", "sky-hop", "fee-flap", "whack-a-node", "node-defender", "stake-merge"];
 
 export function AdminPanel({ challenges, bridges, oracles, lastSeason }: Props) {
   const [token, setToken] = useState("");

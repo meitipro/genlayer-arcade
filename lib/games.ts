@@ -181,6 +181,118 @@ export const GAMES: Game[] = [
     learnMore: "https://docs.genlayer.com/understand-genlayer-protocol/core-concepts/optimistic-democracy/appeal-process",
   },
   {
+    slug: "sky-hop",
+    title: "Sky Hop",
+    type: "arcade",
+    accent: "#5EEAD4",
+    world: "Skyline",
+    mood: "aqua skyline, floating blocks, springs",
+    tier: "B",
+    blurb: "A 2D platformer. Your node bounces up a tower of blocks. Steer left and right, grab votes, and never fall off the chain.",
+    idea: "The deeper a block sits under newer blocks, the harder it is to reverse.",
+    concept:
+      "Each block you land on is another block of history under your feet. The more blocks stacked on top of a transaction, the harder it is to reverse, which is why finality gets stronger with every block.",
+    controls: ["Arrow keys or A / D to steer; the node bounces by itself.", "On a phone: hold the left or right side of the screen.", "Red blocks crumble after one bounce. Springs launch you higher."],
+    gameOver: "undetermined. you fell off the chain at {n} m",
+    // Score is height climbed (1 point per 10 px) plus 5 per vote. A normal
+    // bounce climbs at most 118 px (the largest gap) per 0.89 s: 13 points per
+    // second. A spring climbs 389 px in 1.35 s: 29 per second, and the votes on
+    // the way add at most 11 more. 40 x 1.5 = 60.
+    scoring: { maxPerSec: 60, minMs: 1000, cap: 20000 },
+    xpDivisor: 40,
+    href: "/play/sky-hop",
+    learnMore: CONSENSUS,
+  },
+  {
+    slug: "fee-flap",
+    title: "Fee Flap",
+    type: "arcade",
+    accent: "#FFD84D",
+    world: "Mempool",
+    mood: "yellow pipeline, one-tap flight",
+    tier: "B",
+    blurb: "One tap to flap. Fly your transaction through the gaps between blocks before it runs out of road. Easy to start, hard to put down.",
+    idea: "Every transaction carries fees that pay the leader and the validators for their work.",
+    concept:
+      "Every transaction carries fees that pay the leader and the validators for the work of running it. A transaction that cannot get through the queue never lands, no matter how good the contract is.",
+    controls: ["Space, ArrowUp, click or tap to flap.", "Pass through the gap between two blocks to clear them.", "Touching a block, the floor or the ceiling ends the run."],
+    gameOver: "dropped from the mempool. {n} blocks cleared",
+    // 10 points per block. Blocks are 290 px apart and the world moves at most
+    // 270 px/s: at most 0.93 blocks per second, 9.3 points per second.
+    // 9.3 x 1.5 = 14, 15.
+    scoring: { maxPerSec: 15, minMs: 1000, cap: 10000 },
+    xpDivisor: 25,
+    href: "/play/fee-flap",
+    learnMore: CONSENSUS,
+  },
+  {
+    slug: "whack-a-node",
+    title: "Whack-a-Node",
+    type: "arcade",
+    accent: "#FF9A3C",
+    world: "Slash",
+    mood: "orange control wall, pop-up nodes",
+    tier: "B",
+    blurb: "Faulty nodes pop out of the wall. Slash them before they hide, and leave the honest ones alone. 45 seconds, nine holes, pure reflex.",
+    idea: "A validator that misbehaves can be slashed, and its stake is what pays for it.",
+    concept:
+      "Validators put stake at risk, and a validator that misbehaves can be slashed. The rule only works if it is aimed correctly: slashing an honest validator would hurt the network as much as the fault did.",
+    controls: ["Tap or click a red faulty node to slash it.", "Keyboard: 1 to 9, or Q W E / A S D / Z X C.", "Hitting an honest node costs points."],
+    gameOver: "round over. {n} faulty nodes slashed",
+    // +10 per faulty node. One target appears at most every 0.4 s, 70% of them
+    // faulty: 2.5 targets per second, 25 points per second. 25 x 1.5 = 38, 40.
+    scoring: { maxPerSec: 40, minMs: 40000, cap: 1500 },
+    xpDivisor: 15,
+    href: "/play/whack-a-node",
+    learnMore: CONSENSUS,
+  },
+  {
+    slug: "node-defender",
+    title: "Node Defender",
+    type: "arcade",
+    accent: "#7C8CFF",
+    world: "Shield",
+    mood: "periwinkle void, falling faulty blocks",
+    tier: "B",
+    blurb: "Faulty blocks fall toward the chain. Slide your node, shoot them down before they land, and keep three lives. It fires by itself.",
+    idea: "A leader proposes and the others validate, so a faulty proposal is voted down before it lands.",
+    concept:
+      "A leader proposes a result and the other validators check it. A faulty proposal is voted down before it reaches the chain, which is exactly the job you have here: nothing bad gets through.",
+    controls: ["Arrow keys or A / D to slide; your node fires by itself.", "On a phone: hold the left or right side of the screen.", "Armored blocks take two hits. Three lives."],
+    gameOver: "chain compromised. {n} faulty blocks stopped",
+    // +10 per bullet that hits (a block with two hit points pays 10 per hit).
+    // The node fires once per 0.28 s and a bullet hits one block: 3.6 hits per
+    // second, 36 points per second. 36 x 1.5 = 54, 55.
+    scoring: { maxPerSec: 55, minMs: 1500, cap: 8000 },
+    xpDivisor: 30,
+    href: "/play/node-defender",
+    learnMore: CONSENSUS,
+  },
+  {
+    slug: "stake-merge",
+    title: "Stake Merge",
+    type: "arcade",
+    accent: "#E7B5FF",
+    world: "Pool",
+    mood: "lilac stake tiles, two minutes on the clock",
+    tier: "B",
+    blurb: "Slide the stakes. Two equal stakes merge into one twice as big. Build the largest stake you can in two minutes.",
+    idea: "Validators and delegators put GEN at stake, and a larger stake carries more weight.",
+    concept:
+      "Validators and delegators put GEN at stake. Equal stakes combine into a larger one, and a larger stake carries more weight. Here two equal tiles merge into a single tile worth double.",
+    controls: ["Arrow keys or W A S D to slide every tile.", "On a phone: swipe anywhere on the board.", "Equal tiles merge. The round lasts two minutes."],
+    gameOver: "pool closed. biggest stake {n}",
+    // Score is the sum of merged tiles. Moves are limited to one per 0.12 s, so
+    // a two-minute round has at most 1000 moves, and each move adds at most
+    // 2 or 4 to the total of all tiles: 2.2 x 1000 = 2200, at best a single
+    // 2048 tile plus change = 2048 x 10 + small = 22,000 in 120 s. 183 per
+    // second, 190. Cap 25,000.
+    scoring: { maxPerSec: 190, minMs: 3000, cap: 25000 },
+    xpDivisor: 300,
+    href: "/play/stake-merge",
+    learnMore: CONSENSUS,
+  },
+  {
     slug: "verdict",
     title: "Daily Verdict",
     type: "onchain",

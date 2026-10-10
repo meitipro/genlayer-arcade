@@ -10,7 +10,7 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://genlayergamehub.vercel
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: { default: "GenLayer Arcade", template: "%s · GenLayer Arcade" },
-  description: "Play, compete, get judged by consensus. Nine games built around how GenLayer works, three of them settled on-chain by Intelligent Contracts.",
+  description: "Play, compete, get judged by consensus. Fourteen games built around how GenLayer works, three of them settled on-chain by Intelligent Contracts.",
   openGraph: {
     title: "GenLayer Arcade",
     description: "Play, compete, get judged by consensus.",

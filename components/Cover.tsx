@@ -111,6 +111,66 @@ function Shape({ slug, a }: { slug: string; a: string }) {
           <text x={205} y={112} textAnchor="middle" fill={a} fontSize={13} fontFamily="JetBrains Mono, monospace">LIVE</text>
         </g>
       );
+    case "sky-hop":
+      return (
+        <g>
+          {[0, 1, 2, 3].map((i) => (
+            <rect key={i} x={110 + ((i * 97) % 160)} y={200 - i * 38} width={80} height={12} rx={6} fill={a} fillOpacity={i === 1 ? 1 : 0.6} />
+          ))}
+          <rect x={196} y={126} width={26} height={26} rx={7} fill="#EDEDF2" />
+          <rect x={258} y={96} width={80} height={12} rx={6} fill="#FF5C7A" />
+        </g>
+      );
+    case "fee-flap":
+      return (
+        <g>
+          {[0, 1].map((i) => (
+            <g key={i}>
+              <rect x={120 + i * 150} y={20} width={50} height={70 + i * 30} rx={7} fill={a} fillOpacity={0.25} stroke={a} strokeWidth={2.5} />
+              <rect x={120 + i * 150} y={170 + i * 20} width={50} height={90} rx={7} fill={a} fillOpacity={0.25} stroke={a} strokeWidth={2.5} />
+            </g>
+          ))}
+          <rect x={60} y={118} width={30} height={30} rx={8} fill={a} />
+        </g>
+      );
+    case "whack-a-node":
+      return (
+        <g>
+          {[0, 1, 2].flatMap((r) =>
+            [0, 1, 2].map((c) => (
+              <ellipse key={`${r}${c}`} cx={140 + c * 60} cy={110 + r * 42} rx={22} ry={8} fill="#1C1C27" />
+            )),
+          )}
+          <rect x={185} y={72} width={32} height={34} rx={9} fill="#FF5C7A" />
+          <rect x={125} y={114} width={32} height={30} rx={9} fill={a} />
+        </g>
+      );
+    case "node-defender":
+      return (
+        <g>
+          {[0, 1, 2].map((i) => (
+            <rect key={i} x={110 + i * 80} y={60 + (i % 2) * 24} width={30} height={30} rx={7} fill="#FF5C7A" />
+          ))}
+          <rect x={198} y={120} width={4} height={20} fill={a} />
+          <path d="M200 160 L224 205 L176 205 Z" fill={a} />
+        </g>
+      );
+    case "stake-merge":
+      return (
+        <g>
+          {[0, 1].flatMap((r) =>
+            [0, 1, 2].map((c) => {
+              const v = [2, 4, 8, 16, 32, 64][r * 3 + c];
+              return (
+                <g key={`${r}${c}`}>
+                  <rect x={115 + c * 62} y={85 + r * 62} width={54} height={54} rx={9} fill={a} fillOpacity={0.15 + (r * 3 + c) * 0.14} />
+                  <text x={142 + c * 62} y={120 + r * 62} textAnchor="middle" fill="#EDEDF2" fontSize={20} fontWeight={700} fontFamily="JetBrains Mono, monospace">{v}</text>
+                </g>
+              );
+            }),
+          )}
+        </g>
+      );
     default:
       return <circle cx={200} cy={150} r={40} fill={a} />;
   }

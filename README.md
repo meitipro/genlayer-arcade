@@ -2,7 +2,7 @@
 
 **Live: https://genlayergamehub.vercel.app**
 
-A GenLayer community gaming hub, built from [`docs/BUILD_SPEC.pdf`](docs/BUILD_SPEC.pdf) (v2.0). Six arcade games turn a piece of the protocol into a quick game with weekly season boards. Three daily games are settled on-chain by Intelligent Contracts on **GenLayer Studionet**, with an explorer link on every result. Players need only a nickname: no wallet, because a server-side relayer pays the network fee.
+A GenLayer community gaming hub, built from [`docs/BUILD_SPEC.pdf`](docs/BUILD_SPEC.pdf) (v2.0). Eleven arcade games turn a piece of the protocol (or just a good game) into a quick run with weekly season boards. Three daily games are settled on-chain by Intelligent Contracts on **GenLayer Studionet**, with an explorer link on every result. Players need a nickname, and can play from their own wallet instead; Discord connects to a player card that shows their GenLayer server roles.
 
 | Game | Type | GenLayer idea |
 |---|---|---|
@@ -12,15 +12,22 @@ A GenLayer community gaming hub, built from [`docs/BUILD_SPEC.pdf`](docs/BUILD_S
 | Equivalence | arcade | equivalent, not identical (the Equivalence Principle) |
 | Chain Snake | arcade | proposed, accepted, then finalized |
 | Appeal Breaker (Tier B) | arcade | an appeal brings in a larger validator set |
+| **Sky Hop** (new) | arcade, 2D platformer | the deeper a block sits, the harder it is to reverse |
+| **Fee Flap** (new) | arcade, one tap | transactions carry fees that pay the leader and validators |
+| **Whack-a-Node** (new) | arcade, reflex | a misbehaving validator can be slashed; an honest one must not be |
+| **Node Defender** (new) | arcade, shooter | a faulty proposal is voted down before it lands |
+| **Stake Merge** (new) | arcade, 2048-style | equal stakes combine; a larger stake carries more weight |
 | Daily Verdict | on-chain | an LLM scores 0 to 10; validators re-score and must agree within 1 |
 | Word Bridge | on-chain | an LLM judges every word link; validators must agree on validity |
 | Oracle Guess | on-chain | the contract fetches the live web itself; validators must agree within 1% |
+
+Also: **community games** reviewed on-chain, **tournament rooms** with room codes, **wallet mode** for the dailies, a **My Card** page with **Connect Discord**, and the **UNDETERMINED** teaser level (`/undetermined`).
 
 Seasons are ISO weeks in UTC. Every Monday the top 10 of each arcade game is written to the **SeasonLedger** contract and read back on `/seasons`.
 
 ## Contracts (Studionet, chain 61999)
 
-All four were deployed by the relayer account `0x71E5653471E2d4e1E17814A6123384B567Ea59dE`, which owns them. Details and deploy transactions are in [`scripts/deploy.md`](scripts/deploy.md) and [`contracts/FROZEN.json`](contracts/FROZEN.json).
+All five were deployed by the relayer account `0x71E5653471E2d4e1E17814A6123384B567Ea59dE`, which owns them. Details and deploy transactions are in [`scripts/deploy.md`](scripts/deploy.md) and [`contracts/FROZEN.json`](contracts/FROZEN.json).
 
 | Contract | Address |
 |---|---|
@@ -28,8 +35,9 @@ All four were deployed by the relayer account `0x71E5653471E2d4e1E17814A6123384B
 | WordBridge ([source](contracts/word_bridge.py)) | [`0xa6814A76Ad4342925fCbEFD93abd7b83A00e164e`](https://explorer-studio.genlayer.com/address/0xa6814A76Ad4342925fCbEFD93abd7b83A00e164e) |
 | OracleGuess ([source](contracts/oracle_guess.py)) | [`0x13Ec1296DaE361c0Bb8481f3d6CA51b6f7be0Dc2`](https://explorer-studio.genlayer.com/address/0x13Ec1296DaE361c0Bb8481f3d6CA51b6f7be0Dc2) |
 | SeasonLedger ([source](contracts/season_ledger.py)) | [`0xF6131DAd378A53F7c6241028c72428A08684547C`](https://explorer-studio.genlayer.com/address/0xF6131DAd378A53F7c6241028c72428A08684547C) |
+| GameReview ([source](contracts/game_review.py)) | [`0xBA3b51b47c80e8021BD5E9e6760330709254A8C3`](https://explorer-studio.genlayer.com/address/0xBA3b51b47c80e8021BD5E9e6760330709254A8C3) |
 
-`python scripts/verify.py` reads each contract's code back with `gen_getContractCode`. On 2026-10-10 all four matched their files byte for byte (sha256) and validated against the live runtime.
+`python scripts/verify.py` reads each contract's code back with `gen_getContractCode`. On 2026-10-10 all five matched their files byte for byte (sha256) and validated against the live runtime.
 
 ## What was tested, and the results
 
@@ -40,31 +48,51 @@ Every number below comes from a log in this repository.
 - WordBridge: `ocean salt pepper mill` was valid and scored **85**. `ocean banana mill` was invalid and scored **0**, with the failing links stored. A wrong start word was refused before any LLM call.
 - OracleGuess: all four content-pack sources resolved on chain. The validators' answers versus the same source fetched from the build machine just before: BTC **82959** vs 82959, Tehran **17** °C vs 17, ETH **2508** vs 2509, Dubai **32** °C vs 32. Resolve before lock, and a guess after lock, were both refused.
 - SeasonLedger: record, duplicate refused, read back, and a stranger refused (`not owner`).
+- GameReview: five real pages, each with its expected label written in the script before the run. Chain Snake on this hub and 2048 (play2048.co) were judged **PLAYABLE**; the GenLayer networks docs page and this repository's GitHub page were judged **NOT_A_GAME**; a domain that does not exist was **UNREACHABLE**. The same link again was refused, the unreachable one got one recheck and a second was refused, and the listing came back newest first. 5 of 5 as expected (10 steps, 0 failures).
 
-**Offline contract suite**: `python -m pytest tests/contracts`, **35 passed**. It loads the real contract files against a GenVM test double, with a separate world per node for the leader and each validator. `python scripts/mutate.py` breaks 22 defences one at a time (fence, owner checks, tolerances, exact zero, duplicate entry, hop penalty, lock order, https only, ranking...): **22/22 caught**.
+**Offline contract suite**: `python -m pytest tests/contracts`, **48 passed**. It loads the real contract files against a GenVM test double, with a separate world per node for the leader and each validator. `python scripts/mutate.py` breaks 32 defences one at a time (fence, owner checks, tolerances, exact zero, duplicate entry, hop penalty, lock order, https only, ranking, the closed label set, one recheck...): **32/32 caught**. Two mutants of the GameReview contract first escaped or did not apply; the tests were strengthened (a label outside the set that every node agrees on) rather than the mutants dropped.
 
-**Web suite**: `npm test`, **29 passed**. Bots play each arcade scene headless with the real physics and timing, checking the numbers from section 10 and that an honest bot's score rate stays under the server's limit. The suite also covers seasons, signed sessions, input validation, XP, and the claim, score and leaderboard routes.
+**Web suite**: `npm test`, **60 passed**. Bots play each arcade scene headless with the real physics and timing, checking each game's own numbers and that an honest bot's score rate stays under the server's limit. For the five new games a bot also has to survive and make progress on several seeded levels (Sky Hop: 8 towers, 134 to 1880 m; Fee Flap: 5 seeds, two minutes each). The UNDETERMINED teaser is proven finishable by a beam search over a person's moves. The suite also covers seasons, signed sessions, input validation, XP, tournament rooms, wallet names and the claim, score and leaderboard routes.
 
 **Admin path and crons**: season finalize was exercised against a separate test ledger owned by the relayer, so no test data reached the production ledger. Two `record_season` writes went out back to back; both FINALIZED and `/seasons` read them back. The cron cycle ran on relayer-owned test copies of the three daily contracts: rollover, rollover again, the 18:00 deadline (BTC resolved at 83005), then a third rollover. Every write was correct. The first attempt hit Studionet's 30 requests per minute before sending anything, which led to pacing and nonce-guarded retries in `lib/genlayer.ts` and `lib/admin.ts`. Details: [`docs/admin-test.studionet.json`](docs/admin-test.studionet.json).
 
-**Live site, end to end**: [`scripts/e2e-live.mjs`](scripts/e2e-live.mjs) on genlayergamehub.vercel.app from a fresh nickname ([`docs/e2e-live.json`](docs/e2e-live.json)).
+**Wallet mode**: [`scripts/wallet-e2e.mjs`](scripts/wallet-e2e.mjs) ([`docs/wallet-e2e.json`](docs/wallet-e2e.json)). A throwaway wallet acting as an EIP-1193 provider funds itself from the site faucet, sends `submit` to the Verdict contract itself with genlayer-js through the site's `/api/rpc` relay, and the hub registers it only after reading the transaction back from the chain. Result: ACCEPTED, 3 of 3 agree, scored 8, 10 of 10 steps. **This ran against the local dev server with the real chain, not against the live site, and no browser wallet was used.**
+
+**Live site, end to end**: [`scripts/e2e-live.mjs`](scripts/e2e-live.mjs) on genlayergamehub.vercel.app from a fresh nickname ([`docs/e2e-live.json`](docs/e2e-live.json)). This ran before the Day-two features were added.
 - Run 1 found a production bug and was stopped: the status route answered "unknown transaction" for every relayed hash, because Upstash returns HGETALL as a flat array when automatic deserialization is off. The transaction itself was FINALIZED. This is fixed in `lib/redis.ts`.
 - Run 2: **25 steps, 0 failures**. Claim; the same name in another case is taken; no token, a short run, another device's secret, an impossible score and a reused token are all refused. Scores were accepted on all six boards. Daily Verdict ACCEPTED 3 of 3, scored **9/10**. Word Bridge `moon sky pie` was ACCEPTED as **invalid** (3 of 4 agree; the sky to pie link was judged false). Second entries were blocked. The profile shows the history, and status refuses unknown hashes. The pipeline scores were then removed from the public boards. The script itself crashed on a variable-scope bug after the profile step; the last two steps were run separately and appended to the same run.
-- Run 3, an hour later as the same player (`--daily=oracle --reuse`, because the site allows three daily submissions per hour from one network): **6 steps, 0 failures**. The Oracle guess of 16 °C for Tehran was ACCEPTED, 3 of 3 agree ([tx](https://explorer-studio.genlayer.com/tx/0x932f1796d4dcd0dbd76fafe405a9dbdf6855267bead33d97b03fee8437e628e9)), and a second guess was blocked. Round 2 resolves at the 18:00 UTC cron on 2026-10-11.
+- Run 3, an hour later as the same player (`--daily=oracle --reuse`, because the site allows three daily submissions per hour from one network): **6 steps, 0 failures**. The Oracle guess of 16 °C for Tehran was ACCEPTED, 3 of 3 agree ([tx](https://explorer-studio.genlayer.com/tx/0x932f1796d4dcd0dbd76fafe405a9dbdf6855267bead33d97b03fee8437e628e9)), and a second guess was blocked.
 
-**Section 21 checklist**, pass or fail per item: [`docs/CHECKLIST.md`](docs/CHECKLIST.md). Lighthouse on mobile scored performance 99, 96 and 91 and accessibility 100 on `/`, `/play/validator-run` and `/daily/verdict`.
+**Section 21 checklist**, pass or fail per item: [`docs/CHECKLIST.md`](docs/CHECKLIST.md). Lighthouse on mobile scored performance 99, 96 and 91 and accessibility 100 on `/`, `/play/validator-run` and `/daily/verdict` (measured before the Day-two pages).
+
+### Not yet verified
+
+- **Connect Discord and My Card have not been run against Discord.** The OAuth app's credentials were not available. The role table, tiers and the OAuth calls follow `meitipro/genlayer-cards`, and the card, routes and gate are covered by type checks, the build and unit tests, but a real login has not happened.
+- **X verification** needs `TWITTERAPI_KEY`; GitHub verification needs no key and reads GitHub's public API. Neither was run against the live services here.
+- **Wallet mode through a real browser wallet**, **community submissions and tournament rooms on the live site**, and **the five new games played by hand** have not been exercised on the production site. The games are covered by the bot tests above.
+- **Bradbury**: not launched (see below).
 
 ## Where the build differs from the spec, and why
 
-- **Network: Studionet only.** The spec builds on Studionet and launches on Bradbury. The Bradbury launch is not done: it needs a relayer funded from testnet-faucet.genlayer.foundation and a genlayer-js release that sends fees. `lib/genlayer.ts` uses genlayer-js 1.2.0, the SDK line that reaches Studionet, and writes there without fees (cut list item 5). `GENLAYER_NETWORK=bradbury` switches the chain object, but the write path would also need fee estimation.
+- **Network: Studionet only.** The spec builds on Studionet and launches on Bradbury. The Bradbury launch is not done: the testnet faucet (testnet-faucet.genlayer.foundation, 100 GEN once a week) says it requires 0.01 ETH on mainnet, which the relayer does not have, and genlayer-js 1.2.0 (the SDK line that reaches Studionet) does not send fees. `GENLAYER_NETWORK=bradbury` switches the chain object, but the write path would also need fee estimation.
 - **Runner header.** Every contract uses Studionet's current runner `py-genlayer:1jb45aa8…`. Its description is a docstring, not `#` lines: Studionet reads every leading `#` line as part of the runner comment and rejects the contract (`invalid_contract`). A test holds this.
-- **Contracts are the spec's code with four small additions.** DailyVerdict replaces `<` and `>` in the player's text at the prompt boundary, so an entry cannot close the `<entry>` tag (storage keeps the original). WordBridge `close_round` and OracleGuess `lock_round`/`resolve`/`guess` refuse an unknown round with a sentence instead of a KeyError. Read-back values are cast to int.
-- **Score limits (block 13, "tune maxPerSec").** Several of the spec's starting values reject honest runs; for example, Consensus Stack at 6 points per second refuses any run with perfect drops. Each limit in `lib/games.ts` was set from the game's own maximum rate, plus a 1.5x margin; the derivation sits next to the number, and bots in `tests/web/games.test.ts` confirm it. Validator Run 180/s, Consensus Stack 105/s, Leader Rotation 180/s (cap raised from 5000 to 12000, since 60 s at combo x8 can pass 5000), Equivalence 117/s, Chain Snake 45/s, Appeal Breaker 135/s.
+- **Contracts are the spec's code with four small additions.** DailyVerdict replaces `<` and `>` in the player's text at the prompt boundary, so an entry cannot close the `<entry>` tag (storage keeps the original). WordBridge `close_round` and OracleGuess `lock_round`/`resolve`/`guess` refuse an unknown round with a sentence instead of a KeyError. Read-back values are cast to int. GameReview is new (spec section 20, "Day two and three").
+- **Score limits (block 13, "tune maxPerSec").** Several of the spec's starting values reject honest runs; for example, Consensus Stack at 6 points per second refuses any run with perfect drops. Each limit in `lib/games.ts` was set from the game's own maximum rate, plus a 1.5x margin; the derivation sits next to the number, and bots in `tests/web` confirm it. Validator Run 180/s, Consensus Stack 105/s, Leader Rotation 180/s (cap raised from 5000 to 12000, since 60 s at combo x8 can pass 5000), Equivalence 117/s, Chain Snake 45/s, Appeal Breaker 135/s, Sky Hop 60/s, Fee Flap 15/s, Whack-a-Node 40/s, Node Defender 55/s, Stake Merge 190/s.
 - **Fonts** load through a Google Fonts `<link>`, because `next/font` cannot reach gstatic from the build machine.
 - **Redis.** The project uses an existing Upstash store from the Vercel Marketplace that other projects share, so every key carries the prefix `arcade:`.
 - **Relayer.** Writes are serialised with a short Redis lock, so two players submitting at once never sign the same nonce. Success is read from the leader receipt (`execution_result` and `result.status`), because genlayer-js 1.2.0 on Studionet does not return `txExecutionResultName`.
 - **Content packs.** The spec lists 6 Verdict challenges and 7 Bridge pairs, and says two weeks is enough, so `data/` holds 14 of each (the spec's own entries first). Every Oracle question resolves at 18:00 UTC, when the round locks.
-- **Not invented:** `data/events.json` is empty (no tournament has been scheduled), and the Community tab lists no game, because the spec names Mochi Run without a link.
+- **Not invented:** `data/events.json` is empty (no tournament has been scheduled; they are created from `/admin`). Mochi Run, named in the spec's roster without a link, is not listed.
+- **The five new arcade games are not in the spec.** They were added on request (a 2D game and easier, more fun ones). They are Tier B, so they do not count towards the "Online" badge (play all five Tier A games).
+
+## Day-two features
+
+- **Community games.** `/games?tab=community`: submit a link; the GameReview contract opens the page itself and validators agree on one label (PLAYABLE, NOT_A_GAME, UNREACHABLE). Only the label crosses consensus; the one-sentence reason is display only. One recheck for an unreachable page; admin can delist with the reason on record. Page text and title are fenced.
+- **Tournaments.** Create an event in `/admin` (game, UTC window, room code). A run started with the room code while the event is live also lands on `lb:event:<id>`, shown at `/events/<id>`. Wrong game, unknown code, and not-live events are refused.
+- **Wallet mode.** On any daily page, "My own wallet": connect, switch to Studionet (adds it if missing), get test GEN from the site faucet, and the wallet sends the entry itself. Reads go through `/api/rpc`, which refuses every signing or spending method. The player name is `w_` plus the first 18 hex digits of the address, so the name is bound to the signer: `/register` accepts a transaction only if it is a call of this game's submit method, on this game's contract, for the open round, under the name derived from the sending address.
+- **My Card (`/card`) and Connect Discord.** Discord OAuth (scopes `identify`, `guilds.members.read`) reads the player's roles in the GenLayer server (guild `1237055789441487021`, from the public invite discord.gg/genlayerlabs). The role table, weights and the seven tiers (Spark to True Legends) are taken from `meitipro/genlayer-cards`; only roles were taken from it. The card shows avatar, highest role, tier, every GenLayer role, X and GitHub handles verified by a short code in the profile bio, and arcade standing. It also appears on `/p/<name>`. One Discord account plays under one nickname. The access token is used once and not stored.
+- **Discord gate.** Once `DISCORD_CLIENT_ID` and `DISCORD_CLIENT_SECRET` are set, starting a run, posting a score, submitting a daily and submitting a community game all need a connected Discord (`ARCADE_REQUIRE_DISCORD=0` turns that off). Until they are set the gate is off and nobody is locked out. The redirect URI to register in the Discord developer portal is `https://genlayergamehub.vercel.app/api/discord/callback`.
+- **UNDETERMINED teaser** at `/undetermined`: three rooms (Ink and Neon, The Vault, Contagion), one fragment in each, an exit gate. Not scored.
 
 ## Run it
 
@@ -87,14 +115,18 @@ Python scripts need genlayer-py 0.18 (`pip install genlayer-py==0.18.0`). Test a
 | `SESSION_SECRET`, `PLAYER_PEPPER`, `ADMIN_TOKEN`, `CRON_SECRET` | random hex; `scripts/vercel_env.py` generates them into `~/.genlayer-arcade/vercel-secrets.json` |
 | `RELAYER_PRIVATE_KEY` | server only; the account that deployed and owns the contracts |
 | `GENLAYER_NETWORK` | `studionet` |
-| `VERDICT_CONTRACT`, `BRIDGE_CONTRACT`, `ORACLE_CONTRACT`, `LEDGER_CONTRACT` | the addresses above (`lib/deployment.json` is the fallback) |
+| `VERDICT_CONTRACT`, `BRIDGE_CONTRACT`, `ORACLE_CONTRACT`, `LEDGER_CONTRACT`, `REVIEW_CONTRACT` | the addresses above (`lib/deployment.json` is the fallback) |
 | `NEXT_PUBLIC_EXPLORER`, `NEXT_PUBLIC_SITE_URL` | explorer-studio.genlayer.com, the site URL |
+| `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` | Discord application; turns on Connect Discord and the gate |
+| `DISCORD_GUILD_ID`, `DISCORD_REDIRECT_URI`, `ARCADE_REQUIRE_DISCORD` | optional; guild defaults to the GenLayer server, redirect to `<origin>/api/discord/callback`, `0` disables the gate |
+| `TWITTERAPI_KEY` | optional; X handle verification through twitterapi.io |
+| `DAILY_LIMIT_PER_HOUR` | optional, for local testing only (the spec's limit is 3) |
 
-`python scripts/vercel_env.py` sets all of them in the linked Vercel project, piping each value over stdin so none is printed.
+`python scripts/vercel_env.py` sets the first group in the linked Vercel project, piping each value over stdin so none is printed. The Discord and X keys are added with `vercel env add`.
 
 ### Admin
 
-Open `/admin` and paste `ADMIN_TOKEN` (stored in `~/.genlayer-arcade/vercel-secrets.json`). The panel has one card per daily game, with open (from the content pack or custom), close, lock and resolve. It can also run the 00:00 rollover and the 18:00 Oracle deadline by hand, finalize a season, remove a score, and list every admin transaction with its status and explorer link.
+Open `/admin` and paste `ADMIN_TOKEN` (stored in `~/.genlayer-arcade/vercel-secrets.json`). The panel has one card per daily game, with open (from the content pack or custom), close, lock and resolve. It can also run the 00:00 rollover and the 18:00 Oracle deadline by hand, finalize a season, remove a score, create and delete tournament events, recheck or delist community reviews, and list every admin transaction with its status and explorer link.
 
 Vercel Cron (`vercel.json`) runs the same actions: `/api/cron/daily` at 00:00 UTC closes yesterday's Verdict and Bridge rounds and opens new ones; `/api/cron/oracle` at 18:00 UTC locks and resolves the Oracle round; `/api/cron/season` on Mondays at 00:05 UTC records last week's top 10. On the Hobby plan, Vercel runs each daily cron at some point within its scheduled hour. Oracle guesses stay open until the lock lands, and the admin panel can run any of these by hand.
 
@@ -102,11 +134,12 @@ Vercel Cron (`vercel.json`) runs the same actions: `/api/cron/daily` at 00:00 UT
 
 ```
 app/            pages and API routes (section 5)
-components/     GameShell, TxStatus, DailyPlay, Leaderboard, games/<slug>
-lib/            engine/ (loop, fx, sfx), games, onchain, genlayer, redis, session, season, xp, admin
-contracts/      the four Intelligent Contracts + FROZEN.json
+components/     GameShell, TxStatus, DailyPlay, Leaderboard, PlayerCard, games/<slug>
+lib/            engine/ (loop, fx, sfx), games, onchain, genlayer, redis, session, season, xp, admin,
+                events, community, discord, roles, social, card, wallet, client/
+contracts/      the five Intelligent Contracts + FROZEN.json
 data/           content packs
-scripts/        deploy, verify, studio_tests, mutate, vercel_env, e2e-live
+scripts/        deploy, verify, studio_tests, mutate, vercel_env, e2e-live, wallet-e2e
 tests/          contracts/ (pytest) and web/ (vitest)
 docs/           BUILD_SPEC.pdf and the logs quoted above
 ```

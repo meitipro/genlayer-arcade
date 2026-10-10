@@ -16,7 +16,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ parts: string[
   const accent = g?.accent ?? HUB;
   let eyebrow = "COMMUNITY GAMING HUB";
   let big = "Play, compete, get judged by consensus.";
-  let small = "Nine games built around how GenLayer works.";
+  let small = "Fourteen games built around how GenLayer works.";
   if (kind === "game" && g) {
     eyebrow = g.type === "onchain" ? "DAILY ON-CHAIN GAME" : "ARCADE";
     big = g.title;

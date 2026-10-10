@@ -7,7 +7,7 @@ type Call = (action: string, body?: Record<string, unknown>) => Promise<Record<s
 type Ev = { id: string; title: string; game: string; startsAt: string; endsAt: string; roomCode: string; state?: string };
 type Review = { id: string; title: string; url: string; label: string; listed: boolean; rechecked: boolean; delisted?: string };
 
-const ARCADE = ["validator-run", "consensus-stack", "leader-rotation", "equivalence", "chain-snake", "appeal-breaker"];
+const ARCADE = ["validator-run", "consensus-stack", "leader-rotation", "equivalence", "chain-snake", "appeal-breaker", "sky-hop", "fee-flap", "whack-a-node", "node-defender", "stake-merge"];
 
 export function useAdminCall(token: string): [Call, string, boolean] {
   const [msg, setMsg] = useState("");

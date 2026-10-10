@@ -136,7 +136,7 @@ export default function Home() {
         <p className="mono text-xs uppercase tracking-widest text-accent">community gaming hub</p>
         <h1 className="max-w-3xl text-[44px] font-bold leading-[1.05] sm:text-[64px]">Play, compete, get judged by consensus.</h1>
         <p className="max-w-2xl text-muted">
-          Nine games built around how GenLayer works. Arcade scores are instant. Three daily games are settled on-chain by Intelligent Contracts, with an explorer link on every result.
+          Fourteen games built around how GenLayer works. Arcade scores are instant. Three daily games are settled on-chain by Intelligent Contracts, with an explorer link on every result.
         </p>
         <div className="flex flex-wrap gap-3">
           <Link href="/games" className="btn btn-primary">

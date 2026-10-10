@@ -18,3 +18,15 @@ Pass or fail per item, with the evidence. Run on 2026-10-10 against Studionet an
 | 12 | Lighthouse mobile performance 85+, accessibility 95+, reduced motion respected | **Pass** | `/`: 99 / 100; `/play/validator-run`: 96 / 100; `/daily/verdict`: 91 / 100. `prefers-reduced-motion` disables CSS motion and shake, and limits particle bursts |
 | 13 | OG card renders on X and Discord | **Not verified** | `/api/og/*` returns 1200x630 PNGs, and the `og:image` and `twitter:card` tags are set. It has not been pasted into X or Discord |
 | 14 | README lists env vars, contract addresses, admin steps | **Pass** | [README.md](../README.md) |
+
+## Day two: features added after the section 21 run
+
+| Item | Result | Evidence |
+|---|---|---|
+| Community game submissions reviewed on-chain | **Pass on chain, not yet on the live site** | GameReview deployed and verified; 5 real pages judged as expected ([studio-tests.studionet.json](studio-tests.studionet.json)); 13 offline tests; 32/32 mutants |
+| Tournament mode (rooms scope an event board) | **Pass offline** | `tests/web/features.test.ts`: unknown, upcoming and wrong-game rooms refused, a live room ranks the run on `lb:event:<id>` |
+| Wallet mode for the dailies | **Pass against the local site with the real chain** | [wallet-e2e.json](wallet-e2e.json): faucet, wallet-sent submit, hub verified and recorded it, ACCEPTED 3 of 3, entry read back. **Not tried with a real browser wallet** |
+| UNDETERMINED teaser level | **Pass** | `tests/web/teaser.test.ts`: a beam search over a person's moves finishes it with no fall |
+| Five new arcade games (Sky Hop, Fee Flap, Whack-a-Node, Node Defender, Stake Merge) | **Pass in bot tests, not played by hand** | `tests/web/games2.test.ts`: seeded levels survived, scores under each limit; derivations in `lib/games.ts` |
+| Connect Discord, My Card, Discord gate | **Not verified against Discord** | needs `DISCORD_CLIENT_ID` and `DISCORD_CLIENT_SECRET`; roles and tiers follow `meitipro/genlayer-cards`; the gate is off until the keys are set |
+| X and GitHub verification on the card | **Not verified** | GitHub needs no key; X needs `TWITTERAPI_KEY` |

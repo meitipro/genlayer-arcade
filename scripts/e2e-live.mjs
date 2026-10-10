@@ -34,6 +34,11 @@ const LIMITS = {
   equivalence: { maxPerSec: 117, minMs: 15000 },
   "chain-snake": { maxPerSec: 45, minMs: 5000 },
   "appeal-breaker": { maxPerSec: 135, minMs: 8000 },
+  "sky-hop": { maxPerSec: 60, minMs: 1000 },
+  "fee-flap": { maxPerSec: 15, minMs: 1000 },
+  "whack-a-node": { maxPerSec: 40, minMs: 40000 },
+  "node-defender": { maxPerSec: 55, minMs: 1500 },
+  "stake-merge": { maxPerSec: 190, minMs: 3000 },
 };
 
 const log = existsSync(LOG) ? JSON.parse(readFileSync(LOG, "utf8")) : { runs: [] };
@@ -167,7 +172,7 @@ for (const g of Object.keys(LIMITS)) {
   const x = await post("/api/admin/remove-score", { game: g, player: name }, { "x-admin-token": ADMIN });
   removed += x.data.removed ?? 0;
 }
-step("pipeline scores removed from the public boards (admin remove-score)", removed === 12, { removed });
+step("pipeline scores removed from the public boards (admin remove-score)", removed === Object.keys(LIMITS).length * 2, { removed });
 }
 
 run.finished = new Date().toISOString();

@@ -28,6 +28,11 @@ const COMPONENTS: Record<string, ComponentType<GameProps>> = {
   equivalence: dynamic(() => import("@/components/games/equivalence"), { ssr: false, loading }),
   "chain-snake": dynamic(() => import("@/components/games/chain-snake"), { ssr: false, loading }),
   "appeal-breaker": dynamic(() => import("@/components/games/appeal-breaker"), { ssr: false, loading }),
+  "sky-hop": dynamic(() => import("@/components/games/sky-hop"), { ssr: false, loading }),
+  "fee-flap": dynamic(() => import("@/components/games/fee-flap"), { ssr: false, loading }),
+  "whack-a-node": dynamic(() => import("@/components/games/whack-a-node"), { ssr: false, loading }),
+  "node-defender": dynamic(() => import("@/components/games/node-defender"), { ssr: false, loading }),
+  "stake-merge": dynamic(() => import("@/components/games/stake-merge"), { ssr: false, loading }),
 };
 
 type Phase = "ready" | "starting" | "running" | "posting" | "over";
