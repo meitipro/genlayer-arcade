@@ -7,6 +7,7 @@ import { addressUrl } from "@/lib/explorer";
 import { gameBySlug } from "@/lib/games";
 import { contractAddress } from "@/lib/genlayer";
 import { ONCHAIN, type OnchainGame } from "@/lib/onchain";
+import { AccentStyle } from "./AccentStyle";
 import { DailyPlay } from "./DailyPlay";
 import { RoundBoard } from "./RoundBoard";
 
@@ -23,6 +24,7 @@ export async function DailyPage({ game }: { game: OnchainGame }) {
   const past = round ? Array.from({ length: Math.min(7, Number(round.id) - 1) }, (_, i) => String(Number(round.id) - 1 - i)) : [];
   return (
     <div style={{ "--accent": g.accent } as CSSProperties} className="mx-auto max-w-6xl px-4 py-8">
+      <AccentStyle accent={g.accent} />
       <div className="mb-6 space-y-2">
         <Link href="/daily" className="text-sm text-muted hover:text-text">
           Daily

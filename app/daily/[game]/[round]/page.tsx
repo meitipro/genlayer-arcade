@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { CSSProperties } from "react";
+import { AccentStyle } from "@/components/AccentStyle";
 import { RoundBoard } from "@/components/RoundBoard";
 import { chainBusy, getBoard, getRound } from "@/lib/daily";
 import { gameBySlug } from "@/lib/games";
@@ -39,6 +40,7 @@ export default async function PastRound({ params }: { params: Promise<{ game: st
   }
   return (
     <div style={{ "--accent": g.accent } as CSSProperties} className="mx-auto max-w-3xl space-y-5 px-4 py-10">
+      <AccentStyle accent={g.accent} />
       <Link href={g.href} className="text-sm text-muted hover:text-text">
         {g.title}
       </Link>

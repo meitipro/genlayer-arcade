@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ComponentType } from "react";
 import { postJson, usePlayer } from "@/lib/client/player";
 import type { Game } from "@/lib/games";
+import { AccentStyle } from "./AccentStyle";
 import { ConceptCard } from "./ConceptCard";
 import { Leaderboard, useBoard } from "./Leaderboard";
 import { NicknameGate } from "./NicknameGate";
@@ -106,6 +107,7 @@ export function GameShell({ game }: { game: Game }) {
 
   return (
     <div style={{ "--accent": game.accent } as CSSProperties} className="mx-auto max-w-6xl px-4 py-6">
+      <AccentStyle accent={game.accent} />
       <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1">
         <h1 className="flex items-center gap-2 text-xl font-bold sm:text-2xl">
           <span className="dot h-3 w-3" />
