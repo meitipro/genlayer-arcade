@@ -8,7 +8,8 @@ import { NextResponse } from "next/server";
 import { addressFor, doneKey, getRound, latestRoundId, rememberTx, txKey } from "@/lib/daily";
 import { readClient } from "@/lib/genlayer";
 import { ONCHAIN, roundIsOpen } from "@/lib/onchain";
-import { playerKey } from "@/lib/player";
+import { discordGate, discordRequired } from "@/lib/discord";
+import { playerKey, verifyPlayer } from "@/lib/player";
 import { redis } from "@/lib/redis";
 import { gameOr404, HASH_RE } from "@/lib/route-helpers";
 import { walletName } from "@/lib/wallet";
@@ -20,8 +21,15 @@ type Tx = { from_address?: string; sender?: string; to_address?: string; recipie
 export async function POST(req: Request, ctx: { params: Promise<{ game: string }> }) {
   const g = gameOr404((await ctx.params).game);
   if (g instanceof NextResponse) return g;
-  const { hash } = (await req.json().catch(() => ({}))) as { hash?: string };
+  const { hash, player, playerSecret } = (await req.json().catch(() => ({}))) as { hash?: string; player?: string; playerSecret?: string };
   if (!hash || !HASH_RE.test(hash)) return NextResponse.json({ error: "bad hash" }, { status: 400 });
+  let owner: string | null = null;
+  if (discordRequired()) {
+    owner = await verifyPlayer(player, playerSecret);
+    if (!owner) return NextResponse.json({ error: "claim a nickname on this device first", gate: "nickname" }, { status: 401 });
+    const gate = await discordGate(owner);
+    if (gate) return NextResponse.json({ error: gate, gate: "discord" }, { status: 403 });
+  }
   const contract = addressFor(g);
   if (!contract) return NextResponse.json({ error: "contract not deployed" }, { status: 503 });
 
@@ -57,7 +65,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ game: string }
   // first registration wins; the contract itself refuses a second entry
   await redis.set(doneKey(g, rid, name), hash, { nx: true, ex: 7 * 86400 });
   if (await redis.set(`name:${name}`, name, { nx: true })) {
-    await redis.hset(playerKey(name), { name, wallet: from, createdAt: Date.now(), xp: 0 });
+    await redis.hset(playerKey(name), { name, wallet: from, createdAt: Date.now(), xp: 0, ...(owner ? { owner } : {}) });
   }
   if (!(await redis.hgetall(txKey(hash)))) await rememberTx(hash, { game: g, round: rid, player: name, createdAt: new Date().toISOString() });
   return NextResponse.json({ ok: true, player: name, round: rid });

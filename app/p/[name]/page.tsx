@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { CSSProperties } from "react";
 import { DeviceSecret } from "@/components/DeviceSecret";
+import { PlayerCardView } from "@/components/PlayerCard";
+import { cardFor } from "@/lib/card";
 import { historyOf } from "@/lib/daily";
 import { txUrl } from "@/lib/explorer";
 import { ARCADE, gameBySlug } from "@/lib/games";
@@ -22,7 +24,7 @@ export default async function Profile({ params }: { params: Promise<{ name: stri
   const name = await canonicalName(decodeURIComponent((await params).name));
   if (!name) notFound();
   const season = seasonId();
-  const [p, badges, history, bests] = await Promise.all([
+  const [p, badges, history, bests, card] = await Promise.all([
     redis.hgetall<Record<string, string>>(playerKey(name)),
     badgesOf(name),
     historyOf(name),
@@ -36,6 +38,7 @@ export default async function Profile({ params }: { params: Promise<{ name: stri
         return { g, all, sea, rank: rank === null ? null : rank + 1 };
       }),
     ),
+    cardFor(name),
   ]);
   const xp = Number(p?.xp ?? 0);
   const lv = levelFor(xp);
@@ -44,6 +47,11 @@ export default async function Profile({ params }: { params: Promise<{ name: stri
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-10">
+      {card && (
+        <div className="max-w-2xl">
+          <PlayerCardView card={card} />
+        </div>
+      )}
       <section className="space-y-3">
         <h1 className="mono text-[28px] font-semibold">{name}</h1>
         <p className="mono text-sm text-muted">

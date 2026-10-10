@@ -2,6 +2,7 @@
 // 3/hour/IP, SET daily:done NX, relayWrite, returns {hash} at once.
 import { NextResponse } from "next/server";
 import { addressFor, chainBusy, doneKey, getRound, latestRoundId, rememberTx } from "@/lib/daily";
+import { discordGate } from "@/lib/discord";
 import { relayWrite } from "@/lib/genlayer";
 import { ONCHAIN, roundIsOpen } from "@/lib/onchain";
 import { verifyPlayer } from "@/lib/player";
@@ -19,6 +20,8 @@ export async function POST(req: Request, ctx: { params: Promise<{ game: string }
 
   const player = await verifyPlayer(body.player, body.playerSecret);
   if (!player) return NextResponse.json({ error: "claim a nickname on this device first" }, { status: 401 });
+  const gate = await discordGate(player);
+  if (gate) return NextResponse.json({ error: gate, gate: "discord" }, { status: 403 });
   const invalid = cfg.validate(body);
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 });
 

@@ -43,6 +43,7 @@ export function GameShell({ game }: { game: Game }) {
   const [result, setResult] = useState<Result | null>(null);
   const [bump, setBump] = useState(0);
   const token = useRef<string>("");
+  const [gate, setGate] = useState(false);
   // tournament mode: /play/<slug>?room=CODE
   const [room, setRoom] = useState<string | null>(null);
   useEffect(() => {
@@ -55,10 +56,11 @@ export function GameShell({ game }: { game: Game }) {
     if (!player || phase === "starting" || phase === "running" || phase === "posting") return;
     setError("");
     setPhase("starting");
-    const r = await postJson<{ token: string }>("/api/session/start", { game: game.slug, ...(room ? { room } : {}) });
+    const r = await postJson<{ token: string; gate?: string }>("/api/session/start", { game: game.slug, player: player.name, playerSecret: player.secret, ...(room ? { room } : {}) });
     if (!r.ok) {
       setPhase(result ? "over" : "ready");
       setError(r.data.error ?? "could not start a session, try again");
+      setGate(r.data.gate === "discord");
       return;
     }
     token.current = r.data.token;
@@ -184,7 +186,19 @@ export function GameShell({ game }: { game: Game }) {
                     <p className="text-xs text-muted">or press Space</p>
                   </div>
                 )}
-                {error && <p className="absolute bottom-3 left-0 right-0 text-center text-sm text-danger">{error}</p>}
+                {error && (
+                  <p className="absolute bottom-3 left-0 right-0 text-center text-sm text-danger">
+                    {error}
+                    {gate && (
+                      <>
+                        {" "}
+                        <Link href="/card" className="text-accent underline">
+                          Open My Card
+                        </Link>
+                      </>
+                    )}
+                  </p>
+                )}
               </div>
             )}
           </div>

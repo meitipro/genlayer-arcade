@@ -120,7 +120,7 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
     try {
       if (!(await onStudionet())) await switchToStudionet();
       const h = await sendFromWallet(game, wallet, ONCHAIN[game].toArgs(round.id, who, body));
-      const r = await postJson(`/api/daily/${game}/register`, { hash: h });
+      const r = await postJson(`/api/daily/${game}/register`, { hash: h, ...(player ? { player: player.name, playerSecret: player.secret } : {}) });
       if (!r.ok) setError(`sent from your wallet, but the hub could not record it: ${r.data.error ?? r.status}`);
       setSince(Date.now());
       setHash(h);
@@ -256,6 +256,14 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
           {error && (
             <p className="text-sm text-danger" role="alert">
               {error}
+              {/Discord/.test(error) && (
+                <>
+                  {" "}
+                  <Link href="/card" className="text-accent underline">
+                    Open My Card
+                  </Link>
+                </>
+              )}
             </p>
           )}
           <button className="btn btn-primary" disabled={busy || duplicate}>

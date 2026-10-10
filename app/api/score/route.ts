@@ -1,6 +1,7 @@
 // POST /api/score (section 8): token valid and unused, player secret valid,
 // score <= cap, elapsed >= minMs, score <= elapsed x maxPerSec. 30/min/IP.
 import { NextResponse } from "next/server";
+import { discordGate } from "@/lib/discord";
 import { eventBoardKey, eventById, GRACE_MS } from "@/lib/events";
 import { GAMES } from "@/lib/games";
 import { playerKey, verifyPlayer } from "@/lib/player";
@@ -24,6 +25,8 @@ export async function POST(req: Request) {
   // nickname ownership: hash of secret stored at claim time
   const name = await verifyPlayer(player, playerSecret);
   if (!name) return NextResponse.json({ error: "bad player" }, { status: 401 });
+  const gate = await discordGate(name);
+  if (gate) return NextResponse.json({ error: gate, gate: "discord" }, { status: 403 });
 
   // one score per session
   if (!(await redis.set(`session:used:${s.sid}`, 1, { nx: true, ex: 7200 })))
