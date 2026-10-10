@@ -34,6 +34,13 @@ async function send(game: string, address: string, fn: string, args: unknown[], 
   return rec;
 }
 
+/** Record a write sent outside send() (community moderation) so the panel can poll it. */
+export async function logAdmin(rec: Sent) {
+  await redis.set(ADMIN_TX(rec.hash), JSON.stringify({ ...rec, at: new Date().toISOString() }), { ex: 30 * 86400 });
+  await redis.lpush("admin:log", JSON.stringify({ ...rec, at: new Date().toISOString() }));
+  await redis.ltrim("admin:log", 0, 99);
+}
+
 export async function adminLog(): Promise<(Sent & { at: string })[]> {
   return (await redis.lrange("admin:log", 0, 49)).map((s) => (typeof s === "string" ? JSON.parse(s) : s));
 }
@@ -46,6 +53,7 @@ export async function adminTxStatus(hash: `0x${string}`): Promise<TxView | null>
     const game = (typeof raw === "string" ? JSON.parse(raw) : raw).game as string;
     if (game === "verdict" || game === "bridge" || game === "oracle") revalidateTag(tagFor(game));
     if (game === "ledger") revalidateTag("seasons");
+    if (game === "review") revalidateTag("community");
   }
   return view;
 }

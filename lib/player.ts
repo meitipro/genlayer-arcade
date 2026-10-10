@@ -23,6 +23,8 @@ export type Claim = { ok: true; name: string; secret: string } | { ok: false; er
 
 export async function claimName(name: string): Promise<Claim> {
   if (!NAME_RE.test(name)) return { ok: false, error: "use 3 to 20 letters, digits or underscores", status: 400 };
+  // w_ followed by 18 hex digits is the name of a wallet (lib/wallet.ts)
+  if (/^w_[0-9a-f]{18}$/i.test(name)) return { ok: false, error: "names like w_ plus 18 hex digits belong to wallets", status: 400 };
   const secret = randomBytes(32).toString("hex");
   // Reserve the name atomically, then write the record.
   const reserved = await redis.set(`name:${name.toLowerCase()}`, name, { nx: true });

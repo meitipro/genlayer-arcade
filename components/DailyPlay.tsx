@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { postJson, usePlayer } from "@/lib/client/player";
+import { connectWallet, eth, fundWallet, onStudionet, sendFromWallet, switchToStudionet } from "@/lib/client/wallet";
 import { txUrl } from "@/lib/explorer";
-import type { BridgeEntry, BridgeRound, OnchainGame, OracleRound, VerdictEntry, VerdictRound } from "@/lib/onchain";
+import { ONCHAIN, type BridgeEntry, type BridgeRound, type OnchainGame, type OracleRound, type VerdictEntry, type VerdictRound } from "@/lib/onchain";
 import { nextUtc } from "@/lib/time";
+import { walletName } from "@/lib/wallet";
 import { Countdown } from "./Countdown";
 import { NicknameGate } from "./NicknameGate";
 import { isDecided, isSuccess, TxStatus, useTx } from "./TxStatus";
@@ -29,17 +31,24 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
   const [value, setValue] = useState("");
   const tx = useTx(game, hash);
   const router = useRouter();
+  const [mode, setMode] = useState<"nickname" | "wallet">("nickname");
+  const [wallet, setWallet] = useState<string | null>(null);
+  const [chainOk, setChainOk] = useState(false);
+  const [walletMsg, setWalletMsg] = useState("");
+  const who = mode === "wallet" ? (wallet ? walletName(wallet) : null) : (player?.name ?? null);
 
   const open = round ? (game === "oracle" ? (round as OracleRound).state === "open" : (round as VerdictRound).open) : false;
 
   // already played (or a reload during a pending tx): show the entry or resume polling
   useEffect(() => {
-    if (!player || !round) {
+    setEntry(null);
+    setHash(null);
+    if (!who || !round) {
       setLoaded(true);
       return;
     }
     let stop = false;
-    fetch(`/api/daily/${game}/entry?round=${round.id}&player=${encodeURIComponent(player.name)}`, { cache: "no-store" })
+    fetch(`/api/daily/${game}/entry?round=${round.id}&player=${encodeURIComponent(who)}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => {
         if (stop) return;
@@ -52,15 +61,15 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
     return () => {
       stop = true;
     };
-  }, [game, round, player]);
+  }, [game, round, who]);
 
   // once the tx is decided and returned, read the entry the contract stored
   useEffect(() => {
-    if (!isSuccess(tx) || !player || !round || entry) return;
+    if (!isSuccess(tx) || !who || !round || entry) return;
     let tries = 0;
     let stop = false;
     const load = async () => {
-      const d = await fetch(`/api/daily/${game}/entry?round=${round.id}&player=${encodeURIComponent(player.name)}`, { cache: "no-store" })
+      const d = await fetch(`/api/daily/${game}/entry?round=${round.id}&player=${encodeURIComponent(who)}`, { cache: "no-store" })
         .then((r) => r.json())
         .catch(() => ({}));
       if (stop) return;
@@ -74,22 +83,23 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
     return () => {
       stop = true;
     };
-  }, [tx, game, round, player, entry, router]);
+  }, [tx, game, round, who, entry, router]);
 
   const failed = isDecided(tx) && !isSuccess(tx);
   const duplicate = /already (submitted|guessed)/.test(tx?.error ?? "");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!player || !round) return;
+    if (!round || !who || (mode === "nickname" && !player)) return;
     setError("");
-    const body: Record<string, unknown> = { player: player.name, playerSecret: player.secret, round: round.id };
+    const body: Record<string, unknown> = mode === "nickname" ? { player: player!.name, playerSecret: player!.secret, round: round.id } : { round: round.id };
     if (game === "verdict") body.entry = text;
     if (game === "bridge") {
       const r = round as BridgeRound;
       body.chain = [r.start, ...middle.toLowerCase().trim().split(/\s+/).filter(Boolean), r.end].join(" ");
     }
     if (game === "oracle") body.value = value;
+    if (mode === "wallet") return submitFromWallet(body);
     setBusy(true);
     const r = await postJson<{ hash: string }>(`/api/daily/${game}/submit`, body);
     setBusy(false);
@@ -100,6 +110,38 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
     }
     setSince(Date.now());
     setHash(r.data.hash);
+  }
+
+  async function submitFromWallet(body: Record<string, unknown>) {
+    if (!round || !wallet || !who) return;
+    const invalid = ONCHAIN[game].validate(body);
+    if (invalid) return setError(invalid);
+    setBusy(true);
+    try {
+      if (!(await onStudionet())) await switchToStudionet();
+      const h = await sendFromWallet(game, wallet, ONCHAIN[game].toArgs(round.id, who, body));
+      const r = await postJson(`/api/daily/${game}/register`, { hash: h });
+      if (!r.ok) setError(`sent from your wallet, but the hub could not record it: ${r.data.error ?? r.status}`);
+      setSince(Date.now());
+      setHash(h);
+    } catch (err) {
+      const m = String((err as Error)?.message ?? err);
+      setError(/rejected|denied|4001/i.test(m) ? "you rejected the request in your wallet" : `not sent: ${m.slice(0, 160)}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function startWallet() {
+    setWalletMsg("");
+    try {
+      const a = await connectWallet();
+      if (!(await onStudionet())) await switchToStudionet();
+      setChainOk(await onStudionet());
+      setWallet(a);
+    } catch (err) {
+      setWalletMsg(String((err as Error)?.message ?? err).slice(0, 160));
+    }
   }
 
   if (!round) {
@@ -113,7 +155,47 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
   return (
     <div className="space-y-4">
       <RoundHeader game={game} round={round} />
-      {player === null ? (
+      <div className="flex flex-wrap items-center gap-2 text-sm" role="group" aria-label="How to play">
+        <button type="button" onClick={() => setMode("nickname")} aria-pressed={mode === "nickname"} className={`pill ${mode === "nickname" ? "border-accent text-text" : "text-muted"}`}>
+          Nickname, no wallet
+        </button>
+        <button type="button" onClick={() => setMode("wallet")} aria-pressed={mode === "wallet"} className={`pill ${mode === "wallet" ? "border-accent text-text" : "text-muted"}`}>
+          My own wallet
+        </button>
+      </div>
+      {mode === "wallet" && (
+        <div className="card space-y-2 p-4 text-sm">
+          {!eth() ? (
+            <p className="text-muted">No wallet found in this browser. Install one (MetaMask or similar), or play with a nickname.</p>
+          ) : !wallet ? (
+            <>
+              <p className="text-muted">Your wallet signs the entry and sends it to the contract itself. You play under a name made from your address.</p>
+              <button type="button" className="btn btn-primary" onClick={() => void startWallet()}>
+                Connect wallet
+              </button>
+            </>
+          ) : (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="mono">{who}</span>
+              <span className="mono text-xs text-muted">{wallet.slice(0, 6)}...{wallet.slice(-4)}</span>
+              {!chainOk && (
+                <button type="button" className="btn btn-ghost" onClick={() => void switchToStudionet().then(onStudionet).then(setChainOk).catch((e) => setWalletMsg(String(e?.message ?? e)))}>
+                  Switch to Studionet
+                </button>
+              )}
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={async () => setWalletMsg((await fundWallet(wallet)) ?? "10 test GEN sent from the Studionet faucet")}
+              >
+                Get test GEN
+              </button>
+            </div>
+          )}
+          {walletMsg && <p className="text-xs text-muted">{walletMsg}</p>}
+        </div>
+      )}
+      {mode === "wallet" && !wallet ? null : mode === "nickname" && player === null ? (
         <NicknameGate why={`Claim a nickname to play ${title}.`} />
       ) : !loaded ? (
         <div className="card h-32 animate-pulse" aria-busy />
@@ -179,7 +261,11 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
           <button className="btn btn-primary" disabled={busy || duplicate}>
             {busy ? "Sending" : "Submit"}
           </button>
-          <p className="text-xs text-muted">One entry per nickname per round. The hub pays the network fee, so you do not need a wallet.</p>
+          <p className="text-xs text-muted">
+            {mode === "wallet"
+              ? "One entry per address per round. Your wallet sends it; the hub only polls and records it."
+              : "One entry per nickname per round. The hub pays the network fee, so you do not need a wallet."}
+          </p>
         </form>
       )}
     </div>

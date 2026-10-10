@@ -552,6 +552,201 @@
       ],
       "finished": "2026-10-10T18:48:51Z",
       "failures": 0
+    },
+    {
+      "started": "2026-10-10T21:47:04Z",
+      "network": "studionet",
+      "rpc": "https://studio.genlayer.com/api",
+      "explorer": "https://explorer-studio.genlayer.com",
+      "steps": [
+        {
+          "game": "review",
+          "step": "deploy",
+          "pass": true,
+          "at": "2026-10-10T21:47:44Z",
+          "address": "0x07864b1B6f05120E2b3E39A3Fa879C948914678b"
+        },
+        {
+          "game": "review",
+          "step": "Chain Snake (this hub): expected PLAYABLE, contract said PLAYABLE",
+          "pass": true,
+          "at": "2026-10-10T21:48:08Z",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x1544dc942bb5794863fae5f7379c88fcacd83f62c7eb38633b3116e2467cb046",
+          "status": "ACCEPTED",
+          "url": "https://genlayergamehub.vercel.app/play/chain-snake",
+          "record": {
+            "id": "1",
+            "title": "Chain Snake (this hub)",
+            "url": "https://genlayergamehub.vercel.app/play/chain-snake",
+            "player": "studio_tester",
+            "label": "PLAYABLE",
+            "reason": "页面包含可直接开始的 Chain Snake 游戏，支持键盘或触摸控制，并显示分数、排行榜和游戏说明。",
+            "listed": true,
+            "rechecked": false,
+            "reviewed_by": "0x061959d4d3ecd5ff49A93F5Ea08b68D4e1d323a9"
+          },
+          "refusal": "",
+          "detail": ""
+        },
+        {
+          "game": "review",
+          "step": "2048: expected PLAYABLE, contract said PLAYABLE",
+          "pass": true,
+          "at": "2026-10-10T21:48:32Z",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x07835052a3c4b3636b1d9703b7e241a857398362aee8c1aa8284cb5d0f3e326e",
+          "status": "ACCEPTED",
+          "url": "https://play2048.co/",
+          "record": {
+            "id": "2",
+            "title": "2048",
+            "url": "https://play2048.co/",
+            "player": "studio_tester",
+            "label": "PLAYABLE",
+            "reason": "页面包含2048游戏界面、分数显示、新游戏按钮和数字方块，可直接在浏览器中游玩。",
+            "listed": true,
+            "rechecked": false,
+            "reviewed_by": "0x061959d4d3ecd5ff49A93F5Ea08b68D4e1d323a9"
+          },
+          "refusal": "",
+          "detail": ""
+        },
+        {
+          "game": "review",
+          "step": "GenLayer networks docs: expected NOT_A_GAME, contract said NOT_A_GAME",
+          "pass": true,
+          "at": "2026-10-10T21:49:06Z",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x133cb79cb9beee06ccc466632a38581e8c9c89c6da19ca8025ee86bc8fbf4071",
+          "status": "ACCEPTED",
+          "url": "https://docs.genlayer.com/developers/networks",
+          "record": {
+            "id": "3",
+            "title": "GenLayer networks docs",
+            "url": "https://docs.genlayer.com/developers/networks",
+            "player": "studio_tester",
+            "label": "NOT_A_GAME",
+            "reason": "The page is technical documentation for a blockchain protocol and development environment, not a playable game.",
+            "listed": false,
+            "rechecked": false,
+            "reviewed_by": "0x061959d4d3ecd5ff49A93F5Ea08b68D4e1d323a9"
+          },
+          "refusal": "",
+          "detail": ""
+        },
+        {
+          "game": "review",
+          "step": "GenLayer Arcade source code: expected NOT_A_GAME, contract said NOT_A_GAME",
+          "pass": true,
+          "at": "2026-10-10T21:49:30Z",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x4e9080f9eb660ff90b5f57fa2123ba9158460643f027a4d5c607150baf8e39f8",
+          "status": "ACCEPTED",
+          "url": "https://github.com/meitipro/genlayer-arcade",
+          "record": {
+            "id": "4",
+            "title": "GenLayer Arcade source code",
+            "url": "https://github.com/meitipro/genlayer-arcade",
+            "player": "studio_tester",
+            "label": "NOT_A_GAME",
+            "reason": "The page is a GitHub repository containing source code and documentation rather than a playable browser game.",
+            "listed": false,
+            "rechecked": false,
+            "reviewed_by": "0x061959d4d3ecd5ff49A93F5Ea08b68D4e1d323a9"
+          },
+          "refusal": "",
+          "detail": ""
+        },
+        {
+          "game": "review",
+          "step": "Nowhere game: expected UNREACHABLE, contract said UNREACHABLE",
+          "pass": true,
+          "at": "2026-10-10T21:49:44Z",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xbbaa98fccb3d68ab7dd82d47814f73addce2b3989d4ed48aa51cd60db8053762",
+          "status": "ACCEPTED",
+          "url": "https://arcade-review-test-nonexistent-domain.dev/game",
+          "record": {
+            "id": "5",
+            "title": "Nowhere game",
+            "url": "https://arcade-review-test-nonexistent-domain.dev/game",
+            "player": "studio_tester",
+            "label": "UNREACHABLE",
+            "reason": "the page could not be opened",
+            "listed": false,
+            "rechecked": false,
+            "reviewed_by": "0x061959d4d3ecd5ff49A93F5Ea08b68D4e1d323a9"
+          },
+          "refusal": "",
+          "detail": ""
+        },
+        {
+          "game": "review",
+          "step": "the same link again is refused",
+          "pass": true,
+          "at": "2026-10-10T21:49:51Z",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x4624fdef5071f3335806ed216dc002db6c563fa306c910965cbcec8b2e9864d3",
+          "refusal": "[EXPECTED] already submitted"
+        },
+        {
+          "game": "review",
+          "step": "an unreachable review gets one recheck",
+          "pass": true,
+          "at": "2026-10-10T21:49:59Z",
+          "tx": "https://explorer-studio.genlayer.com/tx/0xd304085f2eb544eb2c8c73a8aa4b60c3f2683ac93c09c4bfd494372fe8e2f914",
+          "record": {
+            "id": "5",
+            "title": "Nowhere game",
+            "url": "https://arcade-review-test-nonexistent-domain.dev/game",
+            "player": "studio_tester",
+            "label": "UNREACHABLE",
+            "reason": "the page could not be opened",
+            "listed": false,
+            "rechecked": true,
+            "reviewed_by": "0x061959d4d3ecd5ff49A93F5Ea08b68D4e1d323a9"
+          },
+          "refusal": ""
+        },
+        {
+          "game": "review",
+          "step": "and only one",
+          "pass": true,
+          "at": "2026-10-10T21:50:07Z",
+          "tx": "https://explorer-studio.genlayer.com/tx/0x50d0abaf85e04bfc842ace46d864e5762db6485dfe3e625419517f319b8334ce",
+          "refusal": "[EXPECTED] already rechecked once"
+        },
+        {
+          "game": "review",
+          "step": "list_games returns every review, newest first",
+          "pass": true,
+          "at": "2026-10-10T21:50:08Z",
+          "listed": [
+            {
+              "id": "5",
+              "label": "UNREACHABLE",
+              "listed": false
+            },
+            {
+              "id": "4",
+              "label": "NOT_A_GAME",
+              "listed": false
+            },
+            {
+              "id": "3",
+              "label": "NOT_A_GAME",
+              "listed": false
+            },
+            {
+              "id": "2",
+              "label": "PLAYABLE",
+              "listed": true
+            },
+            {
+              "id": "1",
+              "label": "PLAYABLE",
+              "listed": true
+            }
+          ]
+        }
+      ],
+      "finished": "2026-10-10T21:50:08Z",
+      "failures": 0
     }
   ]
 }

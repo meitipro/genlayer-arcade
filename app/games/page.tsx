@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GameCard } from "@/components/GameCard";
-import { COMMUNITY, GAMES } from "@/lib/games";
+import { CommunityList } from "@/components/CommunityList";
+import { GAMES } from "@/lib/games";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Games" };
 
 const TABS = [
@@ -32,20 +34,7 @@ export default async function Games({ searchParams }: { searchParams: Promise<{ 
         ))}
       </nav>
       {tab === "community" ? (
-        COMMUNITY.length ? (
-          <ul className="grid gap-4 sm:grid-cols-2">
-            {COMMUNITY.map((c) => (
-              <li key={c.href} className="card p-4">
-                <a href={c.href} target="_blank" rel="noreferrer" className="font-semibold hover:text-accent">
-                  {c.title}
-                </a>
-                <p className="text-sm text-muted">{c.blurb}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="card p-5 text-muted">Community games are listed here and link out to their own sites. None are listed yet.</p>
-        )
+        <CommunityList />
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((g) => (

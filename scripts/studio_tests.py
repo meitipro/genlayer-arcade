@@ -193,11 +193,48 @@ def ledger(run: Run, chain: C.Chain) -> None:
              tx=tx_url(out["hash"]), refusal=out.get("refusal"))
 
 
-GAMES = {"verdict": verdict, "bridge": bridge, "oracle": oracle, "ledger": ledger}
+# Real pages, chosen before the run; each expectation is written down here
+# first and the log records what the contract decided, matches or not.
+REVIEW_CASES = [
+    ("Chain Snake (this hub)", "https://genlayergamehub.vercel.app/play/chain-snake", "PLAYABLE"),
+    ("2048", "https://play2048.co/", "PLAYABLE"),
+    ("GenLayer networks docs", "https://docs.genlayer.com/developers/networks", "NOT_A_GAME"),
+    ("GenLayer Arcade source code", "https://github.com/meitipro/genlayer-arcade", "NOT_A_GAME"),
+    ("Nowhere game", "https://arcade-review-test-nonexistent-domain.dev/game", "UNREACHABLE"),
+]
+
+
+def review(run: Run, chain: C.Chain) -> None:
+    g = "review"
+    addr = chain.deploy(C.ROOT / "contracts" / "game_review.py")["address"]
+    run.step(g, "deploy", True, address=addr)
+    for i, (title, url, expect) in enumerate(REVIEW_CASES, start=1):
+        out = send(chain, addr, "submit_game", ["studio_tester", title, url])
+        rec = json.loads(chain.read(addr, "get_game", [str(i)]) or "{}") if out["ok"] else {}
+        got = rec.get("label")
+        run.step(g, f"{title}: expected {expect}, contract said {got}", out["ok"] and got == expect,
+                 tx=tx_url(out["hash"]), status=out["status"], url=url, record=rec, refusal=out.get("refusal"), detail=out.get("detail"))
+    out = send(chain, addr, "submit_game", ["studio_tester", "2048 again", "https://play2048.co/"])
+    run.step(g, "the same link again is refused", (not out["ok"]) and "already submitted" in (out.get("refusal") or ""),
+             tx=tx_url(out["hash"]), refusal=out.get("refusal"))
+    unreachable = len(REVIEW_CASES)
+    out = send(chain, addr, "recheck", [str(unreachable)])
+    rec = json.loads(chain.read(addr, "get_game", [str(unreachable)]) or "{}")
+    run.step(g, "an unreachable review gets one recheck", out["ok"] and rec.get("rechecked") is True,
+             tx=tx_url(out["hash"]), record=rec, refusal=out.get("refusal"))
+    out = send(chain, addr, "recheck", [str(unreachable)])
+    run.step(g, "and only one", (not out["ok"]) and "rechecked" in (out.get("refusal") or "") or "only an unreachable" in (out.get("refusal") or ""),
+             tx=tx_url(out["hash"]), refusal=out.get("refusal"))
+    listed = json.loads(chain.read(addr, "list_games", ["0", "10"]))
+    run.step(g, "list_games returns every review, newest first", [x["id"] for x in listed] == [str(i) for i in range(len(REVIEW_CASES), 0, -1)],
+             listed=[{"id": x["id"], "label": x["label"], "listed": x["listed"]} for x in listed])
+
+
+GAMES = {"verdict": verdict, "bridge": bridge, "oracle": oracle, "ledger": ledger, "review": review}
 
 
 def main() -> int:
-    wanted = [a for a in sys.argv[1:] if a in GAMES] or list(GAMES)
+    wanted = [a for a in sys.argv[1:] if a in GAMES] or [g for g in GAMES if g != "review"]
     owner = C.accounts("studio_tester")["studio_tester"]
     chain = C.Chain(owner)
     chain.ensure(owner.address, minimum_gen=50)

@@ -1,6 +1,7 @@
 // POST /api/score (section 8): token valid and unused, player secret valid,
 // score <= cap, elapsed >= minMs, score <= elapsed x maxPerSec. 30/min/IP.
 import { NextResponse } from "next/server";
+import { eventBoardKey, eventById, GRACE_MS } from "@/lib/events";
 import { GAMES } from "@/lib/games";
 import { playerKey, verifyPlayer } from "@/lib/player";
 import { ratelimit, clientIp } from "@/lib/ratelimit";
@@ -42,6 +43,16 @@ export async function POST(req: Request) {
     redis.zscore(`lb:${game.slug}:${season}`, name),
     redis.zrevrank(`lb:${game.slug}:${season}`, name),
   ]);
+  // tournament mode: the event board, if the run started in a live event's room
+  let event: { id: string; rank: number | null } | null = null;
+  if (s.room) {
+    const ev = await eventById(s.room);
+    if (ev && ev.game === game.slug && s.t >= Date.parse(ev.startsAt) - 60000 && Date.now() <= Date.parse(ev.endsAt) + GRACE_MS) {
+      await redis.zaddGt(eventBoardKey(ev.id), { score: n, member: name });
+      const r = await redis.zrevrank(eventBoardKey(ev.id), name);
+      event = { id: ev.id, rank: r === null ? null : r + 1 };
+    }
+  }
   const progress = await afterArcadeRun(name, game.slug, n, stats && typeof stats === "object" ? stats : {});
-  return NextResponse.json({ ok: true, season, best, rank: rank === null ? null : rank + 1, xp: progress.xp, badges: progress.fresh });
+  return NextResponse.json({ ok: true, season, best, rank: rank === null ? null : rank + 1, xp: progress.xp, badges: progress.fresh, event });
 }

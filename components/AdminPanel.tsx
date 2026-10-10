@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { postJson } from "@/lib/client/player";
 import { txUrl } from "@/lib/explorer";
+import { EventsPanel, ReviewsPanel } from "./AdminExtras";
 
 type Sent = { action: string; game?: string; hash: string; detail?: string; at?: string };
 type Props = { challenges: { challenge: string; criteria: string }[]; bridges: { start: string; end: string }[]; oracles: string[]; lastSeason: string };
@@ -142,6 +143,11 @@ export function AdminPanel({ challenges, bridges, oracles, lastSeason }: Props) 
           <SeasonForm lastSeason={lastSeason} busy={busy} onFinalize={(season) => act("finalize-season", { season })} />
           <RemoveForm busy={busy} onRemove={(game, player, season) => act("remove-score", { game, player, season })} />
         </Panel>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <EventsPanel token={token} />
+        <ReviewsPanel token={token} />
       </div>
 
       <div className="card p-4">

@@ -54,6 +54,7 @@ CONTRACTS = {
     "BRIDGE_CONTRACT": ROOT / "contracts" / "word_bridge.py",
     "ORACLE_CONTRACT": ROOT / "contracts" / "oracle_guess.py",
     "LEDGER_CONTRACT": ROOT / "contracts" / "season_ledger.py",
+    "REVIEW_CONTRACT": ROOT / "contracts" / "game_review.py",
 }
 
 if SDK_VERSION.startswith("0.19"):

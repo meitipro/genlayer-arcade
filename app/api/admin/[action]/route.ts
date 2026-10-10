@@ -4,6 +4,7 @@
 import { NextResponse } from "next/server";
 import {
   adminLog,
+  logAdmin,
   adminOk,
   adminTxStatus,
   closeRound,
@@ -17,7 +18,9 @@ import {
   removeScore,
   resolveOracle,
 } from "@/lib/admin";
+import { delistReview, dropCommunityCache, recheckReview } from "@/lib/community";
 import { chainBusy } from "@/lib/daily";
+import { deleteEvent, listEvents, saveEvent, validateEvent, type EventInput } from "@/lib/events";
 import { gameBySlug } from "@/lib/games";
 import { clientIp, limits } from "@/lib/ratelimit";
 import { HASH_RE, RID_RE } from "@/lib/route-helpers";
@@ -72,6 +75,35 @@ export async function POST(req: Request, ctx: { params: Promise<{ action: string
       }
       case "log":
         return NextResponse.json({ log: await adminLog() });
+      case "create-event": {
+        const v = validateEvent(b as unknown as EventInput);
+        if (!v.ok) return bad(v.error);
+        const saved = await saveEvent(v.event);
+        return saved.ok ? NextResponse.json({ event: v.event }) : bad(saved.error ?? "could not save");
+      }
+      case "delete-event": {
+        const id = str("id") ?? "";
+        return (await deleteEvent(id)) ? NextResponse.json({ deleted: id }) : NextResponse.json({ error: "no admin-created event with that id" }, { status: 404 });
+      }
+      case "events":
+        return NextResponse.json({ events: await listEvents() });
+      case "review-recheck": {
+        const id = str("id") ?? "";
+        if (!RID_RE.test(id)) return bad("review-recheck needs a review id");
+        const hash = await recheckReview(id);
+        await logAdmin({ action: "recheck", game: "review", hash, detail: `review ${id}` });
+        dropCommunityCache();
+        return ok({ action: "recheck", game: "review", hash, detail: `review ${id}` });
+      }
+      case "review-delist": {
+        const id = str("id") ?? "";
+        const reason = str("reason") ?? "";
+        if (!RID_RE.test(id) || reason.length < 3) return bad("review-delist needs a review id and a reason");
+        const hash = await delistReview(id, reason);
+        await logAdmin({ action: "delist", game: "review", hash, detail: `review ${id}: ${reason}` });
+        dropCommunityCache();
+        return ok({ action: "delist", game: "review", hash, detail: `review ${id}` });
+      }
       default:
         return NextResponse.json({ error: "unknown action" }, { status: 404 });
     }

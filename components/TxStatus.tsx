@@ -21,7 +21,8 @@ export function useTx(game: string, hash?: string | null) {
     let timer: ReturnType<typeof setTimeout>;
     const tick = async () => {
       try {
-        const r = await fetch(`/api/daily/${game}/status?hash=${hash}`, { cache: "no-store" }).then((x) => x.json());
+        const base = game === "community" ? "/api/community/status" : `/api/daily/${game}/status`;
+        const r = await fetch(`${base}?hash=${hash}`, { cache: "no-store" }).then((x) => x.json());
         if (stop) return;
         if (r.status) setS(r);
         // keep polling until the outcome is decided; after ACCEPTED, slowly, to catch FINALIZED

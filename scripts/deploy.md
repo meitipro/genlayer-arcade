@@ -12,6 +12,7 @@ Owner (the relayer account): `0x71E5653471E2d4e1E17814A6123384B567Ea59dE`
 | `BRIDGE_CONTRACT` | `contracts/word_bridge.py` | [`0xa6814A76Ad4342925fCbEFD93abd7b83A00e164e`](https://explorer-studio.genlayer.com/address/0xa6814A76Ad4342925fCbEFD93abd7b83A00e164e) | [deploy tx](https://explorer-studio.genlayer.com/tx/0xffbc2d43312d2af59f0136c152fd5d83e947b158ab60edc765196d0d7246ac9b) | `0ba20a89d96396f4…` | 2026-10-10T18:50:31Z |
 | `ORACLE_CONTRACT` | `contracts/oracle_guess.py` | [`0x13Ec1296DaE361c0Bb8481f3d6CA51b6f7be0Dc2`](https://explorer-studio.genlayer.com/address/0x13Ec1296DaE361c0Bb8481f3d6CA51b6f7be0Dc2) | [deploy tx](https://explorer-studio.genlayer.com/tx/0x907d3e2909fb4d2d8a33860ce8bab4329f999aaea703b096b723d4be3d54298b) | `634114cd9f856f8f…` | 2026-10-10T18:51:12Z |
 | `LEDGER_CONTRACT` | `contracts/season_ledger.py` | [`0xF6131DAd378A53F7c6241028c72428A08684547C`](https://explorer-studio.genlayer.com/address/0xF6131DAd378A53F7c6241028c72428A08684547C) | [deploy tx](https://explorer-studio.genlayer.com/tx/0xd4dbb600921911cd2f2e5a323d008d21ba82d321bdf66fe0c34fc203be87901b) | `8df102d9a145c545…` | 2026-10-10T18:51:52Z |
+| `REVIEW_CONTRACT` | `contracts/game_review.py` | [`0xBA3b51b47c80e8021BD5E9e6760330709254A8C3`](https://explorer-studio.genlayer.com/address/0xBA3b51b47c80e8021BD5E9e6760330709254A8C3) | [deploy tx](https://explorer-studio.genlayer.com/tx/0xcfb3feed107152a591b9efba587c914c6cd8a7b3d09216b9a3723bc52b972a39) | `e7b3326fb8e89f10…` | 2026-10-10T21:51:17Z |
 
 ## Steps
 

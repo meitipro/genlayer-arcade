@@ -41,6 +41,9 @@ export const limits = {
   // spec: 3/hour/IP. DAILY_LIMIT_PER_HOUR raises it for local testing only.
   daily: make("daily", Number(process.env.DAILY_LIMIT_PER_HOUR) || 3, "1 h"),
   admin: make("admin", 30, "1 m"),
+  community: make("community", 3, "24 h"),
+  faucet: make("faucet", 5, "1 h"),
+  rpc: make("rpc", 120, "1 m"),
 };
 
 /** The spec's score route imports `ratelimit`; it is the score limiter. */

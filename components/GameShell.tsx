@@ -31,7 +31,7 @@ const COMPONENTS: Record<string, ComponentType<GameProps>> = {
 };
 
 type Phase = "ready" | "starting" | "running" | "posting" | "over";
-type Result = { score: number; n: number; posted: boolean; error?: string; best?: number | null; rank?: number | null; badges?: string[] };
+type Result = { score: number; n: number; posted: boolean; error?: string; best?: number | null; rank?: number | null; badges?: string[]; eventRank?: number | null };
 
 export function GameShell({ game }: { game: Game }) {
   const Comp = COMPONENTS[game.slug];
@@ -43,13 +43,19 @@ export function GameShell({ game }: { game: Game }) {
   const [result, setResult] = useState<Result | null>(null);
   const [bump, setBump] = useState(0);
   const token = useRef<string>("");
+  // tournament mode: /play/<slug>?room=CODE
+  const [room, setRoom] = useState<string | null>(null);
+  useEffect(() => {
+    const r = new URLSearchParams(window.location.search).get("room");
+    if (r) setRoom(r.toUpperCase());
+  }, []);
   const { board } = useBoard(game.slug, "season", 10, bump);
 
   const start = useCallback(async () => {
     if (!player || phase === "starting" || phase === "running" || phase === "posting") return;
     setError("");
     setPhase("starting");
-    const r = await postJson<{ token: string }>("/api/session/start", { game: game.slug });
+    const r = await postJson<{ token: string }>("/api/session/start", { game: game.slug, ...(room ? { room } : {}) });
     if (!r.ok) {
       setPhase(result ? "over" : "ready");
       setError(r.data.error ?? "could not start a session, try again");
@@ -60,7 +66,7 @@ export function GameShell({ game }: { game: Game }) {
     setLive(0);
     setRun((n) => n + 1);
     setPhase("running");
-  }, [player, phase, game.slug, result]);
+  }, [player, phase, game.slug, result, room]);
 
   const over = useCallback(
     async (finalScore: number, stats?: Record<string, number>) => {
@@ -68,7 +74,7 @@ export function GameShell({ game }: { game: Game }) {
       setPhase("posting");
       setLive(score);
       if (!player) return;
-      const r = await postJson<{ best: number; rank: number; badges: string[] }>("/api/score", {
+      const r = await postJson<{ best: number; rank: number; badges: string[]; event: { rank: number | null } | null }>("/api/score", {
         token: token.current,
         player: player.name,
         playerSecret: player.secret,
@@ -77,7 +83,7 @@ export function GameShell({ game }: { game: Game }) {
       });
       setResult(
         r.ok
-          ? { score, n: stats?.n ?? score, posted: true, best: r.data.best, rank: r.data.rank, badges: r.data.badges }
+          ? { score, n: stats?.n ?? score, posted: true, best: r.data.best, rank: r.data.rank, badges: r.data.badges, eventRank: r.data.event?.rank ?? null }
           : { score, n: stats?.n ?? score, posted: false, error: r.data.error ?? "score not posted" },
       );
       setPhase("over");
@@ -108,6 +114,15 @@ export function GameShell({ game }: { game: Game }) {
   return (
     <div style={{ "--accent": game.accent } as CSSProperties} className="mx-auto max-w-6xl px-4 py-6">
       <AccentStyle accent={game.accent} />
+      {room && (
+        <div className="card mb-4 flex flex-wrap items-center gap-3 border-accent p-3 text-sm">
+          <span className="mono text-accent">ROOM {room}</span>
+          <span className="text-muted">Runs here also count on the event board while the event is live.</span>
+          <button className="ml-auto text-muted underline-offset-4 hover:text-text hover:underline" onClick={() => setRoom(null)}>
+            Play without the room
+          </button>
+        </div>
+      )}
       <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1">
         <h1 className="flex items-center gap-2 text-xl font-bold sm:text-2xl">
           <span className="dot h-3 w-3" />
@@ -149,6 +164,7 @@ export function GameShell({ game }: { game: Game }) {
                     ) : (
                       <p className="text-sm text-danger">Score not posted: {result.error}.</p>
                     )}
+                    {result.eventRank ? <p className="mono text-sm text-accent">event rank #{result.eventRank}</p> : null}
                     {!!result.badges?.length && <p className="mono text-xs text-accent">badge earned: {result.badges.join(", ")}</p>}
                     <div className="flex flex-wrap justify-center gap-2 pt-1">
                       <button className="btn btn-primary" onClick={() => void start()} autoFocus>

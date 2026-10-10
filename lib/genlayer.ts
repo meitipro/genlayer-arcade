@@ -25,7 +25,7 @@ function relayer() {
   return createClient({ chain, account });
 }
 
-export type ContractVar = "VERDICT_CONTRACT" | "BRIDGE_CONTRACT" | "ORACLE_CONTRACT" | "LEDGER_CONTRACT";
+export type ContractVar = "VERDICT_CONTRACT" | "BRIDGE_CONTRACT" | "ORACLE_CONTRACT" | "LEDGER_CONTRACT" | "REVIEW_CONTRACT";
 
 /** Env var first (section 4), then the address deploy.py recorded. */
 export function contractAddress(name: ContractVar): `0x${string}` | null {

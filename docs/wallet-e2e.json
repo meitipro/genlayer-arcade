@@ -1,0 +1,98 @@
+{
+  "runs": [
+    {
+      "site": "http://localhost:3017",
+      "game": "verdict",
+      "started": "2026-10-10T21:54:57.943Z",
+      "steps": [
+        {
+          "step": "the /api/rpc relay refuses signing methods",
+          "pass": true,
+          "at": "2026-10-10T21:54:58.534Z",
+          "status": 400
+        },
+        {
+          "step": "site faucet funds a fresh wallet (lowercase address in, checksummed out)",
+          "pass": true,
+          "at": "2026-10-10T21:54:59.516Z",
+          "status": 200,
+          "body": {
+            "ok": true,
+            "address": "0xDd3187D8882872B26912c42278261C5991c9d84A"
+          }
+        },
+        {
+          "step": "the balance moved",
+          "pass": true,
+          "at": "2026-10-10T21:55:00.091Z",
+          "wei": "10000000000000000000"
+        },
+        {
+          "step": "the same address cannot be funded again within 10 minutes",
+          "pass": true,
+          "at": "2026-10-10T21:55:00.419Z",
+          "status": 429
+        },
+        {
+          "step": "an open round exists",
+          "pass": true,
+          "at": "2026-10-10T21:55:00.764Z",
+          "round": "1"
+        },
+        {
+          "step": "wallet sent the submit itself, through the site relay for reads",
+          "pass": true,
+          "at": "2026-10-10T21:55:02.980Z",
+          "hash": "0xeb7fcdfcef37675a0cec5c67c8a0de611ed0dd7a46ba1712295d4a34640073c6",
+          "args": [
+            "1",
+            "w_dd3187d8882872b269",
+            "A tutor app where AI validators agree whether a homework answer is right, not just one model."
+          ]
+        },
+        {
+          "step": "the hub verified the transaction and recorded it under the wallet name",
+          "pass": true,
+          "at": "2026-10-10T21:55:04.499Z",
+          "status": 200,
+          "body": {
+            "ok": true,
+            "player": "w_dd3187d8882872b269",
+            "round": "1"
+          }
+        },
+        {
+          "step": "decided on chain",
+          "pass": true,
+          "at": "2026-10-10T21:55:19.236Z",
+          "status": "ACCEPTED",
+          "result": "FINISHED_WITH_RETURN",
+          "agree": 3,
+          "voters": 3,
+          "explorer": "https://explorer-studio.genlayer.com/tx/0xeb7fcdfcef37675a0cec5c67c8a0de611ed0dd7a46ba1712295d4a34640073c6"
+        },
+        {
+          "step": "entry read back from the contract",
+          "pass": true,
+          "at": "2026-10-10T21:55:23.755Z",
+          "entry": {
+            "player": "w_dd3187d8882872b269",
+            "entry": "A tutor app where AI validators agree whether a homework answer is right, not just one model.",
+            "score": 8,
+            "reason": "Clear problem, strong consensus use case, slightly over 20 words but compelling pitch."
+          }
+        },
+        {
+          "step": "an unknown hash cannot be registered",
+          "pass": true,
+          "at": "2026-10-10T21:55:46.525Z",
+          "status": 404
+        }
+      ],
+      "wallet": "0xDd3187D8882872B26912c42278261C5991c9d84A",
+      "player": "w_dd3187d8882872b269",
+      "finished": "2026-10-10T21:55:46.525Z",
+      "failures": 0
+    }
+  ]
+}

@@ -84,3 +84,8 @@ def oracle() -> World:
 @pytest.fixture
 def ledger() -> World:
     return World("season_ledger.py", "SeasonLedger")
+
+
+@pytest.fixture
+def review() -> World:
+    return World("game_review.py", "GameReview")

@@ -25,6 +25,13 @@
         "sha256_note": "sha256 of the LF bytes sent; first recorded as the CRLF working copy 699ae2f7d6b94aef..., corrected by scripts/verify.py evidence",
         "tx": "0x907d3e2909fb4d2d8a33860ce8bab4329f999aaea703b096b723d4be3d54298b"
       },
+      "REVIEW_CONTRACT": {
+        "address": "0xBA3b51b47c80e8021BD5E9e6760330709254A8C3",
+        "deployed_at": "2026-10-10T21:51:17Z",
+        "file": "contracts/game_review.py",
+        "sha256": "e7b3326fb8e89f107b8fca92335727530dd41dca578881e701e2207e7ec20520",
+        "tx": "0xcfb3feed107152a591b9efba587c914c6cd8a7b3d09216b9a3723bc52b972a39"
+      },
       "VERDICT_CONTRACT": {
         "address": "0xABD5009490d39f05BB7284eC61BcD34666516A09",
         "deployed_at": "2026-10-10T18:49:50Z",

@@ -40,6 +40,16 @@ MUTANTS = [
     ("season_ledger.py", "owner check removed", '        if gl.message.sender_address != self.owner:\n            raise gl.vm.UserError("[EXPECTED] not owner")', "        pass"),
     ("season_ledger.py", "seasons can be overwritten", '        if key in self.seasons:\n            raise gl.vm.UserError("[EXPECTED] season already recorded")', "        pass"),
     ("season_ledger.py", "payload size unchecked", "if len(payload) > 8000:", "if False:"),
+    ('game_review.py', 'owner check removed', '        if gl.message.sender_address != self.owner:\n            raise gl.vm.UserError("[EXPECTED] not owner")', '        pass'),
+    ('game_review.py', 'validators ignore the label', 'return str(leader_result.calldata["label"]) == mine["label"]', 'return True'),
+    ("game_review.py", "fence removed", 'return text.replace("<", "\u2039").replace(">", "\u203a")', "return text"),
+    ('game_review.py', 'http allowed', 'URL_RE = re.compile(r"^https://', 'URL_RE = re.compile(r"^https?://'),
+    ('game_review.py', 'duplicate links allowed', '        if url in self.by_url:\n            raise gl.vm.UserError("[EXPECTED] already submitted")', '        pass'),
+    ('game_review.py', 'not-a-game listed', '"listed": verdict["label"] == "PLAYABLE", "rechecked": False', '"listed": True, "rechecked": False'),
+    ('game_review.py', 'unlimited rechecks', '        if g["rechecked"]:\n            raise gl.vm.UserError("[EXPECTED] already rechecked once")', '        pass'),
+    ('game_review.py', 'recheck any label', '        if g["label"] != "UNREACHABLE":\n            raise gl.vm.UserError("[EXPECTED] only an unreachable review can be rechecked")', '        pass'),
+    ("game_review.py", "closed label set removed (both checks)", ['if label not in ("PLAYABLE", "NOT_A_GAME"):', "if label not in LABELS:"], ["if False:", "if False:"]),
+    ('game_review.py', 'model asked about unreadable pages', 'if len(text) < MIN_PAGE:', 'if False:'),
 ]
 
 
@@ -50,11 +60,14 @@ def main() -> int:
             shutil.copytree(ROOT / "contracts", tmp, dirs_exist_ok=True)
             p = pathlib.Path(tmp) / file
             src = p.read_text(encoding="utf-8")
-            if old not in src:
+            olds, news = (old, new) if isinstance(old, list) else ([old], [new])
+            if any(o not in src for o in olds):
                 print(f"  ?? {file}: {name}: pattern not found")
                 survived.append((file, name, "pattern not found"))
                 continue
-            p.write_text(src.replace(old, new, 1), encoding="utf-8", newline="\n")
+            for o, n in zip(olds, news):
+                src = src.replace(o, n, 1)
+            p.write_text(src, encoding="utf-8", newline="\n")
             env = dict(os.environ, ARCADE_CONTRACTS_DIR=tmp)
             r = subprocess.run([sys.executable, "-m", "pytest", "-q", "-x", "tests/contracts/test_contracts.py", "-p", "no:cacheprovider"], cwd=ROOT, env=env, capture_output=True, text=True)
             caught = r.returncode != 0

@@ -8,10 +8,11 @@ function secret(): string {
   return "dev-only-session-secret";
 }
 
-export type Session = { sid: string; game: string; t: number };
+export type Session = { sid: string; game: string; t: number; room?: string };
 
-export function signSession(game: string, now = Date.now()) {
-  const payload: Session = { sid: randomUUID(), game, t: now };
+/** room: the id of a live event whose room code started this run (tournament mode). */
+export function signSession(game: string, now = Date.now(), room?: string) {
+  const payload: Session = { sid: randomUUID(), game, t: now, ...(room ? { room } : {}) };
   const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
   const sig = createHmac("sha256", secret()).update(body).digest("base64url");
   return `${body}.${sig}`;
