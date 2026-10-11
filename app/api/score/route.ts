@@ -1,10 +1,10 @@
-// POST /api/score (section 8): token valid and unused, player secret valid,
+// POST /api/score (section 8): signed in, token valid and unused,
 // score <= cap, elapsed >= minMs, score <= elapsed x maxPerSec. 30/min/IP.
 import { NextResponse } from "next/server";
-import { discordGate } from "@/lib/discord";
+import { sessionPlayer } from "@/lib/auth";
 import { eventBoardKey, eventById, GRACE_MS } from "@/lib/events";
 import { GAMES } from "@/lib/games";
-import { playerKey, verifyPlayer } from "@/lib/player";
+import { playerKey } from "@/lib/player";
 import { ratelimit, clientIp } from "@/lib/ratelimit";
 import { redis } from "@/lib/redis";
 import { seasonId } from "@/lib/season";
@@ -15,18 +15,16 @@ export async function POST(req: Request) {
   if (!(await ratelimit.limit(`score:${clientIp(req)}`)).success)
     return NextResponse.json({ error: "slow down" }, { status: 429 });
 
-  const { token, player, playerSecret, score, stats } = await req.json().catch(() => ({}));
+  const { token, score, stats } = await req.json().catch(() => ({}));
   const s = verifySession(token);
   if (!s) return NextResponse.json({ error: "bad session" }, { status: 400 });
 
   const game = GAMES.find((g) => g.slug === s.game);
   if (!game?.scoring) return NextResponse.json({ error: "no game" }, { status: 400 });
 
-  // nickname ownership: hash of secret stored at claim time
-  const name = await verifyPlayer(player, playerSecret);
-  if (!name) return NextResponse.json({ error: "bad player" }, { status: 401 });
-  const gate = await discordGate(name);
-  if (gate) return NextResponse.json({ error: gate, gate: "discord" }, { status: 403 });
+  // the score belongs to the Discord account in the session, never to a name in the body
+  const name = await sessionPlayer(req);
+  if (!name) return NextResponse.json({ error: "sign in with Discord first", gate: "discord" }, { status: 401 });
 
   // one score per session
   if (!(await redis.set(`session:used:${s.sid}`, 1, { nx: true, ex: 7200 })))

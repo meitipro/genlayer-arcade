@@ -1,8 +1,7 @@
 // POST /api/session/start: {game} returns an HMAC token {sid, game, t}. 30/min/IP.
 import { NextResponse } from "next/server";
-import { discordGate, discordRequired } from "@/lib/discord";
+import { sessionPlayer } from "@/lib/auth";
 import { eventByCode, stateOf } from "@/lib/events";
-import { verifyPlayer } from "@/lib/player";
 import { gameBySlug } from "@/lib/games";
 import { clientIp, limits } from "@/lib/ratelimit";
 import { signSession } from "@/lib/session";
@@ -13,13 +12,7 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const game = gameBySlug(String(body?.game ?? ""));
   if (!game?.scoring) return NextResponse.json({ error: "no such arcade game" }, { status: 400 });
-  // playing needs a connected Discord once the Discord app is configured
-  if (discordRequired()) {
-    const name = await verifyPlayer(body?.player, body?.playerSecret);
-    if (!name) return NextResponse.json({ error: "claim a nickname on this device first", gate: "nickname" }, { status: 401 });
-    const gate = await discordGate(name);
-    if (gate) return NextResponse.json({ error: gate, gate: "discord" }, { status: 403 });
-  }
+  if (!(await sessionPlayer(req))) return NextResponse.json({ error: "sign in with Discord first", gate: "discord" }, { status: 401 });
   // tournament mode: a room code ties this run to a live event of the same game
   let room: string | undefined;
   if (body?.room) {

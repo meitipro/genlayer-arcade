@@ -14,7 +14,7 @@ export type CardDiscord = {
 };
 
 export type CardSocial = {
-  network: "x" | "github";
+  network: "x";
   handle: string;
   name: string;
   avatar: string | null;
@@ -34,7 +34,6 @@ export type PlayerCard = {
   best: { game: string; title: string; score: number } | null;
   discord: CardDiscord | null;
   x: CardSocial | null;
-  github: CardSocial | null;
   wallet: string | null;
   config: { discord: boolean; x: boolean };
   /** Tier from the highest GenLayer server role. Spark when there is no role to read. */

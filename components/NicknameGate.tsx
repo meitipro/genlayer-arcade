@@ -1,89 +1,44 @@
 "use client";
-// Claim a nickname with a device secret, no wallet (section 8). The secret is
-// returned once and kept in this browser; "Use on another device" restores it.
+// The account on this site is a Discord account. These are the pieces that
+// show it: a gate for anything that needs a signed-in player (the middleware
+// already keeps signed-out visitors off every page, so this is the backstop for
+// a session that ends while a page is open), and the account chip in the header.
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
-import { postJson, savePlayer, usePlayer } from "@/lib/client/player";
+import { type ReactNode } from "react";
+import { loginUrl, signOut, usePlayer } from "@/lib/client/player";
 
-export function NicknameGate({ children, why = "Claim a nickname to post scores." }: { children?: ReactNode; why?: string }) {
+export function SignInGate({ children, why = "Sign in with Discord to continue." }: { children?: ReactNode; why?: string }) {
   const p = usePlayer();
   if (p === undefined) return <div className="card h-40 animate-pulse" aria-busy />;
   if (p) return <>{children}</>;
-  return <ClaimForm why={why} />;
-}
-
-export function ClaimForm({ why }: { why?: string }) {
-  const [name, setName] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const [restore, setRestore] = useState(false);
-  const [secret, setSecret] = useState("");
-
-  async function claim(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    if (restore) {
-      if (!/^[a-zA-Z0-9_]{3,20}$/.test(name) || !/^[0-9a-f]{64}$/.test(secret.trim())) {
-        setError("enter your nickname and the 64-character secret from your other device");
-        return;
-      }
-      savePlayer({ name, secret: secret.trim() });
-      return;
-    }
-    setBusy(true);
-    const r = await postJson<{ name: string; secret: string }>("/api/player/claim", { name });
-    setBusy(false);
-    if (!r.ok) return setError(r.data.error ?? "could not claim that name, try again");
-    savePlayer({ name: r.data.name, secret: r.data.secret });
-  }
-
   return (
-    <form onSubmit={claim} className="card space-y-3 p-5">
-      <h2 className="text-lg font-semibold">{restore ? "Use your nickname on this device" : "Claim a nickname"}</h2>
-      <p className="text-sm text-muted">
-        {restore
-          ? "Paste the secret shown on your profile page on the other device."
-          : `${why} No wallet needed: the name is tied to a secret stored in this browser.`}
-      </p>
-      <label className="block">
-        <span className="sr-only">Nickname</span>
-        <input
-          className="field mono"
-          value={name}
-          onChange={(e) => setName(e.target.value.replace(/[^a-zA-Z0-9_]/g, "").slice(0, 20))}
-          placeholder="nickname (3 to 20, letters, digits, _)"
-          autoComplete="off"
-          required
-          minLength={3}
-          maxLength={20}
-        />
-      </label>
-      {restore && (
-        <label className="block">
-          <span className="sr-only">Device secret</span>
-          <input className="field mono" value={secret} onChange={(e) => setSecret(e.target.value)} placeholder="64-character secret" autoComplete="off" />
-        </label>
-      )}
-      {error && <p className="text-sm text-danger" role="alert">{error}</p>}
-      <div className="flex flex-wrap items-center gap-3">
-        <button className="btn btn-primary" disabled={busy || name.length < 3}>
-          {busy ? "Claiming" : restore ? "Use this nickname" : "Claim nickname"}
-        </button>
-        <button type="button" className="text-sm text-muted underline-offset-4 hover:text-text hover:underline" onClick={() => (setRestore(!restore), setError(""))}>
-          {restore ? "Claim a new nickname instead" : "Use a nickname from another device"}
-        </button>
-      </div>
-    </form>
+    <div className="card space-y-3 p-5">
+      <h2 className="text-lg font-semibold">Sign in with Discord</h2>
+      <p className="text-sm text-muted">{why}</p>
+      <a className="btn btn-primary" href={loginUrl()}>
+        Continue with Discord
+      </a>
+    </div>
   );
 }
 
-export function NicknamePill() {
+export function AccountChip() {
   const p = usePlayer();
   if (!p) return null;
   return (
-    <Link href={`/p/${p.name}`} className="pill mono max-w-[9rem] truncate hover:border-accent" title="Your profile">
-      <span className="dot" />
-      <span className="truncate">{p.name}</span>
-    </Link>
+    <div className="flex items-center gap-1">
+      <Link href="/card" className="pill mono max-w-[10rem] truncate hover:border-accent" title="My Card">
+        {p.discord?.avatar ? (
+          // eslint-disable-next-line @next/next/no-img-element -- Discord CDN avatar
+          <img src={p.discord.avatar} alt="" width={16} height={16} className="h-4 w-4 rounded-full" referrerPolicy="no-referrer" />
+        ) : (
+          <span className="dot" />
+        )}
+        <span className="truncate">{p.name}</span>
+      </Link>
+      <button type="button" onClick={() => void signOut()} className="rounded-[10px] px-2 py-2 text-xs text-muted hover:text-text" aria-label="Sign out">
+        Sign out
+      </button>
+    </div>
   );
 }

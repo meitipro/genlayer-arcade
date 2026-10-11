@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { CSSProperties } from "react";
-import { DeviceSecret } from "@/components/DeviceSecret";
 import CredentialCard from "@/components/CredentialCard";
 import { cardFor } from "@/lib/card";
 import { historyOf } from "@/lib/daily";
@@ -63,7 +62,6 @@ export default async function Profile({ params }: { params: Promise<{ name: stri
         <p className="mono text-xs text-muted">
           {lv.next - xp} XP to level {lv.level + 1}
         </p>
-        <DeviceSecret name={name} />
       </section>
 
       <section aria-labelledby="bests" className="space-y-3">

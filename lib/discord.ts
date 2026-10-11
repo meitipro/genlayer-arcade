@@ -1,10 +1,10 @@
-// lib/discord.ts: "Connect Discord". OAuth2 with the identify and
+// lib/discord.ts: logging in with Discord. OAuth2 with the identify and
 // guilds.members.read scopes, then the player's member object in the GenLayer
 // server, whose role IDs lib/roles.ts names and ranks. The access token is used
 // once in the callback and never stored.
 import "server-only";
 import { highestRole, roleNamesFromIds, tierForRole, type Tier } from "./roles";
-import { playerKey } from "./player";
+import { createPlayer, playerKey } from "./player";
 import { redis } from "./redis";
 
 /** The GenLayer server, read from its public invite discord.gg/genlayerlabs. */
@@ -27,13 +27,11 @@ export function discordConfigured(): boolean {
   return Boolean(process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET);
 }
 
-/** Playing needs a connected Discord once the app is configured (ARCADE_REQUIRE_DISCORD=0 turns that off). */
-export function discordRequired(): boolean {
-  return discordConfigured() && process.env.ARCADE_REQUIRE_DISCORD !== "0";
-}
-
+/** The origin Discord sends people back to. The configured site URL wins, so a preview URL never breaks the redirect. */
 export function redirectUri(origin: string): string {
-  return process.env.DISCORD_REDIRECT_URI || `${origin}/api/discord/callback`;
+  if (process.env.DISCORD_REDIRECT_URI) return process.env.DISCORD_REDIRECT_URI;
+  const site = (process.env.NEXT_PUBLIC_SITE_URL || origin).replace(/\/$/, "");
+  return `${site}/api/discord/callback`;
 }
 
 export function authorizeUrl(origin: string, state: string): string {
@@ -104,35 +102,28 @@ export async function fetchStanding(accessToken: string): Promise<DiscordCard> {
 const cardKey = (name: string) => `card:discord:${name.toLowerCase()}`;
 const userKey = (discordId: string) => `discord:user:${discordId}`;
 
-/** Links a Discord account to a nickname. One Discord account plays under one nickname. */
+/** Stores the Discord side of a player's card and the Discord id to player mapping. */
 export async function linkDiscord(name: string, card: DiscordCard): Promise<{ ok: true } | { ok: false; error: string }> {
   const owner = await redis.get<string>(userKey(card.id));
   if (owner && owner.toLowerCase() !== name.toLowerCase()) return { ok: false, error: "taken" };
-  const previous = await redis.hget<string>(playerKey(name), "discordId");
-  if (previous && previous !== card.id) await redis.del(userKey(previous));
   await redis.set(userKey(card.id), name);
   await redis.hset(playerKey(name), { discordId: card.id });
   await redis.set(cardKey(name), JSON.stringify(card));
   return { ok: true };
 }
 
-export async function unlinkDiscord(name: string): Promise<void> {
-  const id = await redis.hget<string>(playerKey(name), "discordId");
-  if (id) await redis.del(userKey(id));
-  await redis.hset(playerKey(name), { discordId: "" });
-  await redis.del(cardKey(name));
+/**
+ * Login: the player for this Discord account, created on first sight. The
+ * stored card (roles, tier, avatar) is refreshed on every login.
+ */
+export async function loginWithDiscord(card: DiscordCard): Promise<string> {
+  let name = await redis.get<string>(userKey(card.id));
+  if (!name) name = await createPlayer(card.username, card.id);
+  await linkDiscord(name, card);
+  return name;
 }
 
 export async function discordCardOf(name: string): Promise<DiscordCard | null> {
   const raw = await redis.get<string>(cardKey(name));
   return raw ? ((typeof raw === "string" ? JSON.parse(raw) : raw) as DiscordCard) : null;
-}
-
-/** Null when the player may play; otherwise the sentence to show. */
-export async function discordGate(name: string): Promise<string | null> {
-  if (!discordRequired()) return null;
-  // wallet players are bound to their address instead
-  if (/^w_[0-9a-f]{18}$/.test(name)) return null;
-  const id = await redis.hget<string>(playerKey(name), "discordId");
-  return id ? null : "connect your Discord on My Card to play";
 }

@@ -4,7 +4,9 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { ONCHAIN } from "@/lib/onchain";
 import { formatLeft, previousSeasonId, seasonEnd, seasonId, seasonStart } from "@/lib/season";
 import { signSession, verifySession } from "@/lib/session";
+import { SESSION_COOKIE } from "@/lib/sessionCookie";
 import { levelFor, dailyXp } from "@/lib/xp";
+import { jsonPost, loginAs } from "./helpers";
 
 vi.mock("next/cache", () => ({ revalidateTag: () => {}, unstable_cache: (fn: () => unknown) => fn }));
 
@@ -82,71 +84,90 @@ describe("XP and levels", () => {
 });
 
 describe("arcade routes (section 8 anti-cheat)", () => {
-  let claim: typeof import("@/app/api/player/claim/route").POST;
   let start: typeof import("@/app/api/session/start/route").POST;
   let score: typeof import("@/app/api/score/route").POST;
   let board: typeof import("@/app/api/leaderboard/route").GET;
-  const post = (url: string, body: unknown, ip = "10.0.0.1") =>
-    new Request(`http://t${url}`, { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": ip }, body: JSON.stringify(body) });
+  const post = jsonPost;
 
   beforeAll(async () => {
-    claim = (await import("@/app/api/player/claim/route")).POST;
     start = (await import("@/app/api/session/start/route")).POST;
     score = (await import("@/app/api/score/route")).POST;
     board = (await import("@/app/api/leaderboard/route")).GET;
   });
   afterEach(() => vi.useRealTimers());
 
-  it("claims a name once, case-insensitively, and returns the secret once", async () => {
-    const r = await claim(post("/api/player/claim", { name: "Route_Tester" }));
-    const d = await r.json();
-    expect(r.status).toBe(200);
-    expect(d.secret).toMatch(/^[0-9a-f]{64}$/);
-    expect((await claim(post("/api/player/claim", { name: "route_tester" }))).status).toBe(409);
-    expect((await claim(post("/api/player/claim", { name: "no" }))).status).toBe(400);
+  it("refuses a signed-out visitor at every step, and names are made from the Discord username", async () => {
+    expect((await start(post("/api/session/start", { game: "chain-snake" }))).status).toBe(401);
+    expect((await score(post("/api/score", { token: "x", score: 10 }))).status).toBe(400);
+    const me = await loginAs("Route.Tester!");
+    expect(me.name).toBe("RouteTester");
+    // the same Discord account is the same player
+    expect((await loginAs("Route.Tester!")).name).toBe("RouteTester");
+    // another account with the same username gets its own name
+    const other = await loginAs("Route.Tester!", { id: "test-other-account" });
+    expect(other.name).not.toBe("RouteTester");
+    expect(other.name.toLowerCase().startsWith("routetester")).toBe(true);
   });
 
-  it("refuses no token, a reused token, a short run, an implausible rate, another device's name; accepts an honest one", async () => {
+  it("refuses no token, a reused token, a short run, an implausible rate, and a session that is not the player's; accepts an honest one", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-10-10T12:00:00Z"));
-    const me = await (await claim(post("/api/player/claim", { name: "honest_one" }))).json();
-    const tok = async (game: string) => (await (await start(post("/api/session/start", { game }))).json()).token as string;
-    const send = (body: unknown) => score(post("/api/score", body));
+    const me = await loginAs("honest_one");
+    const tok = async (game: string) => (await (await start(post("/api/session/start", { game }, { cookie: me.cookie }))).json()).token as string;
+    const send = (body: unknown, cookie: string = me.cookie) => score(post("/api/score", body, { cookie }));
 
-    expect((await send({ player: me.name, playerSecret: me.secret, score: 10 })).status).toBe(400);
+    expect((await send({ score: 10 })).status).toBe(400);
 
     let t = await tok("chain-snake");
     vi.setSystemTime(new Date("2026-10-10T12:00:02Z")); // 2 s < minMs 5000
-    expect((await send({ token: t, player: me.name, playerSecret: me.secret, score: 10 })).status).toBe(422);
+    expect((await send({ token: t, score: 10 })).status).toBe(422);
 
     t = await tok("chain-snake");
     vi.setSystemTime(new Date("2026-10-10T12:00:12Z")); // 10 s x 45/s = 450 max
-    expect((await send({ token: t, player: me.name, playerSecret: me.secret, score: 451 })).status).toBe(422);
+    expect((await send({ token: t, score: 451 })).status).toBe(422);
 
     t = await tok("chain-snake");
     vi.setSystemTime(new Date("2026-10-10T12:00:22Z"));
-    expect((await send({ token: t, player: me.name, playerSecret: "0".repeat(64), score: 100 })).status).toBe(401);
-    const ok = await send({ token: t, player: me.name, playerSecret: me.secret, score: 100 });
+    // no cookie: the score has no player
+    expect((await send({ token: t, score: 100 }, "")).status).toBe(401);
+    // a forged cookie: wrong signature
+    expect((await send({ token: t, score: 100 }, `${SESSION_COOKIE}=${me.cookie.split("=")[1].slice(0, -2)}xx`)).status).toBe(401);
+    const ok = await send({ token: t, score: 100 });
     expect(ok.status).toBe(200);
     expect(await ok.json()).toMatchObject({ ok: true, season: "2026-W41", best: 100, rank: 1 });
-    expect((await send({ token: t, player: me.name, playerSecret: me.secret, score: 100 })).status).toBe(409);
+    expect((await send({ token: t, score: 100 })).status).toBe(409);
 
     const b = await (await board(new Request("http://t/api/leaderboard?game=chain-snake&scope=season&player=HONEST_ONE"))).json();
     expect(b.rows[0]).toEqual({ rank: 1, player: "honest_one", score: 100 });
     expect(b.you.rank).toBe(1);
   });
 
+  it("a body that names another player does not move the score to them", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-10-10T14:00:00Z"));
+    const me = await loginAs("score_owner");
+    const victim = await loginAs("score_victim");
+    const t = (await (await start(post("/api/session/start", { game: "chain-snake" }, { cookie: me.cookie }))).json()).token;
+    vi.setSystemTime(new Date("2026-10-10T14:00:30Z"));
+    const r = await score(post("/api/score", { token: t, player: victim.name, score: 200 }, { cookie: me.cookie }));
+    expect(r.status).toBe(200);
+    const mine = await (await board(new Request("http://t/api/leaderboard?game=chain-snake&scope=all&player=score_owner"))).json();
+    const theirs = await (await board(new Request("http://t/api/leaderboard?game=chain-snake&scope=all&player=score_victim"))).json();
+    expect(mine.you?.score).toBe(200);
+    expect(theirs.you ?? null).toBeNull();
+  });
+
   it("keeps the best score only (ZADD GT)", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-10-10T13:00:00Z"));
-    const me = await (await claim(post("/api/player/claim", { name: "best_only" }))).json();
+    const me = await loginAs("best_only");
     for (const [n, at] of [
       [300, "13:00:30"],
       [120, "13:01:30"],
     ] as const) {
-      const t = (await (await start(post("/api/session/start", { game: "chain-snake" }))).json()).token;
+      const t = (await (await start(post("/api/session/start", { game: "chain-snake" }, { cookie: me.cookie }))).json()).token;
       vi.setSystemTime(new Date(`2026-10-10T${at}Z`));
-      expect((await score(post("/api/score", { token: t, player: me.name, playerSecret: me.secret, score: n }))).status).toBe(200);
+      expect((await score(post("/api/score", { token: t, score: n }, { cookie: me.cookie }))).status).toBe(200);
     }
     const b = await (await board(new Request("http://t/api/leaderboard?game=chain-snake&scope=all&player=best_only"))).json();
     expect(b.you.score).toBe(300);

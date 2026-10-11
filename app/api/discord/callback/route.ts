@@ -1,28 +1,40 @@
 // GET /api/discord/callback?code&state: Discord sends the player back here.
-// The code is exchanged once, the user and their GenLayer server roles are
-// read, the access token is dropped, and the account is linked to the nickname
-// that started the flow. Always redirects to /card with an outcome.
+// The state must match the cookie this browser was given, the code is
+// exchanged once, the user and their GenLayer server roles are read, the
+// access token is dropped, and the session cookie is set. Always redirects.
 import { NextResponse } from "next/server";
-import { exchangeCode, fetchStanding, linkDiscord } from "@/lib/discord";
-import { redis } from "@/lib/redis";
+import { isHttps, sessionCookieFor } from "@/lib/auth";
+import { exchangeCode, fetchStanding, loginWithDiscord } from "@/lib/discord";
+import { NEXT_COOKIE, STATE_COOKIE, safeNext } from "@/lib/loginState";
+import { cookieFromHeader, setCookieHeader } from "@/lib/sessionCookie";
+
 
 export async function GET(req: Request) {
   const u = new URL(req.url);
-  const back = (outcome: string) => NextResponse.redirect(new URL(`/card?discord=${outcome}`, u.origin));
-  if (u.searchParams.get("error")) return back("cancelled");
+  const cookies = req.headers.get("cookie");
+  const secure = isHttps(req);
+  const clear = (res: NextResponse) => {
+    res.headers.append("set-cookie", setCookieHeader(STATE_COOKIE, "", 0, secure));
+    res.headers.append("set-cookie", setCookieHeader(NEXT_COOKIE, "", 0, secure));
+    return res;
+  };
+  const fail = (why: string) => clear(NextResponse.redirect(new URL(`/login?error=${why}`, u.origin)));
+
+  if (u.searchParams.get("error")) return fail("cancelled");
   const state = u.searchParams.get("state") ?? "";
   const code = u.searchParams.get("code") ?? "";
-  if (!state || !code) return back("bad-request");
-  const name = await redis.get<string>(`discord:state:${state}`);
-  if (!name) return back("expired");
-  await redis.del(`discord:state:${state}`);
+  const expected = cookieFromHeader(cookies, STATE_COOKIE);
+  if (!state || !code || !expected || expected !== state) return fail("expired");
+
   try {
     const token = await exchangeCode(code, u.origin);
     const card = await fetchStanding(token);
-    const linked = await linkDiscord(name, card);
-    return back(linked.ok ? (card.isMember ? "ok" : "not-member") : linked.error);
+    const name = await loginWithDiscord(card);
+    const res = NextResponse.redirect(new URL(safeNext(cookieFromHeader(cookies, NEXT_COOKIE)), u.origin));
+    res.headers.append("set-cookie", await sessionCookieFor(req, name, card.id));
+    return clear(res);
   } catch (e) {
-    console.error("discord callback failed", String((e as Error)?.message ?? e).slice(0, 200));
-    return back("failed");
+    console.error("discord login failed", String((e as Error)?.message ?? e).slice(0, 200));
+    return fail("failed");
   }
 }

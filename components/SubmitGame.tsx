@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { postJson, usePlayer } from "@/lib/client/player";
 import { txUrl } from "@/lib/explorer";
-import { NicknameGate } from "./NicknameGate";
+import { SignInGate } from "./NicknameGate";
 import { isDecided, isSuccess, TxStatus, useTx } from "./TxStatus";
 
 const KEY = "arcade.community.pending";
@@ -50,7 +50,7 @@ export function SubmitGame() {
     if (!player) return;
     setError("");
     setBusy(true);
-    const r = await postJson<{ hash: string }>("/api/community/submit", { player: player.name, playerSecret: player.secret, title, url });
+    const r = await postJson<{ hash: string }>("/api/community/submit", { title, url });
     setBusy(false);
     if (!r.ok) return setError(r.data.error ?? "not sent, try again in a minute");
     const now = Date.now();
@@ -73,7 +73,7 @@ export function SubmitGame() {
         Games judged PLAYABLE are listed here.
       </p>
       {player === null ? (
-        <NicknameGate why="Claim a nickname to submit a game." />
+        <SignInGate why="Sign in with Discord to submit a game." />
       ) : hash && !isDecided(tx) ? (
         <TxStatus state={tx} since={since} explorer={txUrl(hash)} />
       ) : (

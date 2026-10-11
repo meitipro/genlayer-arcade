@@ -9,7 +9,7 @@ import type { Game } from "@/lib/games";
 import { AccentStyle } from "./AccentStyle";
 import { ConceptCard } from "./ConceptCard";
 import { Leaderboard, useBoard } from "./Leaderboard";
-import { NicknameGate } from "./NicknameGate";
+import { SignInGate } from "./NicknameGate";
 
 // every game exports one component with this signature
 export type GameProps = {
@@ -61,7 +61,7 @@ export function GameShell({ game }: { game: Game }) {
     if (!player || phase === "starting" || phase === "running" || phase === "posting") return;
     setError("");
     setPhase("starting");
-    const r = await postJson<{ token: string; gate?: string }>("/api/session/start", { game: game.slug, player: player.name, playerSecret: player.secret, ...(room ? { room } : {}) });
+    const r = await postJson<{ token: string; gate?: string }>("/api/session/start", { game: game.slug, ...(room ? { room } : {}) });
     if (!r.ok) {
       setPhase(result ? "over" : "ready");
       setError(r.data.error ?? "could not start a session, try again");
@@ -83,8 +83,6 @@ export function GameShell({ game }: { game: Game }) {
       if (!player) return;
       const r = await postJson<{ best: number; rank: number; badges: string[]; event: { rank: number | null } | null }>("/api/score", {
         token: token.current,
-        player: player.name,
-        playerSecret: player.secret,
         score,
         stats,
       });
@@ -157,7 +155,7 @@ export function GameShell({ game }: { game: Game }) {
               <div className="absolute inset-0 grid place-items-center bg-bg/80 p-4 backdrop-blur-[2px]">
                 {player === null ? (
                   <div className="w-full max-w-md">
-                    <NicknameGate why="Claim a nickname to play and post scores." />
+                    <SignInGate why="Sign in with Discord to play and post scores." />
                   </div>
                 ) : phase === "over" && result ? (
                   <div className="w-full max-w-sm space-y-3 text-center" role="status">

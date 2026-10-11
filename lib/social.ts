@@ -1,12 +1,12 @@
-// lib/social.ts: X and GitHub on the card, proven by a short code the holder
-// puts in their profile bio (or X location) and can remove right after.
-// GitHub is read from its public API; X through twitterapi.io, which needs
-// TWITTERAPI_KEY. A handle is only shown as verified after the code was seen.
+// lib/social.ts: the player's X handle on the card. It is optional: the site
+// works without it. A handle only appears as verified after a short code the
+// holder put in their X bio or location was seen, through twitterapi.io
+// (TWITTERAPI_KEY). The code can be removed right after.
 import "server-only";
 import { randomInt } from "crypto";
 import { redis } from "./redis";
 
-export type Network = "x" | "github";
+export type Network = "x";
 export type SocialProfile = {
   network: Network;
   handle: string;
@@ -18,18 +18,18 @@ export type SocialProfile = {
   verifiedAt: string;
 };
 
-const HANDLE_RE: Record<Network, RegExp> = { x: /^[A-Za-z0-9_]{1,15}$/, github: /^[A-Za-z0-9-]{1,39}$/ };
+const HANDLE_RE = /^[A-Za-z0-9_]{1,15}$/;
 const challengeKey = (name: string, n: Network) => `social:challenge:${name.toLowerCase()}:${n}`;
 const socialKey = (name: string) => `card:social:${name.toLowerCase()}`;
 const ownerKey = (n: Network, handle: string) => `social:owner:${n}:${handle.toLowerCase()}`;
 
-export function cleanHandle(network: Network, raw: unknown): string | null {
+export function cleanHandle(_network: Network, raw: unknown): string | null {
   const h = String(raw ?? "")
     .trim()
     .replace(/^@/, "")
-    .replace(/^https?:\/\/(www\.)?(x\.com|twitter\.com|github\.com)\//i, "")
+    .replace(/^https?:\/\/(www\.)?(x\.com|twitter\.com)\//i, "")
     .replace(/\/.*$/, "");
-  return HANDLE_RE[network].test(h) ? h : null;
+  return HANDLE_RE.test(h) ? h : null;
 }
 
 export function xConfigured(): boolean {
@@ -43,25 +43,7 @@ export async function startChallenge(name: string, network: Network, handle: str
   return code;
 }
 
-async function fetchProfile(network: Network, handle: string): Promise<(Omit<SocialProfile, "verifiedAt"> & { text: string }) | null> {
-  if (network === "github") {
-    const r = await fetch(`https://api.github.com/users/${encodeURIComponent(handle)}`, {
-      headers: { accept: "application/vnd.github+json", "user-agent": "genlayer-arcade" },
-      cache: "no-store",
-    });
-    if (!r.ok) return null;
-    const d = (await r.json()) as { login: string; name?: string; avatar_url?: string; html_url: string; followers?: number; created_at?: string; bio?: string | null; blog?: string | null };
-    return {
-      network,
-      handle: d.login,
-      name: d.name || d.login,
-      avatar: d.avatar_url ?? null,
-      url: d.html_url,
-      followers: d.followers ?? null,
-      since: d.created_at ?? null,
-      text: `${d.bio ?? ""} ${d.blog ?? ""}`,
-    };
-  }
+async function fetchProfile(handle: string): Promise<(Omit<SocialProfile, "verifiedAt"> & { text: string }) | null> {
   const key = process.env.TWITTERAPI_KEY;
   if (!key) throw new Error("X verification is not configured on this site yet");
   const r = await fetch(`https://api.twitterapi.io/twitter/user/info?userName=${encodeURIComponent(handle)}`, { headers: { "X-API-Key": key }, cache: "no-store" });
@@ -69,7 +51,7 @@ async function fetchProfile(network: Network, handle: string): Promise<(Omit<Soc
   const d = ((await r.json()) as { data?: Record<string, unknown> }).data;
   if (!d?.userName) return null;
   return {
-    network,
+    network: "x",
     handle: String(d.userName),
     name: String(d.name || d.userName),
     avatar: String(d.profilePicture || "").replace("_normal", "") || null,
@@ -84,9 +66,9 @@ export async function verifyChallenge(name: string, network: Network): Promise<{
   const raw = await redis.get<string>(challengeKey(name, network));
   if (!raw) return { ok: false, error: "start again: the code expired after 30 minutes" };
   const { handle, code } = JSON.parse(raw) as { handle: string; code: string };
-  const p = await fetchProfile(network, handle);
-  if (!p) return { ok: false, error: `could not read @${handle} on ${network === "x" ? "X" : "GitHub"}` };
-  if (!p.text.toUpperCase().includes(code)) return { ok: false, error: `${code} is not in the ${network === "x" ? "bio or location" : "bio"} of @${p.handle} yet` };
+  const p = await fetchProfile(handle);
+  if (!p) return { ok: false, error: `could not read @${handle} on X` };
+  if (!p.text.toUpperCase().includes(code)) return { ok: false, error: `${code} is not in the bio or location of @${p.handle} yet` };
   const owner = await redis.get<string>(ownerKey(network, p.handle));
   if (owner && owner.toLowerCase() !== name.toLowerCase()) return { ok: false, error: `@${p.handle} is already on another card` };
   const { text: _text, ...profile } = p;

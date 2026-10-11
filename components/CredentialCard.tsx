@@ -46,7 +46,7 @@ export default function CredentialCard({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const discord = data.discord;
-  const portrait = discord?.avatar || data.github?.avatar || data.x?.avatar || null;
+  const portrait = discord?.avatar || data.x?.avatar || null;
 
   const dragging = useRef(false);
   const moved = useRef(false);
@@ -196,7 +196,7 @@ export default function CredentialCard({
             <div className="cc-holder">
               <div className="portrait">
                 {portrait ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- remote avatar from Discord, GitHub or X
+                  // eslint-disable-next-line @next/next/no-img-element -- remote avatar from Discord or X
                   <img src={portrait} alt={discord?.username || data.name} referrerPolicy="no-referrer" />
                 ) : null}
                 <i className="c1" />
@@ -206,7 +206,7 @@ export default function CredentialCard({
               </div>
               <div className="h">
                 <div className="x">{data.name}</div>
-                <div className="d">@{discord?.username || data.x?.handle || data.github?.handle || data.name}</div>
+                <div className="d">@{discord?.username || data.x?.handle || data.name}</div>
               </div>
             </div>
             <div className="cc-stats">
@@ -320,11 +320,6 @@ export default function CredentialCard({
               {data.x && (
                 <span className="cb-link-chip">
                   X / Twitter <b>✓</b>
-                </span>
-              )}
-              {data.github && (
-                <span className="cb-link-chip">
-                  GitHub <b>✓</b>
                 </span>
               )}
               {data.wallet && (

@@ -35,6 +35,20 @@ const step = (name, pass, detail = {}) => {
   console.log(`[${pass ? "PASS" : "FAIL"}] ${name} ${JSON.stringify(detail).slice(0, 240)}`);
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// The site is Discord-only, so the wallet's owner has to be signed in too. This
+// signs in through /api/dev/login, which exists only on a local development
+// server with no Discord keys (404 in production).
+let COOKIE = "";
+const siteFetch = (url, init = {}) => fetch(url, { ...init, headers: { ...(init.headers ?? {}), ...(COOKIE ? { cookie: COOKIE } : {}) } });
+{
+  const r = await fetch(`${BASE}/api/dev/login?name=wallet_owner`, { redirect: "manual" });
+  COOKIE = (r.headers.getSetCookie?.() ?? []).map((c) => c.split(";")[0]).join("; ");
+  if (!COOKIE.includes("arcade_session")) {
+    console.log("This script needs a local development server without Discord keys.");
+    process.exit(2);
+  }
+}
+
 async function rpc(method, params) {
   const r = await fetch(RPC, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) }).then((x) => x.json());
   if (r.error) throw new Error(JSON.stringify(r.error));
@@ -69,10 +83,10 @@ const provider = {
 };
 
 // the site's relay refuses anything that signs or spends
-const refused = await fetch(`${BASE}/api/rpc`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_sendRawTransaction", params: ["0x00"] }) });
+const refused = await siteFetch(`${BASE}/api/rpc`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_sendRawTransaction", params: ["0x00"] }) });
 step("the /api/rpc relay refuses signing methods", refused.status === 400, { status: refused.status });
 
-const fund = await fetch(`${BASE}/api/faucet`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ address: address.toLowerCase() }) });
+const fund = await siteFetch(`${BASE}/api/faucet`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ address: address.toLowerCase() }) });
 step("site faucet funds a fresh wallet (lowercase address in, checksummed out)", fund.ok, { status: fund.status, body: await fund.json().catch(() => ({})) });
 let bal = 0n;
 for (let i = 0; i < 10 && bal === 0n; i++) {
@@ -80,10 +94,10 @@ for (let i = 0; i < 10 && bal === 0n; i++) {
   if (bal === 0n) await sleep(1500);
 }
 step("the balance moved", bal > 0n, { wei: bal.toString() });
-const again = await fetch(`${BASE}/api/faucet`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ address }) });
+const again = await siteFetch(`${BASE}/api/faucet`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ address }) });
 step("the same address cannot be funded again within 10 minutes", again.status === 429, { status: again.status });
 
-const round = (await fetch(`${BASE}/api/daily/${GAME}/round`).then((x) => x.json())).round;
+const round = (await siteFetch(`${BASE}/api/daily/${GAME}/round`).then((x) => x.json())).round;
 step("an open round exists", !!round, { round: round?.id });
 const body =
   GAME === "verdict"
@@ -105,13 +119,13 @@ try {
 }
 
 if (hash) {
-  const reg = await fetch(`${BASE}/api/daily/${GAME}/register`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ hash }) });
+  const reg = await siteFetch(`${BASE}/api/daily/${GAME}/register`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ hash }) });
   const rd = await reg.json().catch(() => ({}));
   step("the hub verified the transaction and recorded it under the wallet name", reg.ok && rd.player === name, { status: reg.status, body: rd });
   let st = null;
   const begin = Date.now();
   while (Date.now() - begin < 240000) {
-    st = await fetch(`${BASE}/api/daily/${GAME}/status?hash=${hash}`).then((x) => x.json());
+    st = await siteFetch(`${BASE}/api/daily/${GAME}/status?hash=${hash}`).then((x) => x.json());
     if (["ACCEPTED", "FINALIZED", "UNDETERMINED", "CANCELED"].includes(st.status) && (st.result || !["ACCEPTED", "FINALIZED"].includes(st.status))) break;
     await sleep(5000);
   }
@@ -123,11 +137,11 @@ if (hash) {
     explorer: `https://explorer-studio.genlayer.com/tx/${hash}`,
   });
   await sleep(2000);
-  const e = await fetch(`${BASE}/api/daily/${GAME}/entry?round=${round.id}&player=${name}`).then((x) => x.json());
+  const e = await siteFetch(`${BASE}/api/daily/${GAME}/entry?round=${round.id}&player=${name}`).then((x) => x.json());
   step("entry read back from the contract", !!e.entry, { entry: e.entry });
 
   // a transaction from another address cannot be registered under this name
-  const forged = await fetch(`${BASE}/api/daily/${GAME}/register`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ hash: `0x${"cd".repeat(32)}` }) });
+  const forged = await siteFetch(`${BASE}/api/daily/${GAME}/register`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ hash: `0x${"cd".repeat(32)}` }) });
   step("an unknown hash cannot be registered", !forged.ok, { status: forged.status });
 }
 

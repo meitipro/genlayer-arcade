@@ -437,6 +437,419 @@
       "reused": "e2e_10101941",
       "finished": "2026-10-10T20:38:35.047Z",
       "failures": 0
+    },
+    {
+      "site": "http://localhost:3017",
+      "started": "2026-10-11T00:17:58.038Z",
+      "daily": [
+        "none"
+      ],
+      "steps": [
+        {
+          "step": "sign in (local development login)",
+          "pass": true,
+          "at": "2026-10-11T00:17:58.443Z",
+          "name": "e2e_10110017"
+        },
+        {
+          "step": "/api/me names the signed-in player",
+          "pass": true,
+          "at": "2026-10-11T00:17:58.776Z",
+          "me": {
+            "name": "e2e_10110017",
+            "discord": {
+              "username": "e2e_10110017",
+              "avatar": null,
+              "isMember": true,
+              "highestRole": "Mindbender"
+            }
+          }
+        },
+        {
+          "step": "a signed-out request is refused",
+          "pass": true,
+          "at": "2026-10-11T00:17:58.798Z",
+          "status": 401
+        },
+        {
+          "step": "a signed-out score post is refused",
+          "pass": true,
+          "at": "2026-10-11T00:17:58.811Z",
+          "status": 401
+        },
+        {
+          "step": "score without a session token is refused",
+          "pass": true,
+          "at": "2026-10-11T00:17:59.361Z",
+          "status": 400,
+          "error": "bad session"
+        },
+        {
+          "step": "a run shorter than minMs is refused",
+          "pass": true,
+          "at": "2026-10-11T00:18:00.174Z",
+          "status": 422,
+          "error": "implausible score"
+        },
+        {
+          "step": "sky-hop: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:05.776Z",
+          "score": 36,
+          "status": 200,
+          "rank": 1,
+          "badges": [
+            "first-block"
+          ]
+        },
+        {
+          "step": "fee-flap: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:06.119Z",
+          "score": 9,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "node-defender: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:07.151Z",
+          "score": 38,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "consensus-stack: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:07.479Z",
+          "score": 131,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "stake-merge: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:09.052Z",
+          "score": 190,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "validator-run: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:09.376Z",
+          "score": 306,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "an impossible score is refused",
+          "pass": true,
+          "at": "2026-10-11T00:18:16.041Z",
+          "status": 422,
+          "error": "implausible score"
+        },
+        {
+          "step": "chain-snake: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:16.456Z",
+          "score": 67,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "a reused session token is refused",
+          "pass": true,
+          "at": "2026-10-11T00:18:16.797Z",
+          "status": 409,
+          "error": "session used"
+        },
+        {
+          "step": "appeal-breaker: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:17.145Z",
+          "score": 395,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "equivalence: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:18.857Z",
+          "score": 397,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "whack-a-node: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:45.425Z",
+          "score": 336,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "leader-rotation: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:18:58.528Z",
+          "score": 2052,
+          "status": 200,
+          "rank": 1,
+          "badges": [
+            "online"
+          ]
+        },
+        {
+          "step": "the season board shows the player",
+          "pass": true,
+          "at": "2026-10-11T00:18:59.017Z",
+          "you": {
+            "rank": 1,
+            "player": "e2e_10110017",
+            "score": 306
+          }
+        },
+        {
+          "step": "the card has a tier, a number and a real hash",
+          "pass": true,
+          "at": "2026-10-11T00:19:00.056Z",
+          "tier": {
+            "n": "I",
+            "name": "Spark"
+          },
+          "no": "3C38-0BAA"
+        },
+        {
+          "step": "status refuses hashes the hub did not send",
+          "pass": true,
+          "at": "2026-10-11T00:19:01.396Z",
+          "status": 404
+        },
+        {
+          "step": "pipeline scores removed from the boards (admin remove-score)",
+          "pass": false,
+          "at": "2026-10-11T00:19:05.763Z",
+          "removed": 0
+        }
+      ],
+      "finished": "2026-10-11T00:19:05.763Z",
+      "failures": 1,
+      "note": "First run of the Discord-only version, against a local server through the development login. All but the last step passed; the last (remove-score) failed because the script used the production admin token against the local server. The script was fixed to read the local token."
+    },
+    {
+      "site": "http://localhost:3017",
+      "started": "2026-10-11T00:19:15.524Z",
+      "daily": [
+        "none"
+      ],
+      "steps": [
+        {
+          "step": "sign in (local development login)",
+          "pass": true,
+          "at": "2026-10-11T00:19:15.846Z",
+          "name": "e2e_10110019"
+        },
+        {
+          "step": "/api/me names the signed-in player",
+          "pass": true,
+          "at": "2026-10-11T00:19:16.180Z",
+          "me": {
+            "name": "e2e_10110019",
+            "discord": {
+              "username": "e2e_10110019",
+              "avatar": null,
+              "isMember": true,
+              "highestRole": "Mindbender"
+            }
+          }
+        },
+        {
+          "step": "a signed-out request is refused",
+          "pass": true,
+          "at": "2026-10-11T00:19:16.203Z",
+          "status": 401
+        },
+        {
+          "step": "a signed-out score post is refused",
+          "pass": true,
+          "at": "2026-10-11T00:19:16.210Z",
+          "status": 401
+        },
+        {
+          "step": "score without a session token is refused",
+          "pass": true,
+          "at": "2026-10-11T00:19:16.541Z",
+          "status": 400,
+          "error": "bad session"
+        },
+        {
+          "step": "a run shorter than minMs is refused",
+          "pass": true,
+          "at": "2026-10-11T00:19:17.269Z",
+          "status": 422,
+          "error": "implausible score"
+        },
+        {
+          "step": "sky-hop: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:22.768Z",
+          "score": 36,
+          "status": 200,
+          "rank": 1,
+          "badges": [
+            "first-block"
+          ]
+        },
+        {
+          "step": "fee-flap: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:23.116Z",
+          "score": 9,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "node-defender: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:24.128Z",
+          "score": 38,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "consensus-stack: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:24.455Z",
+          "score": 130,
+          "status": 200,
+          "rank": 2,
+          "badges": []
+        },
+        {
+          "step": "stake-merge: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:25.936Z",
+          "score": 190,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "validator-run: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:26.260Z",
+          "score": 299,
+          "status": 200,
+          "rank": 2,
+          "badges": []
+        },
+        {
+          "step": "an impossible score is refused",
+          "pass": true,
+          "at": "2026-10-11T00:19:32.928Z",
+          "status": 422,
+          "error": "implausible score"
+        },
+        {
+          "step": "chain-snake: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:33.253Z",
+          "score": 66,
+          "status": 200,
+          "rank": 2,
+          "badges": []
+        },
+        {
+          "step": "a reused session token is refused",
+          "pass": true,
+          "at": "2026-10-11T00:19:33.581Z",
+          "status": 409,
+          "error": "session used"
+        },
+        {
+          "step": "appeal-breaker: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:33.957Z",
+          "score": 389,
+          "status": 200,
+          "rank": 2,
+          "badges": []
+        },
+        {
+          "step": "equivalence: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:19:35.867Z",
+          "score": 398,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "whack-a-node: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:20:02.364Z",
+          "score": 336,
+          "status": 200,
+          "rank": 1,
+          "badges": []
+        },
+        {
+          "step": "leader-rotation: score accepted and ranked",
+          "pass": true,
+          "at": "2026-10-11T00:20:15.655Z",
+          "score": 2052,
+          "status": 200,
+          "rank": 1,
+          "badges": [
+            "online"
+          ]
+        },
+        {
+          "step": "the season board shows the player",
+          "pass": true,
+          "at": "2026-10-11T00:20:16.008Z",
+          "you": {
+            "rank": 2,
+            "player": "e2e_10110019",
+            "score": 299
+          }
+        },
+        {
+          "step": "the card has a tier, a number and a real hash",
+          "pass": true,
+          "at": "2026-10-11T00:20:16.857Z",
+          "tier": {
+            "n": "I",
+            "name": "Spark"
+          },
+          "no": "699C-72AF"
+        },
+        {
+          "step": "status refuses hashes the hub did not send",
+          "pass": true,
+          "at": "2026-10-11T00:20:17.210Z",
+          "status": 404
+        },
+        {
+          "step": "pipeline scores removed from the boards (admin remove-score)",
+          "pass": true,
+          "at": "2026-10-11T00:20:20.693Z",
+          "removed": 22
+        }
+      ],
+      "finished": "2026-10-11T00:20:20.694Z",
+      "failures": 0
     }
   ]
 }

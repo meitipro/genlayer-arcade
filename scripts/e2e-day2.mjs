@@ -13,7 +13,11 @@ import { join } from "node:path";
 
 const BASE = (process.argv[2] || "https://genlayergamehub.vercel.app").replace(/\/$/, "");
 const LOG = new URL("../docs/day2-live.json", import.meta.url);
-const ADMIN = JSON.parse(readFileSync(join(homedir(), ".genlayer-arcade", "vercel-secrets.json"), "utf8")).ADMIN_TOKEN;
+// the admin token of the deployment being tested: .env.local for a local server, the
+// generated production secrets otherwise
+const ADMIN = /localhost|127\.0\.0\.1/.test(BASE)
+  ? (readFileSync(new URL("../.env.local", import.meta.url), "utf8").match(/^ADMIN_TOKEN=(.+)$/m)?.[1] ?? "").trim()
+  : JSON.parse(readFileSync(join(homedir(), ".genlayer-arcade", "vercel-secrets.json"), "utf8")).ADMIN_TOKEN;
 const log = existsSync(LOG) ? JSON.parse(readFileSync(LOG, "utf8")) : { runs: [] };
 const run = { site: BASE, started: new Date().toISOString(), steps: [] };
 log.runs.push(run);
@@ -26,33 +30,49 @@ const step = (name, pass, detail = {}) => {
   console.log(`[${pass ? "PASS" : "FAIL"}] ${name} ${JSON.stringify(detail).slice(0, 260)}`);
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// The site is Discord-only and a real Discord login cannot be scripted, so this
+// script signs in through /api/dev/login. That route exists only on a local
+// development server with no Discord keys (it answers 404 in production), which
+// is where this runs.
+let COOKIE = "";
+async function devLogin(name) {
+  const r = await fetch(`${BASE}/api/dev/login?name=${encodeURIComponent(name)}`, { redirect: "manual" });
+  COOKIE = (r.headers.getSetCookie?.() ?? []).map((c) => c.split(";")[0]).join("; ");
+  return r.status >= 300 && r.status < 400 && COOKIE.includes("arcade_session");
+}
 async function post(path, body, headers = {}) {
-  const r = await fetch(BASE + path, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(body) });
+  const r = await fetch(BASE + path, { method: "POST", headers: { "content-type": "application/json", ...(COOKIE ? { cookie: COOKIE } : {}), ...headers }, body: JSON.stringify(body) });
   return { status: r.status, data: await r.json().catch(() => ({})) };
 }
 const get = async (path) => {
-  const r = await fetch(BASE + path, { cache: "no-store" });
+  const r = await fetch(BASE + path, { cache: "no-store", headers: COOKIE ? { cookie: COOKIE } : {} });
   return { status: r.status, data: await r.json().catch(() => ({})) };
 };
 const admin = (action, body = {}) => post(`/api/admin/${action}`, body, { "x-admin-token": ADMIN });
 
 const stamp = new Date().toISOString().slice(5, 16).replace(/[-T:]/g, "");
 const name = `d2_${stamp}`;
-const c = await post("/api/player/claim", { name });
-step("claim a fresh nickname", c.status === 200, { name });
-const secret = c.data.secret;
+const signedIn = await devLogin(name);
+step("sign in (local development login)", signedIn, { name });
+if (!signedIn) {
+  console.log("This script needs a local development server without Discord keys.");
+  process.exit(2);
+}
 
 // ---- community review ----
 const gameUrl = `${BASE}/play/chain-snake`;
-const bad = await post("/api/community/submit", { player: name, playerSecret: secret, title: "x", url: "http://example.com/g" });
+const bad = await post("/api/community/submit", { title: "x", url: "http://example.com/g" });
 step("a bad title and an http link are refused before any fee", bad.status === 400, { error: bad.data.error });
-const anon = await post("/api/community/submit", { player: name, playerSecret: "0".repeat(64), title: "Chain Snake", url: gameUrl });
-step("another device's secret cannot submit", anon.status === 401, { status: anon.status });
+const saved = COOKIE;
+COOKIE = "";
+const anon = await post("/api/community/submit", { title: "Chain Snake", url: gameUrl });
+step("a signed-out request cannot submit", anon.status === 401, { status: anon.status });
+COOKIE = saved;
 
-const sub = await post("/api/community/submit", { player: name, playerSecret: secret, title: "Chain Snake (this hub)", url: gameUrl });
+const sub = await post("/api/community/submit", { title: "Chain Snake (this hub)", url: gameUrl });
 step("a real game page is sent to the GameReview contract, hash at once", sub.status === 200 && /^0x[0-9a-f]{64}$/i.test(sub.data.hash ?? ""), { status: sub.status, hash: sub.data.hash, error: sub.data.error });
 if (sub.status === 200) {
-  const dup = await post("/api/community/submit", { player: name, playerSecret: secret, title: "Again", url: gameUrl });
+  const dup = await post("/api/community/submit", { title: "Again", url: gameUrl });
   step("the same link again is refused", dup.status === 409, { status: dup.status, error: dup.data.error });
   let st = null;
   const begin = Date.now();
@@ -118,14 +138,14 @@ step("a room for another game is refused", wrong.status === 400, { status: wrong
 const s = await post("/api/session/start", { game: "chain-snake", room: code });
 step("a session starts in the room", s.status === 200 && !!s.data.room, { status: s.status, room: s.data.room });
 await sleep(7000);
-const sc = await post("/api/score", { token: s.data.token, player: name, playerSecret: secret, score: 60 });
+const sc = await post("/api/score", { token: s.data.token, score: 60 });
 step("the score lands on the season board and the event board", sc.status === 200 && sc.data.event?.rank === 1, { status: sc.status, body: sc.data });
 const page = await fetch(`${BASE}/events/${eventId}`).then((x) => x.text());
 step("the event page shows the player on the event board", page.includes(name), {});
 
 // ---- the gate is off while Discord is not configured ----
-const dc = await post("/api/discord/start", { player: name, playerSecret: secret });
-step("Connect Discord says it is not configured (no keys yet)", dc.status === 503, { status: dc.status, error: dc.data.error });
+const dc = await fetch(`${BASE}/api/discord/login`, { redirect: "manual" });
+step("the Discord login says it is not configured when there are no keys", (dc.headers.get("location") ?? "").includes("error=not-configured"), { status: dc.status });
 
 // ---- clean up ----
 const del = await admin("delete-event", { id: eventId });

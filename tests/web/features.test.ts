@@ -4,6 +4,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { validateSubmission } from "@/lib/community";
 import { stateOf, validateEvent } from "@/lib/events";
 import { walletName, WALLET_NAME_RE } from "@/lib/wallet";
+import { loginAs } from "./helpers";
 
 vi.mock("next/cache", () => ({ revalidateTag: () => {}, unstable_cache: (fn: () => unknown) => fn }));
 
@@ -16,12 +17,16 @@ describe("wallet names are bound to the address", () => {
     expect(WALLET_NAME_RE.test(walletName("0xDd3187D8882872B26912c42278261C5991c9d84A"))).toBe(true);
     expect(walletName("0xDd3187D8882872B26912c42278261C5991c9d84A")).toHaveLength(20);
   });
-  it("a nickname cannot take a wallet name", async () => {
-    const { POST } = await import("@/app/api/player/claim/route");
-    const r = await POST(post("/api/player/claim", { name: "w_dd3187d8882872b269" }));
-    expect(r.status).toBe(400);
-    expect((await r.json()).error).toMatch(/wallets/);
+  it("a Discord username shaped like a wallet name gets a different name", async () => {
+    const { baseName } = await import("@/lib/player");
+    // cut to 17 characters, which cannot be the 20-character wallet shape; a longer name made by
+    // adding digits is checked against the shape again when the player is created
+    expect(baseName("w_dd3187d8882872b269")).toHaveLength(17);
+    expect(baseName("w_dd3187d8882872b")).toBe("w_dd3187d8882872b");
+    const me = await loginAs("w_dd3187d8882872b269", { id: "wallet-lookalike" });
+    expect(WALLET_NAME_RE.test(me.name)).toBe(false);
   });
+
 });
 
 describe("community submissions: cheap checks before the relayer spends anything", () => {
@@ -60,13 +65,11 @@ describe("tournament mode", () => {
   describe("a room code puts a run on the event board too", () => {
     let start: typeof import("@/app/api/session/start/route").POST;
     let score: typeof import("@/app/api/score/route").POST;
-    let claim: typeof import("@/app/api/player/claim/route").POST;
     let admin: typeof import("@/app/api/admin/[action]/route").POST;
     beforeAll(async () => {
       process.env.ADMIN_TOKEN = "test-admin-token";
       start = (await import("@/app/api/session/start/route")).POST;
       score = (await import("@/app/api/score/route")).POST;
-      claim = (await import("@/app/api/player/claim/route")).POST;
       admin = (await import("@/app/api/admin/[action]/route")).POST;
     });
 
@@ -86,15 +89,16 @@ describe("tournament mode", () => {
       );
       expect(dup.status).toBe(400);
 
-      expect((await start(post("/api/session/start", { game: "chain-snake", room: "NOPE-9" }))).status).toBe(404);
-      expect((await start(post("/api/session/start", { game: "chain-snake", room: "snake-1" }))).status).toBe(409); // not started
+      const me = await loginAs("room_runner");
+      const inRoom = (body: unknown) => post("/api/session/start", body, { cookie: me.cookie });
+      expect((await start(inRoom({ game: "chain-snake", room: "NOPE-9" }))).status).toBe(404);
+      expect((await start(inRoom({ game: "chain-snake", room: "snake-1" }))).status).toBe(409); // not started
       vi.setSystemTime(new Date(T0 + 60000));
-      expect((await start(post("/api/session/start", { game: "validator-run", room: "SNAKE-1" }))).status).toBe(400);
+      expect((await start(inRoom({ game: "validator-run", room: "SNAKE-1" }))).status).toBe(400);
 
-      const me = await (await claim(post("/api/player/claim", { name: "room_runner" }))).json();
-      const tok = (await (await start(post("/api/session/start", { game: "chain-snake", room: "SNAKE-1" }))).json()).token;
+      const tok = (await (await start(inRoom({ game: "chain-snake", room: "SNAKE-1" }))).json()).token;
       vi.setSystemTime(new Date(T0 + 70000));
-      const r = await score(post("/api/score", { token: tok, player: me.name, playerSecret: me.secret, score: 80 }));
+      const r = await score(post("/api/score", { token: tok, score: 80 }, { cookie: me.cookie }));
       expect(r.status).toBe(200);
       expect((await r.json()).event).toEqual({ id, rank: 1 });
 

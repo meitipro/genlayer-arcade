@@ -1,19 +1,16 @@
-// POST /api/community/submit: {player, playerSecret, title, url}. The relayer
+// POST /api/community/submit: {title, url} from the signed-in player. The relayer
 // sends the link to the GameReview contract, which opens the page itself.
 import { NextResponse } from "next/server";
 import { submitGame, validateSubmission } from "@/lib/community";
-import { discordGate } from "@/lib/discord";
-import { verifyPlayer } from "@/lib/player";
+import { sessionPlayer } from "@/lib/auth";
 import { clientIp, limits } from "@/lib/ratelimit";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
   const b = (await req.json().catch(() => ({}))) as Record<string, unknown>;
-  const player = await verifyPlayer(b.player, b.playerSecret);
-  if (!player) return NextResponse.json({ error: "claim a nickname on this device first" }, { status: 401 });
-  const gate = await discordGate(player);
-  if (gate) return NextResponse.json({ error: gate, gate: "discord" }, { status: 403 });
+  const player = await sessionPlayer(req);
+  if (!player) return NextResponse.json({ error: "sign in with Discord first", gate: "discord" }, { status: 401 });
   const invalid = validateSubmission(b.title, b.url);
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 });
   if (!(await limits.community.limit(clientIp(req))).success)

@@ -1,6 +1,6 @@
 // lib/card.ts: everything a player card shows, read in one place. Nothing on a
-// card is typed in by the player: Discord comes from OAuth, X and GitHub from
-// a bio code, and the arcade numbers from the boards.
+// card is typed in by the player: Discord comes from OAuth, X from a bio code,
+// and the arcade numbers from the boards.
 import "server-only";
 import { createHash } from "crypto";
 import { historyOf } from "./daily";
@@ -34,7 +34,6 @@ export async function cardFor(raw: string): Promise<PlayerCard | null> {
     .sort((a, b) => (b.score ?? 0) / (b.g.scoring?.cap ?? 1) - (a.score ?? 0) / (a.g.scoring?.cap ?? 1))[0];
   const level = levelFor(xp).level;
   const x = social.x ?? null;
-  const github = social.github ?? null;
 
   // Tier comes from the highest GenLayer server role. Without a role to read
   // (not connected, or not in the server) the card is Spark, as in the original.
@@ -50,7 +49,6 @@ export async function cardFor(raw: string): Promise<PlayerCard | null> {
     roles: discord?.roles ?? [],
     highest: discord?.highestRole ?? null,
     x: x?.handle ?? null,
-    github: github?.handle ?? null,
     level,
   });
   const recordHash = "0x" + sha(record).slice(0, 40);
@@ -65,7 +63,6 @@ export async function cardFor(raw: string): Promise<PlayerCard | null> {
     best: top ? { game: top.g.slug, title: top.g.title, score: top.score ?? 0 } : null,
     discord,
     x,
-    github,
     wallet: p?.wallet || null,
     config: { discord: discordConfigured(), x: xConfigured() },
     tier: { n: tier.n, name: tier.name },

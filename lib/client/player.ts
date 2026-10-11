@@ -1,59 +1,65 @@
 "use client";
-// The nickname and its device secret live only in this browser's localStorage.
+// Who is signed in, for the client. The login itself is an HttpOnly cookie the
+// browser cannot read, so this asks the server (/api/me) once and shares the answer.
 import { useSyncExternalStore } from "react";
 
-export type LocalPlayer = { name: string; secret: string };
-const KEY = "arcade.player";
-const listeners = new Set<() => void>();
+export type LocalPlayer = {
+  name: string;
+  discord: { username: string; avatar: string | null; isMember: boolean; highestRole: string } | null;
+};
+
 let cache: LocalPlayer | null | undefined;
-let cacheRaw: string | null | undefined;
+let inflight = false;
+const listeners = new Set<() => void>();
+const emit = () => listeners.forEach((fn) => fn());
 
-function read(): LocalPlayer | null {
-  let raw: string | null = null;
-  try {
-    raw = localStorage.getItem(KEY);
-  } catch {
-    raw = null;
-  }
-  if (raw === cacheRaw && cache !== undefined) return cache;
-  cacheRaw = raw;
-  try {
-    const p = raw ? (JSON.parse(raw) as LocalPlayer) : null;
-    cache = p && typeof p.name === "string" && typeof p.secret === "string" ? p : null;
-  } catch {
-    cache = null;
-  }
-  return cache;
-}
-
-export function savePlayer(p: LocalPlayer | null) {
-  try {
-    if (p) localStorage.setItem(KEY, JSON.stringify(p));
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* storage blocked: the player stays signed in for this page only */
-    cache = p;
-  }
-  listeners.forEach((fn) => fn());
+function load() {
+  if (inflight) return;
+  inflight = true;
+  fetch("/api/me", { cache: "no-store" })
+    .then(async (r) => {
+      cache = r.ok ? ((await r.json()) as LocalPlayer) : null;
+    })
+    .catch(() => {
+      cache = null;
+    })
+    .finally(() => {
+      inflight = false;
+      emit();
+    });
 }
 
 function subscribe(fn: () => void) {
   listeners.add(fn);
-  const onStorage = (e: StorageEvent) => e.key === KEY && fn();
-  window.addEventListener("storage", onStorage);
+  if (cache === undefined) load();
   return () => {
     listeners.delete(fn);
-    window.removeEventListener("storage", onStorage);
   };
 }
 
-/** undefined while hydrating, null when no nickname is claimed on this device. */
+/** undefined while loading, null when signed out. */
 export function usePlayer(): LocalPlayer | null | undefined {
-  return useSyncExternalStore(subscribe, read, () => undefined);
+  return useSyncExternalStore(subscribe, () => cache, () => undefined);
+}
+
+export async function signOut() {
+  await fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
+  cache = null;
+  emit();
+  window.location.href = "/login";
+}
+
+export function loginUrl(next?: string): string {
+  const n = next ?? (typeof window !== "undefined" ? window.location.pathname + window.location.search : "/");
+  return `/api/discord/login?next=${encodeURIComponent(n)}`;
 }
 
 export async function postJson<T = Record<string, unknown>>(url: string, body: unknown, headers: Record<string, string> = {}) {
   const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(body) });
-  const data = (await res.json().catch(() => ({}))) as T & { error?: string };
+  const data = (await res.json().catch(() => ({}))) as T & { error?: string; gate?: string };
+  // the session ended: back to the login page, which comes first
+  if (res.status === 401 && data.gate === "discord" && typeof window !== "undefined") {
+    window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+  }
   return { ok: res.ok, status: res.status, data };
 }

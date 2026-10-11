@@ -12,7 +12,7 @@ import { ONCHAIN, type BridgeEntry, type BridgeRound, type OnchainGame, type Ora
 import { nextUtc } from "@/lib/time";
 import { walletName } from "@/lib/wallet";
 import { Countdown } from "./Countdown";
-import { NicknameGate } from "./NicknameGate";
+import { SignInGate } from "./NicknameGate";
 import { isDecided, isSuccess, TxStatus, useTx } from "./TxStatus";
 
 type Round = VerdictRound | BridgeRound | OracleRound;
@@ -92,7 +92,7 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
     e.preventDefault();
     if (!round || !who || (mode === "nickname" && !player)) return;
     setError("");
-    const body: Record<string, unknown> = mode === "nickname" ? { player: player!.name, playerSecret: player!.secret, round: round.id } : { round: round.id };
+    const body: Record<string, unknown> = { round: round.id };
     if (game === "verdict") body.entry = text;
     if (game === "bridge") {
       const r = round as BridgeRound;
@@ -120,7 +120,7 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
     try {
       if (!(await onStudionet())) await switchToStudionet();
       const h = await sendFromWallet(game, wallet, ONCHAIN[game].toArgs(round.id, who, body));
-      const r = await postJson(`/api/daily/${game}/register`, { hash: h, ...(player ? { player: player.name, playerSecret: player.secret } : {}) });
+      const r = await postJson(`/api/daily/${game}/register`, { hash: h });
       if (!r.ok) setError(`sent from your wallet, but the hub could not record it: ${r.data.error ?? r.status}`);
       setSince(Date.now());
       setHash(h);
@@ -157,7 +157,7 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
       <RoundHeader game={game} round={round} />
       <div className="flex flex-wrap items-center gap-2 text-sm" role="group" aria-label="How to play">
         <button type="button" onClick={() => setMode("nickname")} aria-pressed={mode === "nickname"} className={`pill ${mode === "nickname" ? "border-accent text-text" : "text-muted"}`}>
-          Nickname, no wallet
+          Discord account, the hub pays the fee
         </button>
         <button type="button" onClick={() => setMode("wallet")} aria-pressed={mode === "wallet"} className={`pill ${mode === "wallet" ? "border-accent text-text" : "text-muted"}`}>
           My own wallet
@@ -166,7 +166,7 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
       {mode === "wallet" && (
         <div className="card space-y-2 p-4 text-sm">
           {!eth() ? (
-            <p className="text-muted">No wallet found in this browser. Install one (MetaMask or similar), or play with a nickname.</p>
+            <p className="text-muted">No wallet found in this browser. Install one (MetaMask or similar), or play with your Discord account.</p>
           ) : !wallet ? (
             <>
               <p className="text-muted">Your wallet signs the entry and sends it to the contract itself. You play under a name made from your address.</p>
@@ -196,7 +196,7 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
         </div>
       )}
       {mode === "wallet" && !wallet ? null : mode === "nickname" && player === null ? (
-        <NicknameGate why={`Claim a nickname to play ${title}.`} />
+        <SignInGate why={`Sign in with Discord to play ${title}.`} />
       ) : !loaded ? (
         <div className="card h-32 animate-pulse" aria-busy />
       ) : entry ? (
@@ -272,7 +272,7 @@ export function DailyPlay({ game, round, title }: { game: OnchainGame; round: Ro
           <p className="text-xs text-muted">
             {mode === "wallet"
               ? "One entry per address per round. Your wallet sends it; the hub only polls and records it."
-              : "One entry per nickname per round. The hub pays the network fee, so you do not need a wallet."}
+              : "One entry per player per round. The hub pays the network fee, so you do not need a wallet."}
           </p>
         </form>
       )}

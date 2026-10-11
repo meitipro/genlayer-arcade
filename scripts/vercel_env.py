@@ -6,7 +6,7 @@ secret. Values are piped to `vercel env add` on stdin.
     python scripts/vercel_env.py            # add what is missing
     python scripts/vercel_env.py --force    # replace every value
 
-Secrets (SESSION_SECRET, PLAYER_PEPPER, ADMIN_TOKEN, CRON_SECRET) are generated
+Secrets (SESSION_SECRET, ADMIN_TOKEN, CRON_SECRET) are generated
 once and kept in ~/.genlayer-arcade/vercel-secrets.json, outside the repo, so
 the admin token can be read from there. RELAYER_PRIVATE_KEY comes from the
 "relayer" account in ~/.genlayer-arcade/accounts.json, the account that
@@ -30,7 +30,7 @@ HOME = pathlib.Path.home() / ".genlayer-arcade"
 SECRETS = HOME / "vercel-secrets.json"
 SITE = os.environ.get("ARCADE_SITE_URL", "https://genlayergamehub.vercel.app")
 # optional names read from ~/.genlayer-arcade/keys.json; anything else in that file is ignored
-ALLOWED_EXTRA = ("DISCORD_CLIENT_ID", "DISCORD_CLIENT_SECRET", "DISCORD_GUILD_ID", "DISCORD_REDIRECT_URI", "ARCADE_REQUIRE_DISCORD", "TWITTERAPI_KEY")
+ALLOWED_EXTRA = ("DISCORD_CLIENT_ID", "DISCORD_CLIENT_SECRET", "DISCORD_GUILD_ID", "DISCORD_REDIRECT_URI", "TWITTERAPI_KEY")
 
 
 def vercel() -> list[str]:
@@ -45,7 +45,7 @@ def main() -> int:
     force = "--force" in sys.argv
     HOME.mkdir(parents=True, exist_ok=True)
     stored = json.loads(SECRETS.read_text(encoding="utf-8")) if SECRETS.exists() else {}
-    for name in ("SESSION_SECRET", "PLAYER_PEPPER", "ADMIN_TOKEN", "CRON_SECRET"):
+    for name in ("SESSION_SECRET", "ADMIN_TOKEN", "CRON_SECRET"):
         stored.setdefault(name, secrets.token_hex(32))
     SECRETS.write_text(json.dumps(stored, indent=2) + "\n", encoding="utf-8", newline="\n")
     try:
@@ -78,7 +78,7 @@ def main() -> int:
             continue
         if name in present:
             subprocess.run([*vercel(), "env", "rm", name, "production", "--yes"], cwd=ROOT, capture_output=True, text=True)
-        sensitive = name not in ("GENLAYER_NETWORK", "NEXT_PUBLIC_EXPLORER", "NEXT_PUBLIC_SITE_URL", "DISCORD_CLIENT_ID", "DISCORD_GUILD_ID", "DISCORD_REDIRECT_URI", "ARCADE_REQUIRE_DISCORD") and not name.endswith("_CONTRACT")
+        sensitive = name not in ("GENLAYER_NETWORK", "NEXT_PUBLIC_EXPLORER", "NEXT_PUBLIC_SITE_URL", "DISCORD_CLIENT_ID", "DISCORD_GUILD_ID", "DISCORD_REDIRECT_URI") and not name.endswith("_CONTRACT")
         args = [*vercel(), "env", "add", name, "production"]
         if sensitive:
             args.append("--sensitive")
