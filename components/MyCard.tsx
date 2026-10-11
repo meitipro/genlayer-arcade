@@ -13,6 +13,7 @@ export function MyCard() {
   const player = usePlayer();
   const [card, setCard] = useState<PlayerCard | null>(null);
   const [flip, setFlip] = useState(0);
+  const [note, setNote] = useState("");
 
   const load = useCallback(async () => {
     if (!player) return;
@@ -44,7 +45,7 @@ export function MyCard() {
           <CredentialCard data={card} hideFlipButton flipSignal={flip} />
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-          <ShareOnX card={card} />
+          <ShareOnX card={card} onNote={setNote} />
           <button className="btn btn-ghost" onClick={() => setFlip((n) => n + 1)}>
             Flip
           </button>
@@ -58,6 +59,11 @@ export function MyCard() {
             Sign out
           </button>
         </div>
+        {note && (
+          <p className="mx-auto mt-3 max-w-xl text-center text-sm text-accent" aria-live="polite">
+            {note}
+          </p>
+        )}
         <p className="mx-auto mt-4 max-w-xl text-center text-xs text-muted">
           Your roles are read from the GenLayer Discord server each time you sign in (scopes: identify, guilds.members.read). Nothing is posted and the access token is not kept. Refresh roles signs in again to read them again.
           {card.discord && !card.discord.isMember && " This Discord account is not in the GenLayer server, so the card shows no roles. Join at discord.gg/genlayerlabs, then refresh."}
@@ -69,21 +75,43 @@ export function MyCard() {
   );
 }
 
-/** Opens X's composer with the card sentence; the link's preview shows the card picture. */
-function ShareOnX({ card }: { card: PlayerCard }) {
+/**
+ * Opens X's composer with the card sentence. X's web composer cannot take a
+ * picture from a link, so the card picture is put on the clipboard first and the
+ * player pastes it in (Ctrl+V or Cmd+V). Where the clipboard refuses, the link's
+ * own preview card still shows the picture.
+ */
+function ShareOnX({ card, onNote }: { card: PlayerCard; onNote: (m: string) => void }) {
   const [origin, setOrigin] = useState("");
+  const [busy, setBusy] = useState(false);
   useEffect(() => setOrigin(location.origin), []);
   // the version tag makes the link preview refetch the picture when the card changes
   const v = `${card.recordHash.slice(2, 10)}-${card.server?.xp ?? 0}-${card.xp}`;
   const url = `${origin}/s/card/${encodeURIComponent(card.name)}?v=${v}`;
   const { body } = shareParts(card, url);
   const href = `https://x.com/intent/post?text=${encodeURIComponent(body)}&url=${encodeURIComponent(url)}`;
-  return origin ? (
-    <a className="btn btn-primary" href={href} target="_blank" rel="noopener noreferrer">
-      Share on X
-    </a>
-  ) : (
-    <button className="btn btn-primary" disabled>
+
+  async function share() {
+    setBusy(true);
+    let copied = false;
+    try {
+      const png = fetch(`/api/og/card/${encodeURIComponent(card.name)}?v=${v}`).then((r) => {
+        if (!r.ok) throw new Error("no picture");
+        return r.blob();
+      });
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
+      copied = true;
+    } catch {
+      /* the clipboard refused: the link preview still carries the picture */
+    }
+    setBusy(false);
+    const key = /Mac|iPhone|iPad/.test(navigator.platform) ? "Cmd+V" : "Ctrl+V";
+    onNote(copied ? `Card picture copied. Press ${key} in the X composer to attach it.` : "The picture could not be copied; the link shows the card in the post.");
+    window.open(href, "_blank", "noopener,noreferrer");
+  }
+
+  return (
+    <button className="btn btn-primary" disabled={!origin || busy} onClick={() => void share()}>
       Share on X
     </button>
   );
