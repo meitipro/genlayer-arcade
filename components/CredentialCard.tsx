@@ -292,10 +292,8 @@ export default function CredentialCard({
               {data.server && (
                 <>
                   <div className="cb-cell">
-                    <div className="l">Server level - rank</div>
-                    <div className="v">
-                      {data.server.level} - #{data.server.rank.toLocaleString("en-US")}
-                    </div>
+                    <div className="l">Server rank</div>
+                    <div className="v">#{data.server.rank.toLocaleString("en-US")}</div>
                   </div>
                   <div className="cb-cell">
                     <div className="l">Server messages</div>

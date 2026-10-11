@@ -50,7 +50,7 @@ describe("share text", () => {
         `👤 ${bold("mahdi")} - synapse`,
         "🏅 tier ii - ember",
         "",
-        "▸ server: lvl 21 - rank #1,203",
+        "▸ server rank: #1,203",
         "▸ arcade: lvl 7 - 1,240 xp",
         "▸ badges: 4/10",
         "",
@@ -79,9 +79,15 @@ ${URL}`);
     expect(xLength("a🪪")).toBe(3);
   });
 
+  it("never shows the Discord server level", () => {
+    const { body } = shareParts(card({ server: { level: 99, xp: 5, rank: 7, messages: 0, at: 0 } }), URL);
+    expect(body).not.toContain("99");
+    expect(body).toContain("▸ server rank: #7");
+  });
+
   it("without server stats or a server role it does not make them up", () => {
     const { body } = shareParts(card({ server: null, discord: { ...card().discord!, isMember: false, roles: [] } }), URL);
-    expect(body).not.toContain("server:");
+    expect(body).not.toContain("server");
     expect(body).not.toContain("synapse");
     expect(body).toContain("▸ arcade: lvl 7 - 1,240 xp");
   });

@@ -38,11 +38,11 @@ export async function GET(_req: Request, ctx: { params: Promise<{ name: string }
   const more = (card.discord?.roles.length ?? 0) - roles.length;
   const cells: [string, string][] = [
     ["HIGHEST ROLE", member ? card.standing : "No server role"],
-    [card.server ? "SERVER LEVEL" : "ARCADE LEVEL", String(card.server ? card.server.level : card.level)],
-    [card.server ? "SERVER XP" : "ARCADE XP", n(card.server ? card.server.xp : card.xp)],
-    [card.server ? "SERVER RANK" : "BADGES", card.server ? `#${n(card.server.rank)}` : `${card.badges}/10`],
+    ["ARCADE XP", n(card.xp)],
+    ["BADGES", `${card.badges}/10`],
+    card.server ? ["SERVER RANK", `#${n(card.server.rank)}`] : ["DAILY GAMES", String(card.dailies)],
   ];
-  const sub = card.server ? `Arcade level ${card.level} · ${n(card.xp)} XP · ${card.badges}/10 badges` : `${card.badges}/10 badges · ${card.dailies} daily entries`;
+  const sub = `Arcade level ${card.level} · ${card.dailies} daily entries`;
 
   return new ImageResponse(
     (

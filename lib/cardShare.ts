@@ -50,7 +50,7 @@ export function shareParts(card: PlayerCard, url: string): { body: string; text:
   const tier = card.tier.name.toLowerCase();
   const role = member ? card.standing.toLowerCase() : "";
   const who = `👤 ${bold(card.name.toLowerCase())}${role && role !== tier ? ` - ${role}` : ""}`;
-  const server = card.server ? `▸ server: lvl ${card.server.level} - rank #${n(card.server.rank)}` : null;
+  const server = card.server ? `▸ server rank: #${n(card.server.rank)}` : null;
   const arcade = `▸ arcade: lvl ${card.level} - ${n(card.xp)} xp`;
   const badges = `▸ badges: ${card.badges}/10`;
 
