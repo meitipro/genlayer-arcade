@@ -218,10 +218,8 @@ export default function CredentialCard({
                 <div className="v">{data.standing}</div>
               </div>
               <div className="cell">
-                <div className="l">{data.server ? "Server level - XP" : "Arcade level - XP"}</div>
-                <div className="v">
-                  {data.server ? `${data.server.level} - ${data.server.xp.toLocaleString("en-US")}` : `${data.level} - ${data.xp.toLocaleString("en-US")}`}
-                </div>
+                <div className="l">Arcade XP</div>
+                <div className="v">{data.xp.toLocaleString("en-US")}</div>
               </div>
             </div>
             <div className="cc-foot">

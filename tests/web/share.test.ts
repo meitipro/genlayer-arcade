@@ -1,7 +1,7 @@
 // Share card: the text that goes with it, and the MEE6 server level and XP behind it.
 import { describe, expect, it, vi } from "vitest";
 import type { PlayerCard } from "@/lib/cardTypes";
-import { shareParts } from "@/lib/cardShare";
+import { bold, shareParts, xLength } from "@/lib/cardShare";
 import { findInPages, refreshMee6, type GetPage, type Row } from "@/lib/mee6";
 
 vi.mock("next/cache", () => ({ revalidateTag: () => {}, unstable_cache: (fn: () => unknown) => fn }));
@@ -32,45 +32,58 @@ function card(over: Partial<PlayerCard> = {}): PlayerCard {
 const URL = "https://genlayergamehub.vercel.app/s/card/Mahdi?v=19233577-66950-270";
 
 describe("share text", () => {
-  it("is one lower-case sentence in the agreed shape, then the link", () => {
+  it("is the agreed structured post, then the link", () => {
     const c = card({
       name: "Mahdi",
-      level: 1,
-      xp: 270,
-      badges: 2,
-      best: { game: "stake-merge", title: "Stake Merge", score: 2784 },
-      server: { level: 29, xp: 66950, rank: 364, messages: 0, at: 0 },
-      tier: { n: "V", name: "Singularity" },
-      standing: "Regional Moderator",
+      level: 7,
+      xp: 1240,
+      badges: 4,
+      server: { level: 21, xp: 18420, rank: 1203, messages: 0, at: 0 },
+      tier: { n: "II", name: "Ember" },
+      standing: "Synapse",
     });
     const { body, text } = shareParts(c, URL);
     expect(body).toBe(
-      "my genlayer arcade card: mahdi, singularity (tier v) and regional moderator, level 29 on the server with 66,950 xp at rank #364, level 1 in the arcade with 270 xp, 2/10 badges and a best of 2,784 in stake merge, the card is not an nft",
+      [
+        `🪪 ${bold("GENLAYER ARCADE CARD")}`,
+        "",
+        `👤 ${bold("mahdi")} - synapse`,
+        "🏅 tier ii - ember",
+        "",
+        "▸ server: lvl 21 - rank #1,203",
+        "▸ arcade: lvl 7 - 1,240 xp",
+        "▸ badges: 4/10",
+        "",
+        "your turn: grab your card and drop it below 👇",
+      ].join("\n"),
     );
     expect(text).toBe(`${body}
 
 ${URL}`);
   });
 
+  it("bold covers letters and digits and leaves the rest", () => {
+    expect(bold("ab_9")).toBe("\u{1d5ee}\u{1d5ef}_\u{1d7f5}");
+  });
+
   it("does not say the same word twice when the role is the tier", () => {
     const { body } = shareParts(card({ tier: { n: "V", name: "Singularity" }, standing: "Singularity" }), URL);
-    expect(body).toContain("alice, singularity (tier v), level 21");
+    expect(body).toContain(`👤 ${bold("alice")}\n`);
   });
 
-  it("fits a post: X counts the link as 23 characters, and the closing line is the last thing shed", () => {
-    const long = card({ name: "a_very_long_name_x", standing: "Early Testnet Community", tier: { n: "VII", name: "True Legends" }, best: { game: "x", title: "Appeal Breaker", score: 123456789 } });
+  it("fits a post by X's count (bold letters and emoji count 2, the link 23)", () => {
+    const long = card({ name: "a_very_long_name_xyz", standing: "Early Testnet Community Member", tier: { n: "VII", name: "True Legends" } });
     const { body } = shareParts(long, URL);
-    expect(body.length + 2 + 23).toBeLessThanOrEqual(280);
-    expect(body).toContain("level 21 on the server");
-    expect(body).toContain("level 7 in the arcade");
+    expect(xLength(body) + 2 + 23).toBeLessThanOrEqual(280);
+    expect(body).toContain("▸ arcade: lvl 7");
+    expect(xLength("a🪪")).toBe(3);
   });
 
-  it("without server stats, a best game or a server role it does not make them up", () => {
-    const { body } = shareParts(card({ server: null, best: null, discord: { ...card().discord!, isMember: false, roles: [] } }), URL);
-    expect(body).not.toContain("on the server");
-    expect(body).not.toContain("best of");
+  it("without server stats or a server role it does not make them up", () => {
+    const { body } = shareParts(card({ server: null, discord: { ...card().discord!, isMember: false, roles: [] } }), URL);
+    expect(body).not.toContain("server:");
     expect(body).not.toContain("synapse");
-    expect(body).toBe("my genlayer arcade card: alice, ember (tier ii), level 7 in the arcade with 1,240 xp, 4/10 badges, the card is not an nft");
+    expect(body).toContain("▸ arcade: lvl 7 - 1,240 xp");
   });
 });
 
