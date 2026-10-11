@@ -1,5 +1,5 @@
-// lib/cardShare.ts: the text that goes with a shared card. Pure, so the browser
-// builds it from the same card data the page shows.
+// lib/cardShare.ts: the sentence that goes with a shared card. Pure, so the
+// browser builds it from the same card data the page shows.
 import type { PlayerCard } from "./cardTypes";
 
 /** X counts every link as 23 characters. */
@@ -9,26 +9,43 @@ const LINK = 23;
 const n = (v: number) => v.toLocaleString("en-US");
 
 /**
- * The share text for a card, as `body` (no link, for X's own link field) and
- * `text` (body and link in one string, for share sheets and copying). Lines are
- * dropped from the bottom until it fits a post.
+ * One lower-case sentence: name, tier and highest role, the server level, XP and
+ * rank, the arcade level and XP, badges, the best game, and that the card is not
+ * an NFT. `body` has no link (X takes the link in its own field); `text` is
+ * body and link together. Pieces are shed (best game, then badges, then the
+ * closing line) until it fits a post.
  */
 export function shareParts(card: PlayerCard, url: string): { body: string; text: string } {
-  const d = card.discord;
-  const member = Boolean(d?.isMember);
-  const lines: string[] = [`My GenLayer Arcade card: ${card.name}`];
-  lines.push(`${card.tier.name} (Tier ${card.tier.n})${member ? ` · ${card.standing}` : ""}`);
-  if (card.server) lines.push(`Server: level ${card.server.level} · ${n(card.server.xp)} XP · rank #${n(card.server.rank)}`);
-  lines.push(`Arcade: level ${card.level} · ${n(card.xp)} XP · ${card.badges}/10 badges`);
-  if (card.best) lines.push(`Best: ${card.best.title} ${n(card.best.score)}`);
-  if (member && d && d.roles.length > 1) {
-    const shown = d.roles.slice(0, 3).join(", ");
-    lines.push(`Roles: ${shown}${d.roles.length > 3 ? ` +${d.roles.length - 3}` : ""}`);
+  const member = Boolean(card.discord?.isMember);
+  const tier = card.tier.name.toLowerCase();
+  const role = member ? card.standing.toLowerCase() : "";
+  const head = `my genlayer arcade card: ${card.name.toLowerCase()}, ${tier} (tier ${card.tier.n.toLowerCase()})${role && role !== tier ? ` and ${role}` : ""}`;
+  const server = card.server ? `level ${card.server.level} on the server with ${n(card.server.xp)} xp at rank #${n(card.server.rank)}` : null;
+  const arcade = `level ${card.level} in the arcade with ${n(card.xp)} xp`;
+  const badges = `${card.badges}/10 badges`;
+  const best = card.best ? `a best of ${n(card.best.score)} in ${card.best.title.toLowerCase()}` : null;
+  const tail = "the card is not an nft";
+
+  const build = (withBest: boolean, withBadges: boolean, withTail: boolean) => {
+    const items = [server, arcade].filter((x): x is string => Boolean(x));
+    const last = [withBadges ? badges : null, withBest ? best : null].filter((x): x is string => Boolean(x)).join(" and ");
+    if (last) items.push(last);
+    return [head, ...items, ...(withTail ? [tail] : [])].join(", ");
+  };
+  const fits = (s: string) => s.length + 2 + LINK <= LIMIT;
+  const tries: [boolean, boolean, boolean][] = [
+    [true, true, true],
+    [false, true, true],
+    [false, false, true],
+    [false, false, false],
+  ];
+  let body = build(...tries[tries.length - 1]);
+  for (const t of tries) {
+    const s = build(...t);
+    if (fits(s)) {
+      body = s;
+      break;
+    }
   }
-  if (card.x) lines.push(`X: @${card.x.handle}`);
-  const fit = () => lines.join("\n").length + 2 + LINK <= LIMIT;
-  // keep the header, tier and server/arcade lines; shed the rest from the bottom
-  while (!fit() && lines.length > 3) lines.pop();
-  const body = lines.join("\n");
   return { body, text: `${body}\n\n${url}` };
 }

@@ -29,34 +29,48 @@ function card(over: Partial<PlayerCard> = {}): PlayerCard {
   };
 }
 
-const URL = "https://genlayergamehub.vercel.app/s/card/alice?v=x";
+const URL = "https://genlayergamehub.vercel.app/s/card/Mahdi?v=19233577-66950-270";
 
 describe("share text", () => {
-  it("names the role, the server level and XP, the arcade level and XP, and ends with the link", () => {
-    const { body, text } = shareParts(card(), URL);
-    expect(body).toContain("alice");
-    expect(body).toContain("Ember (Tier II) · Synapse");
-    expect(body).toContain("Server: level 21 · 18,420 XP · rank #1,203");
-    expect(body).toContain("Arcade: level 7 · 1,240 XP · 4/10 badges");
-    expect(body).toContain("Best: Sky Hop 1,240");
-    expect(text.endsWith(`\n\n${URL}`)).toBe(true);
-    expect(body).not.toContain("https://");
+  it("is one lower-case sentence in the agreed shape, then the link", () => {
+    const c = card({
+      name: "Mahdi",
+      level: 1,
+      xp: 270,
+      badges: 2,
+      best: { game: "stake-merge", title: "Stake Merge", score: 2784 },
+      server: { level: 29, xp: 66950, rank: 364, messages: 0, at: 0 },
+      tier: { n: "V", name: "Singularity" },
+      standing: "Regional Moderator",
+    });
+    const { body, text } = shareParts(c, URL);
+    expect(body).toBe(
+      "my genlayer arcade card: mahdi, singularity (tier v) and regional moderator, level 29 on the server with 66,950 xp at rank #364, level 1 in the arcade with 270 xp, 2/10 badges and a best of 2,784 in stake merge, the card is not an nft",
+    );
+    expect(text).toBe(`${body}
+
+${URL}`);
   });
 
-  it("fits a post: X counts the link as 23 characters, and the important lines survive", () => {
-    const long = card({ name: "a_very_long_name_x", discord: { ...card().discord!, roles: ["Early Testnet Community", "Builder Working Group", "Regional Moderator", "Onboarding Core", "Neurocreative"] } });
+  it("does not say the same word twice when the role is the tier", () => {
+    const { body } = shareParts(card({ tier: { n: "V", name: "Singularity" }, standing: "Singularity" }), URL);
+    expect(body).toContain("alice, singularity (tier v), level 21");
+  });
+
+  it("fits a post: X counts the link as 23 characters, and the closing line is the last thing shed", () => {
+    const long = card({ name: "a_very_long_name_x", standing: "Early Testnet Community", tier: { n: "VII", name: "True Legends" }, best: { game: "x", title: "Appeal Breaker", score: 123456789 } });
     const { body } = shareParts(long, URL);
     expect(body.length + 2 + 23).toBeLessThanOrEqual(280);
-    expect(body).toContain("Server: level 21");
-    expect(body).toContain("Arcade: level 7");
+    expect(body).toContain("level 21 on the server");
+    expect(body).toContain("level 7 in the arcade");
   });
 
-  it("without server stats or a server role it does not make them up", () => {
-    const { body } = shareParts(card({ server: null, discord: { ...card().discord!, isMember: false, roles: [] }, x: null, best: null }), URL);
-    expect(body).not.toContain("Server:");
-    expect(body).not.toContain("Roles:");
-    expect(body).not.toContain("Synapse");
-    expect(body).toContain("Arcade: level 7 · 1,240 XP");
+  it("without server stats, a best game or a server role it does not make them up", () => {
+    const { body } = shareParts(card({ server: null, best: null, discord: { ...card().discord!, isMember: false, roles: [] } }), URL);
+    expect(body).not.toContain("on the server");
+    expect(body).not.toContain("best of");
+    expect(body).not.toContain("synapse");
+    expect(body).toBe("my genlayer arcade card: alice, ember (tier ii), level 7 in the arcade with 1,240 xp, 4/10 badges, the card is not an nft");
   });
 });
 

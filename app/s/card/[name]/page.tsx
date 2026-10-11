@@ -22,7 +22,7 @@ export async function generateMetadata({ params, searchParams }: P): Promise<Met
   const v = (await searchParams).v;
   const img = `/api/og/card/${encodeURIComponent(card.name)}${v && VERSION_RE.test(v) ? `?v=${v}` : ""}`;
   const title = `${card.name} on GenLayer Arcade`;
-  const description = shareParts(card, "").body.split("\n").slice(1, 4).join(" · ");
+  const description = shareParts(card, "").body;
   return {
     title,
     description,
