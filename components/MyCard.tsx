@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PlayerCard } from "@/lib/cardTypes";
 import { loginUrl, postJson, signOut, usePlayer } from "@/lib/client/player";
-import { shareParts } from "@/lib/cardShare";
+import { QUOTE_POST, shareParts } from "@/lib/cardShare";
 import { cardPicture } from "@/lib/client/cardPicture";
 import CredentialCard from "./CredentialCard";
 
@@ -75,20 +75,16 @@ function picture(front: PictureProps["front"]): Promise<Blob> {
 }
 
 /**
- * Opens X's composer with the card sentence. X's web composer cannot take a
- * picture from a link, so the picture of the card on this page is put on the
- * clipboard first and the player pastes it in (Ctrl+V or Cmd+V). Where the
- * clipboard refuses, the link's own preview card still shows a picture.
+ * Opens X's composer with the card post, quoting the arcade's announcement
+ * (QUOTE_POST): X turns a post link given as the url into a quote. X's web
+ * composer cannot take a picture from a link, so the picture of the card on
+ * this page is put on the clipboard first and the player pastes it in (Ctrl+V
+ * or Cmd+V).
  */
 function ShareOnX({ card, front, onNote }: PictureProps) {
-  const [origin, setOrigin] = useState("");
   const [busy, setBusy] = useState(false);
-  useEffect(() => setOrigin(location.origin), []);
-  // the version tag makes the link preview refetch the picture when the card changes
-  const v = `${card.recordHash.slice(2, 10)}-${card.xp}`;
-  const url = `${origin}/s/card/${encodeURIComponent(card.name)}?v=${v}`;
-  const { body } = shareParts(card, url);
-  const href = `https://x.com/intent/post?text=${encodeURIComponent(body)}&url=${encodeURIComponent(url)}`;
+  const { body } = shareParts(card, QUOTE_POST);
+  const href = `https://x.com/intent/post?text=${encodeURIComponent(body)}&url=${encodeURIComponent(QUOTE_POST)}`;
 
   async function share() {
     setBusy(true);
@@ -98,16 +94,16 @@ function ShareOnX({ card, front, onNote }: PictureProps) {
       await navigator.clipboard.write([new ClipboardItem({ "image/png": picture(front) })]);
       copied = true;
     } catch {
-      /* the clipboard refused: the link preview still carries a picture */
+      /* the clipboard refused: the post goes out with the text and the quote */
     }
     setBusy(false);
     const key = /Mac|iPhone|iPad/.test(navigator.platform) ? "Cmd+V" : "Ctrl+V";
-    onNote(copied ? `Card picture copied. Press ${key} in the X composer to attach it.` : "The picture could not be copied; the link shows the card in the post.");
+    onNote(copied ? `Card picture copied. Press ${key} in the X composer to attach it.` : "The picture could not be copied. Use Download and attach the file in the X composer.");
     window.open(href, "_blank", "noopener,noreferrer");
   }
 
   return (
-    <button className="btn btn-primary" disabled={!origin || busy} onClick={() => void share()}>
+    <button className="btn btn-primary" disabled={busy} onClick={() => void share()}>
       Share on X
     </button>
   );

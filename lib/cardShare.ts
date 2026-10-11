@@ -2,6 +2,9 @@
 // browser builds it from the same card data the page shows.
 import type { PlayerCard } from "./cardTypes";
 
+/** The arcade's announcement on X. Every shared card quotes it. */
+export const QUOTE_POST = "https://x.com/meitipro1/status/2109119688244343102";
+
 /** X counts every link as 23 characters. */
 const LIMIT = 280;
 const LINK = 23;
