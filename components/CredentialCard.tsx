@@ -38,11 +38,14 @@ export default function CredentialCard({
   data,
   hideFlipButton = false,
   flipSignal = 0,
+  frontRef,
 }: {
   data: PlayerCard;
   hideFlipButton?: boolean;
   /** Bump this to flip the card from outside. */
   flipSignal?: number;
+  /** The front face, for drawing the card into a picture. */
+  frontRef?: React.Ref<HTMLDivElement>;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const discord = data.discord;
@@ -155,7 +158,7 @@ export default function CredentialCard({
         onTouchEnd={endDrag}
       >
         {/* FRONT */}
-        <div className="cred face-front">
+        <div className="cred face-front" ref={frontRef}>
           <Svg html={guillocheSVG(data.seed)} />
           <div
             className="holo"

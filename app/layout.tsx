@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { FONTS_CSS } from "@/lib/fonts";
 import "./globals.css";
 
-const FONTS =
-  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&family=Instrument+Serif&family=Geist:wght@400;500;600&display=swap";
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://genlayergamehub.vercel.app";
 
 export const metadata: Metadata = {
@@ -31,9 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         {/* loaded as print, switched to all once it arrives, so the fonts never block the first paint */}
-        <link rel="stylesheet" href={FONTS} media="print" data-font="" suppressHydrationWarning />
+        <link rel="stylesheet" href={FONTS_CSS} media="print" data-font="" suppressHydrationWarning />
         <noscript>
-          <link rel="stylesheet" href={FONTS} />
+          <link rel="stylesheet" href={FONTS_CSS} />
         </noscript>
       </head>
       <body className="flex min-h-dvh flex-col">

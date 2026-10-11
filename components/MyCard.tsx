@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { PlayerCard } from "@/lib/cardTypes";
 import { loginUrl, postJson, signOut, usePlayer } from "@/lib/client/player";
 import { shareParts } from "@/lib/cardShare";
+import { cardPicture } from "@/lib/client/cardPicture";
 import CredentialCard from "./CredentialCard";
 
 export function MyCard() {
@@ -14,6 +15,7 @@ export function MyCard() {
   const [card, setCard] = useState<PlayerCard | null>(null);
   const [flip, setFlip] = useState(0);
   const [note, setNote] = useState("");
+  const front = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async () => {
     if (!player) return;
@@ -42,10 +44,11 @@ export function MyCard() {
     <div className="space-y-8">
       <section aria-label="Your card">
         <div className="vault-cardstage">
-          <CredentialCard data={card} hideFlipButton flipSignal={flip} />
+          <CredentialCard data={card} hideFlipButton flipSignal={flip} frontRef={front} />
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-          <ShareOnX card={card} onNote={setNote} />
+          <ShareOnX card={card} front={front} onNote={setNote} />
+          <Download card={card} front={front} onNote={setNote} />
           <button className="btn btn-ghost" onClick={() => setFlip((n) => n + 1)}>
             Flip
           </button>
@@ -75,13 +78,20 @@ export function MyCard() {
   );
 }
 
+type PictureProps = { card: PlayerCard; front: React.RefObject<HTMLDivElement | null>; onNote: (m: string) => void };
+
+/** The picture of the card on this page: the front face, drawn as it is shown. */
+function picture(front: PictureProps["front"]): Promise<Blob> {
+  return front.current ? cardPicture(front.current) : Promise.reject(new Error("no card on the page"));
+}
+
 /**
  * Opens X's composer with the card sentence. X's web composer cannot take a
- * picture from a link, so the card picture is put on the clipboard first and the
- * player pastes it in (Ctrl+V or Cmd+V). Where the clipboard refuses, the link's
- * own preview card still shows the picture.
+ * picture from a link, so the picture of the card on this page is put on the
+ * clipboard first and the player pastes it in (Ctrl+V or Cmd+V). Where the
+ * clipboard refuses, the link's own preview card still shows a picture.
  */
-function ShareOnX({ card, onNote }: { card: PlayerCard; onNote: (m: string) => void }) {
+function ShareOnX({ card, front, onNote }: PictureProps) {
   const [origin, setOrigin] = useState("");
   const [busy, setBusy] = useState(false);
   useEffect(() => setOrigin(location.origin), []);
@@ -95,14 +105,11 @@ function ShareOnX({ card, onNote }: { card: PlayerCard; onNote: (m: string) => v
     setBusy(true);
     let copied = false;
     try {
-      const png = fetch(`/api/og/card/${encodeURIComponent(card.name)}?v=${v}`).then((r) => {
-        if (!r.ok) throw new Error("no picture");
-        return r.blob();
-      });
-      await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
+      // the picture is handed over as a promise so the click still counts as the gesture behind the copy
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": picture(front) })]);
       copied = true;
     } catch {
-      /* the clipboard refused: the link preview still carries the picture */
+      /* the clipboard refused: the link preview still carries a picture */
     }
     setBusy(false);
     const key = /Mac|iPhone|iPad/.test(navigator.platform) ? "Cmd+V" : "Ctrl+V";
@@ -113,6 +120,33 @@ function ShareOnX({ card, onNote }: { card: PlayerCard; onNote: (m: string) => v
   return (
     <button className="btn btn-primary" disabled={!origin || busy} onClick={() => void share()}>
       Share on X
+    </button>
+  );
+}
+
+/** Saves the picture of the card on this page as a PNG. */
+function Download({ card, front, onNote }: PictureProps) {
+  const [busy, setBusy] = useState(false);
+
+  async function save() {
+    setBusy(true);
+    try {
+      const blob = await picture(front);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `genlayer-card-${card.name}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
+      onNote("");
+    } catch {
+      onNote("The card picture could not be made. Try again in a moment.");
+    }
+    setBusy(false);
+  }
+
+  return (
+    <button className="btn btn-ghost" disabled={busy} onClick={() => void save()}>
+      {busy ? "Saving..." : "Download"}
     </button>
   );
 }
