@@ -86,8 +86,7 @@ All under `https://genlayergamehub.vercel.app/api`. "Session" means the signed-i
 | `/community/list` | GET | session | every on-chain review, newest first |
 | `/events[?code]` | GET | session | tournament events, or the event a room code belongs to |
 | `/social/start`, `/social/verify`, `/social/remove` | POST | session | optional X handle, proven by a bio code |
-| `/card/[name]` | GET | session | the public card data (no secrets), including the MEE6 server level and XP once read |
-| `/mee6/refresh` | POST | session, 6/hour/IP | read the signed-in player's server level, XP, rank and messages from MEE6's public leaderboard; kept per Discord id, re-read at most every 30 minutes |
+| `/card/[name]` | GET | session | the public card data (no secrets) |
 | `/rpc` | POST | session, 120/min/IP | same-origin relay of read-only and fee JSON-RPC methods to Studionet; refuses everything that signs or spends |
 | `/faucet` | POST | session; 1 per address per 10 min, 5/hour/IP | Studionet test GEN for wallet mode |
 | `/admin/[action]` | POST | header `x-admin-token` | open, close, lock, resolve, finalize-season, remove-score, create-event, delete-event, review-recheck, review-delist, rollover, deadline, tx, log |

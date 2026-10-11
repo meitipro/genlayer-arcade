@@ -24,16 +24,11 @@ export type CardSocial = {
   verifiedAt: string;
 };
 
-/** The player's MEE6 standing in the GenLayer Discord server (the server's own level and XP). */
-export type ServerStats = { level: number; xp: number; rank: number; messages: number; at: number };
-
 export type PlayerCard = {
   name: string;
   since: string | null;
   level: number;
   xp: number;
-  /** Server level and XP from MEE6, or null when not read yet or not ranked. level/xp above are the arcade's own. */
-  server: ServerStats | null;
   badges: number;
   dailies: number;
   best: { game: string; title: string; score: number } | null;

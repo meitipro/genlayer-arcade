@@ -40,7 +40,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ name: string }
     ["HIGHEST ROLE", member ? card.standing : "No server role"],
     ["ARCADE XP", n(card.xp)],
     ["BADGES", `${card.badges}/10`],
-    card.server ? ["SERVER RANK", `#${n(card.server.rank)}`] : ["DAILY GAMES", String(card.dailies)],
+    ["DAILY GAMES", String(card.dailies)],
   ];
   const sub = `Arcade level ${card.level} · ${card.dailies} daily entries`;
 

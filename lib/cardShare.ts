@@ -39,47 +39,31 @@ export function xLength(s: string): number {
 
 /**
  * The card as a short structured post: a bold heading, the player and their
- * role, the tier, the server and arcade standing, badges, and a line asking
- * others to post theirs. Lines with nothing behind them (no server role, no
- * MEE6 numbers) are left out rather than made up. `body` has no link (X takes
+ * Discord role, the tier, the arcade standing, badges, and a line asking others
+ * to post theirs. From Discord the post takes only the role; with no server
+ * role that part is left out rather than made up. `body` has no link (X takes
  * the link in its own field); `text` is body and link together. If a post
- * would run long, the badges and then the server lines are shed.
+ * would run long, the badges line is shed.
  */
 export function shareParts(card: PlayerCard, url: string): { body: string; text: string } {
   const member = Boolean(card.discord?.isMember);
   const tier = card.tier.name.toLowerCase();
   const role = member ? card.standing.toLowerCase() : "";
   const who = `👤 ${bold(card.name.toLowerCase())}${role && role !== tier ? ` - ${role}` : ""}`;
-  const server = card.server ? `▸ server rank: #${n(card.server.rank)}` : null;
-  const arcade = `▸ arcade: lvl ${card.level} - ${n(card.xp)} xp`;
-  const badges = `▸ badges: ${card.badges}/10`;
 
-  const build = (withServer: boolean, withBadges: boolean) =>
+  const build = (withBadges: boolean) =>
     [
       `🪪 ${bold("GENLAYER ARCADE CARD")}`,
       "",
       who,
       `🏅 tier ${card.tier.n.toLowerCase()} - ${tier}`,
       "",
-      ...(withServer && server ? [server] : []),
-      arcade,
-      ...(withBadges ? [badges] : []),
+      `▸ arcade: lvl ${card.level} - ${n(card.xp)} xp`,
+      ...(withBadges ? [`▸ badges: ${card.badges}/10`] : []),
       "",
       "your turn: grab your card and drop it below 👇",
     ].join("\n");
-  const fits = (s: string) => xLength(s) + 2 + LINK <= LIMIT;
-  const tries: [boolean, boolean][] = [
-    [true, true],
-    [true, false],
-    [false, false],
-  ];
-  let body = build(false, false);
-  for (const t of tries) {
-    const s = build(...t);
-    if (fits(s)) {
-      body = s;
-      break;
-    }
-  }
+  const full = build(true);
+  const body = xLength(full) + 2 + LINK <= LIMIT ? full : build(false);
   return { body, text: `${body}\n\n${url}` };
 }

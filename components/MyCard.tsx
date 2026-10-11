@@ -27,17 +27,6 @@ export function MyCard() {
     void load();
   }, [load]);
 
-  // the server level and XP come from MEE6; read them once per visit when they are missing or old
-  const asked = useRef(false);
-  useEffect(() => {
-    if (!card || asked.current || !card.discord) return;
-    if (card.server && Date.now() - card.server.at < 6 * 3600 * 1000) return;
-    asked.current = true;
-    void postJson("/api/mee6/refresh", {}).then((r) => {
-      if (r.ok && (r.data as { read?: boolean }).read) void load();
-    });
-  }, [card, load]);
-
   if (!player || !card) return <div className="card h-64 animate-pulse" aria-busy />;
 
   return (
@@ -96,7 +85,7 @@ function ShareOnX({ card, front, onNote }: PictureProps) {
   const [busy, setBusy] = useState(false);
   useEffect(() => setOrigin(location.origin), []);
   // the version tag makes the link preview refetch the picture when the card changes
-  const v = `${card.recordHash.slice(2, 10)}-${card.server?.xp ?? 0}-${card.xp}`;
+  const v = `${card.recordHash.slice(2, 10)}-${card.xp}`;
   const url = `${origin}/s/card/${encodeURIComponent(card.name)}?v=${v}`;
   const { body } = shareParts(card, url);
   const href = `https://x.com/intent/post?text=${encodeURIComponent(body)}&url=${encodeURIComponent(url)}`;
