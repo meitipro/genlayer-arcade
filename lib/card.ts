@@ -11,6 +11,7 @@ import { redis } from "./redis";
 import { socialOf, xConfigured } from "./social";
 import type { PlayerCard } from "./cardTypes";
 import { tierForRole } from "./roles";
+import { mee6Of } from "./mee6";
 import { badgesOf, levelFor } from "./xp";
 
 export type { PlayerCard } from "./cardTypes";
@@ -28,6 +29,7 @@ export async function cardFor(raw: string): Promise<PlayerCard | null> {
     socialOf(name),
     Promise.all(ARCADE.map(async (g) => ({ g, score: await redis.zscore(`lb:${g.slug}:all`, name) }))),
   ]);
+  const server = discord?.id ? await mee6Of(discord.id) : null;
   const xp = Number(p?.xp ?? 0);
   const top = bests
     .filter((b) => b.score !== null)
@@ -58,6 +60,7 @@ export async function cardFor(raw: string): Promise<PlayerCard | null> {
     since: p?.createdAt ? new Date(Number(p.createdAt)).toISOString().slice(0, 10) : null,
     level,
     xp,
+    server,
     badges: badges.length,
     dailies: history.filter((h) => h.ok).length,
     best: top ? { game: top.g.slug, title: top.g.title, score: top.score ?? 0 } : null,

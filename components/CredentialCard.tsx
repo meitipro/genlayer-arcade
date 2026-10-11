@@ -215,9 +215,9 @@ export default function CredentialCard({
                 <div className="v">{data.standing}</div>
               </div>
               <div className="cell">
-                <div className="l">Level - XP</div>
+                <div className="l">{data.server ? "Server level - XP" : "Arcade level - XP"}</div>
                 <div className="v">
-                  {data.level} - {data.xp.toLocaleString("en-US")}
+                  {data.server ? `${data.server.level} - ${data.server.xp.toLocaleString("en-US")}` : `${data.level} - ${data.xp.toLocaleString("en-US")}`}
                 </div>
               </div>
             </div>
@@ -288,8 +288,22 @@ export default function CredentialCard({
                   <div className="v">{xSince}</div>
                 </div>
               )}
+              {data.server && (
+                <>
+                  <div className="cb-cell">
+                    <div className="l">Server level - rank</div>
+                    <div className="v">
+                      {data.server.level} - #{data.server.rank.toLocaleString("en-US")}
+                    </div>
+                  </div>
+                  <div className="cb-cell">
+                    <div className="l">Server messages</div>
+                    <div className="v">{data.server.messages.toLocaleString("en-US")}</div>
+                  </div>
+                </>
+              )}
               <div className="cb-cell">
-                <div className="l">Level - XP</div>
+                <div className="l">Arcade level - XP</div>
                 <div className="v">
                   {data.level} - {data.xp.toLocaleString("en-US")}
                 </div>

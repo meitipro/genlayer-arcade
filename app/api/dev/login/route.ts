@@ -14,7 +14,8 @@ export async function GET(req: Request) {
   const u = new URL(req.url);
   const name = (u.searchParams.get("name") || "dev_player").replace(/[^a-zA-Z0-9_]/g, "").slice(0, 17) || "dev_player";
   const role = u.searchParams.get("role") || "Mindbender";
-  const id = "dev-" + name.toLowerCase();
+  // ?id= lets a local run use a real Discord id, to see real MEE6 numbers on the card
+  const id = /^[0-9]{15,22}$/.test(u.searchParams.get("id") ?? "") ? u.searchParams.get("id")! : "dev-" + name.toLowerCase();
   const player = await loginWithDiscord({
     id,
     username: name,

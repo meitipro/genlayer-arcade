@@ -43,7 +43,7 @@ Optional variables:
 ## 3. How login works, and what is reachable without it
 
 - **Discord is the only login.** There is no nickname signup and no password. The player's name is made once from the Discord username (letters, digits and underscores; a number is added if it is taken). One Discord account is one player.
-- **Middleware (`middleware.ts`) keeps every signed-out visitor on `/login`.** Pages redirect there with `?next=`; API routes answer `401 {gate: "discord"}`. The only things reachable without a session: `/login`, `/api/discord/login`, `/api/discord/callback`, assets (`/_next`, `/brand`, `/icon.svg`), `/api/og/*` (share images), `/api/cron/*` (bearer secret) and `/api/admin/*` (admin token). Link-preview crawlers (Discordbot, Twitterbot, and similar) may fetch `/s/*` share pages for their tags.
+- **Middleware (`middleware.ts`) keeps every signed-out visitor on `/login`.** Pages redirect there with `?next=`; API routes answer `401 {gate: "discord"}`. The only things reachable without a session: `/login`, `/api/discord/login`, `/api/discord/callback`, assets (`/_next`, `/brand`, `/icon.svg`), `/api/og/*` (share images, including a card's picture), `/api/cron/*` (bearer secret) and `/api/admin/*` (admin token). Link-preview crawlers (Discordbot, Twitterbot, and similar) may fetch `/s/*` share pages for their tags.
 - **The session** is an HttpOnly, SameSite=Lax cookie (`arcade_session`) signed with `SESSION_SECRET`, valid for 30 days. A route trusts the player named in the cookie, never a name in the request body, and checks that the Discord id on the player record still matches.
 - **X is optional**, linked later on My Card with a code in the bio or location. GitHub is not part of the site.
 - **Local development** with no Discord keys: `/api/dev/login?name=...` signs in a fake player. It answers 404 in production and whenever Discord keys are present.
@@ -86,12 +86,14 @@ All under `https://genlayergamehub.vercel.app/api`. "Session" means the signed-i
 | `/community/list` | GET | session | every on-chain review, newest first |
 | `/events[?code]` | GET | session | tournament events, or the event a room code belongs to |
 | `/social/start`, `/social/verify`, `/social/remove` | POST | session | optional X handle, proven by a bio code |
-| `/card/[name]` | GET | session | the public card data (no secrets) |
+| `/card/[name]` | GET | session | the public card data (no secrets), including the MEE6 server level and XP once read |
+| `/mee6/refresh` | POST | session, 6/hour/IP | read the signed-in player's server level, XP, rank and messages from MEE6's public leaderboard; kept per Discord id, re-read at most every 30 minutes |
 | `/rpc` | POST | session, 120/min/IP | same-origin relay of read-only and fee JSON-RPC methods to Studionet; refuses everything that signs or spends |
 | `/faucet` | POST | session; 1 per address per 10 min, 5/hour/IP | Studionet test GEN for wallet mode |
 | `/admin/[action]` | POST | header `x-admin-token` | open, close, lock, resolve, finalize-season, remove-score, create-event, delete-event, review-recheck, review-delist, rollover, deadline, tx, log |
 | `/cron/daily`, `/cron/oracle`, `/cron/season` | GET | `Authorization: Bearer CRON_SECRET` | run by Vercel Cron at 00:00, 18:00 UTC and Monday 00:05 UTC |
-| `/og/...` | GET | none | 1200x630 share images |
+| `/og/...` | GET | none | 1200x630 share images; `/og/card/[name]` is a card |
+| `/s/card/[name]` (page) | GET | session, or a link-preview crawler | share page of a card, with the preview tags |
 | `/dev/login` | GET | none; 404 in production and with Discord keys | local development sign-in |
 
 ## 6. Rate limits you may run into

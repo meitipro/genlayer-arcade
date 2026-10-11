@@ -44,6 +44,7 @@ export const limits = {
   community: make("community", 3, "24 h"),
   faucet: make("faucet", 5, "1 h"),
   rpc: make("rpc", 120, "1 m"),
+  mee6: make("mee6", 6, "1 h"),
 };
 
 /** The spec's score route imports `ratelimit`; it is the score limiter. */
