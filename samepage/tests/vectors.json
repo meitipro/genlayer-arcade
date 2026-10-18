@@ -1,0 +1,40 @@
+{
+  "rule": "sha256 over the UTF-8 bytes of text + '|' + salt + '|' + lower-case address with 0x; salt is 16 to 64 lower-case hex characters",
+  "vectors": [
+    {
+      "text": "I write 3 posts and one thread on X about the Kiln launch, all live by Oct 24. 600 USDC, half before I start and half after the thread is live. Kiln can repost and quote them.",
+      "salt": "5f2c9a7e01b4d3c6",
+      "address": "0x9C4E8a51e7D2b6F03a1c4d5E6f708192A3b4b207",
+      "preimage_bytes": 235,
+      "seal": "8bc2a90f6d1c33869d232be9abf98b03dafcd2a58685b0a641a1ec4010980015"
+    },
+    {
+      "text": "3 posts about the launch, 600 USDC, half before I start and half after",
+      "salt": "00112233445566778899aabbccddeeff",
+      "address": "0x00000000000000000000000000000000000000a1",
+      "preimage_bytes": 146,
+      "seal": "ff36eb5bb046a417010f01e33b18b0169a5bd8e023a1a633addda8effc414845"
+    },
+    {
+      "text": "سه پست درباره‌ی عرضه‌ی Kiln، ۶۰۰ USDC، پرداخت پس از تحویل، تا ۲۴ اکتبر",
+      "salt": "deadbeefdeadbeef",
+      "address": "0xb2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+      "preimage_bytes": 181,
+      "seal": "444bde3956e725957985ab6a1a822cd33ea4ac446bc30ddc5a4bb5e10b4d9030"
+    },
+    {
+      "text": "a | pipe | inside | the text\nand a second line",
+      "salt": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "address": "0xA1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1",
+      "preimage_bytes": 154,
+      "seal": "dad95c285123c3422182d01856283b3145f4ddfc98d6541968b3909acc9d9360"
+    },
+    {
+      "text": "Logo PNGs, by Oct 16 🎨",
+      "salt": "abcdefabcdefabcd",
+      "address": "0x1234567890AbCdEf1234567890aBcDeF12345678",
+      "preimage_bytes": 85,
+      "seal": "3278cd30340ab64b7a9404cdcb36b75cacd0e904bd98ab13ae277e3536eb5f2a"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "tasks": ["probe", "deploy", "verify", "golden", "golden-report"],
+  "note": "first deploy and the golden run",
+  "stop_on_failure": ["deploy"]
+}

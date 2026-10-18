@@ -1,10 +1,12 @@
 name: samepage-chain
-# Runs the Samepage scripts that talk to Studio Next (chain 61997). The
-# development container cannot reach the GenLayer RPC, a GitHub runner can.
+# Runs the Samepage tasks that talk to Studio Next (chain 61997), named in
+# samepage/chain/REQUEST.json, and commits what they wrote back to the branch.
+# The development container cannot reach the GenLayer RPC; a runner can. Every
+# account is made inside the run and never stored.
 on:
   push:
     branches: [claude/project-deploy-test-t7j87s]
-    paths: ["samepage/chain/**", ".github/workflows/samepage-chain.yml"]
+    paths: ["samepage/chain/REQUEST.json"]
   workflow_dispatch:
 permissions:
   contents: write
@@ -14,11 +16,45 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 300
+    defaults:
+      run:
+        working-directory: samepage
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-      - name: probe
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/genvm-linter
+          key: genvm-linter-0.11.1rc2-genvm-v0.6.0-rc5-${{ runner.os }}
+      - name: dependencies
         run: |
-          curl -sS -m 20 -X POST https://studio-next.genlayer.com/api -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]}'
+          pip install -q -r requirements.txt
+          if [ -f web/package-lock.json ]; then (cd web && npm ci --no-audit --no-fund); fi
+      - name: direct tests
+        run: python -m pytest tests -q -p no:cacheprovider
+      - name: tasks
+        env:
+          GENVM_VERSION: v0.6.0-rc5
+          PYTHONUNBUFFERED: "1"
+        run: python scripts/runner.py
+      - name: commit results
+        if: always()
+        run: |
+          git config user.name "samepage-runner"
+          git config user.email "samepage-runner@users.noreply.github.com"
+          git add -A chain/out eval deployments.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -q -m "Samepage runner: $(jq -r '.tasks | join(", ")' chain/REQUEST.json) on Studio Next"
+          for i in 1 2 3 4; do
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
