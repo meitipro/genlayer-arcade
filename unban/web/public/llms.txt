@@ -1,0 +1,19 @@
+# Unban
+
+> Ban appeals for online communities, decided on GenLayer by the community's own written rules.
+
+- [The bot and what it can do](/docs/concepts/bot): A read-only Discord bot that applies rulings with the server's own token.
+- [Fees, compensation and the pool](/docs/concepts/fees-and-pool): Where every wei sits, and the one method that pays.
+- [Rules and the penalty ladder](/docs/concepts/rules-and-ladder): How a court's rules are written, frozen and applied only to bans made after them.
+- [The four rulings](/docs/concepts/rulings): UPHELD, REDUCED, OVERTURNED and DEFAULTED, what each means, and what moves.
+- [File an appeal](/docs/getting-started/file-an-appeal): What a member writes, what it costs, and every outcome before signing.
+- ["Quickstart: open a court"](/docs/getting-started/quickstart): Open a court for your community, connect the bot and take your first appeal, in about ten minutes.
+- [Introduction](/docs): Unban is an appeals court a community sets up once, ruled by GenLayer validators from the community's own written rules.
+- [Evaluation results with transactions](/docs/more/evaluation): The golden cases and the held-out cases, through real consensus on Studio Next, exactly as they came out.
+- [FAQ and changelog](/docs/more/faq): Short answers, and what changed.
+- [The judge prompt, word for word](/docs/more/judge-prompt): The JUDGE constant in contracts/unban.py, extracted at build time.
+- [Limitations](/docs/more/limitations): What Unban decides, and what it honestly cannot.
+- [Addresses and network](/docs/reference/addresses): The network Unban runs on and the deployment this site reads, generated from deployment.json.
+- [Bot configuration](/docs/reference/bot-configuration): Every environment variable the read-only Discord bot reads.
+- [Contract reference](/docs/reference/contract): Every public method of contracts/unban.py, generated from the source at build time.
+- [Errors](/docs/reference/errors): Every refusal the contract can raise, generated from the source.

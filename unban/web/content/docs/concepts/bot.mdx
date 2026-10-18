@@ -1,0 +1,21 @@
+---
+title: The bot and what it can do
+description: A read-only Discord bot that applies rulings with the server's own token.
+---
+
+The bot in `unban/bot` polls `list_appeals(court_id, "DONE", 0, 50)` every minute and, for each ruling it has not applied yet:
+
+| Ruling | What the bot does in Discord |
+| --- | --- |
+| OVERTURNED, DEFAULTED | removes the ban (`DELETE /guilds/{guild}/bans/{user}`) |
+| REDUCED | removes the ban, then applies the ladder level from its config, for example a timeout of 24 hours |
+| UPHELD | nothing |
+
+It finds the member by matching the handle at the start of the case line against the server's ban list.
+
+<Callout type="warn" title="What it cannot do">
+It holds no wallet key and signs nothing. It cannot change a ruling, file anything, or move money. Without the bot, the ruling
+and the community's refusal to apply it are both public.
+</Callout>
+
+It remembers what it has applied in a local `state.json`, so a restart never applies a ruling twice.

@@ -1,0 +1,35 @@
+---
+title: Fees, compensation and the pool
+description: Where every wei sits, and the one method that pays.
+---
+
+Every wei the contract holds sits in exactly one place, and `tests/test_direct.py` checks it after every call:
+
+- a court's **pool**, free to reserve;
+- a court's **reserved** amount, one compensation per open appeal that found the pool funded;
+- the **fee** of every open appeal;
+- a member's **balance**, owed after a ruling.
+
+## Reserve on filing
+
+`appeal` moves one compensation from the pool to reserved. A ruling for the member therefore never finds the pool empty. If the
+pool holds less than one compensation, nothing is reserved and only the fee is at stake.
+
+## Settlement
+
+`judge` and `default` only move balances:
+
+| Outcome | Fee | Reserved compensation |
+| --- | --- | --- |
+| OVERTURNED, DEFAULTED | to the member | to the member |
+| REDUCED | to the member | back to the pool |
+| UPHELD | to the pool | back to the pool |
+
+## Withdraw is the only payout
+
+`withdraw()` pays the caller's balance as a top-level transfer. On Studio Next a value transfer is funded only at the root of a
+transaction, so judging never pays anyone directly; the site and the scripts add the External fee allocation a payout needs.
+The same call also returns to a court **owner** the free pool of every court they own that has no open appeal: that is how an
+unused pool is reclaimed. Money already reserved for an open appeal is never part of it.
+
+Anyone can add to a pool with `fund(court_id)`.

@@ -1,0 +1,27 @@
+---
+title: Rules and the penalty ladder
+description: How a court's rules are written, frozen and applied only to bans made after them.
+---
+
+A court has up to **12 numbered rules** in at most 2,500 characters, and a **ladder** of up to **6 penalty levels**, P1 to P6,
+lightest first, each a short label such as "24h mute". Every rule names the level it sets for a first offence and for a
+repeat:
+
+```json title="eval/golden.json (the Kiln court)"
+{"text": "No spam: the same message repeated or flooding a channel.", "first": 2, "repeat": 4}
+```
+
+With the ladder `["warning", "24h mute", "7-day mute", "ban"]`, a first spam offence is P2, a 24 hour mute, and a repeat is P4,
+a ban. A repeat is counted per member and per court: every UPHELD or REDUCED ruling against the member in that court counts,
+and the judge is told how many there were.
+
+## Frozen while appeals are open
+
+`update_court` is refused while any appeal in the court is open. When it succeeds, the new rules apply **only to bans dated
+after the day of the change**. An appeal is judged by the newest rule set that was in force before its ban date, and the appeal
+page says which one. Nobody is judged by a rule written after the fact.
+
+## A rule that is not written cannot be broken
+
+The judge reads only the court's rules and the record. A moderator who bans for something no rule covers will be overturned,
+however reasonable the ban felt. That is the promise a court makes.

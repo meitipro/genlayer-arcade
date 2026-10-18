@@ -1,0 +1,27 @@
+---
+title: The four rulings
+description: UPHELD, REDUCED, OVERTURNED and DEFAULTED, what each means, and what moves.
+---
+
+| Ruling | Meaning | Money | The bot |
+| --- | --- | --- | --- |
+| OVERTURNED | The evidence does not show the cited rule, or any written rule, broken. | Fee back plus compensation from the pool | Lifts the ban |
+| REDUCED · P*n* | A rule was broken, but the ladder sets a lighter penalty than the one applied. | Fee back | Replaces the ban with P*n* |
+| UPHELD | The evidence shows the cited rule broken and the penalty fits the ladder. | Fee goes to the pool | The ban stays |
+| DEFAULTED | No moderator answered within the response window. | Fee back plus compensation | Lifts the ban, never judged |
+
+## Lifecycle of one appeal
+
+```text
+FILED --respond--> ANSWERED --judge--> UPHELD | REDUCED | OVERTURNED
+  |
+  +--no answer in time, default()--> DEFAULTED
+```
+
+`judge` opens once the member has replied, or once the 24 hour reply window has passed. `default` opens once the court's
+response window has passed with no answer. Anyone can call either; who calls changes nothing.
+
+## How a REDUCED level is checked
+
+The normaliser in the contract refuses a REDUCED level that is not on the court's ladder, or that is not lighter than the level
+the moderator applied. The validators compare the verdict and the level, so the bot only ever receives a real, agreed penalty.

@@ -1,0 +1,26 @@
+---
+title: Bot configuration
+description: Every environment variable the read-only Discord bot reads.
+---
+
+```bash
+cd unban/bot
+npm install
+UNBAN_CONTRACT=0x... UNBAN_COURT=1 DISCORD_TOKEN=... DISCORD_GUILD=... npm start
+```
+
+| Variable | Required | Meaning |
+| --- | --- | --- |
+| `UNBAN_CONTRACT` | yes, unless `unban/deployment.json` exists | the Unban contract address |
+| `UNBAN_COURT` | yes | the court number this server uses |
+| `DISCORD_TOKEN` | yes | the server's bot token, with the Ban Members and Moderate Members permissions |
+| `DISCORD_GUILD` | yes | the server id |
+| `UNBAN_LEVELS` | no | JSON mapping ladder levels to actions, default `{"P1":"warn","P2":"timeout:1440","P3":"timeout:10080"}`; a level not listed, such as a ban, is left as a ban |
+| `UNBAN_POLL_SECONDS` | no | how often to read rulings, default 60 |
+| `UNBAN_DRY_RUN` | no | `1` prints what it would do and changes nothing in Discord |
+
+`timeout:N` is a Discord timeout of N minutes, at most 40,320 (28 days), which is Discord's limit. `warn` sends nothing to
+Discord and only logs the ruling.
+
+The bot reads the chain through `https://studio-next.genlayer.com/api` with no account. It never asks for, stores or uses a
+private key.

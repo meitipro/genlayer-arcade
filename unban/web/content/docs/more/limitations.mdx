@@ -1,0 +1,24 @@
+---
+title: Limitations
+description: What Unban decides, and what it honestly cannot.
+---
+
+<Callout title="Honest limits">
+Unban decides whether the record shows a written rule broken and whether the penalty fits the ladder, not what really happened
+in the chat. It trusts the quoted evidence unless the record contradicts itself, it covers a community's own rules rather than
+platform terms, and it only works as well as the rules a community is willing to write down.
+</Callout>
+
+| Attack or risk | What happens | The answer in the design |
+| --- | --- | --- |
+| Spam appeals | Banned raiders appeal in bulk | Each costs the fee, which an upheld ruling sends to the pool, and one appeal per address per court per week |
+| Moderators ignoring appeals | Nobody answers | DEFAULTED after the window, the ban is lifted and the pool pays; response times are public |
+| Fabricated evidence | A moderator invents a quote | The judge cannot check chat logs; the quote sits in public next to the moderator's address and the member's reply disputes it |
+| Rules written after the fact | A rule is added to justify an old ban | Rules freeze while appeals are open and apply only to bans dated after a change |
+| A court that pays nothing | The owner never funds the pool | The court page shows the pool, and appeals still refund the fee when the member is right |
+| Ignoring the ruling | The community keeps the ban anyway | The bot applies rulings automatically; without it, the ruling and the refusal are both public |
+| Prompt injection | An appeal or a quote tells the judge what to rule | Fenced as data, ignored by rule, judged on the conduct in the record; golden case 9 tests it |
+| A new address | A member appeals from a fresh wallet to look like a first offender | Earlier rulings are counted per address; the moderator's quotes and the member's handle are still public |
+
+Not built yet: evidence locked by hash at ban time, Telegram and X adapters for the bot, shared rulebooks, and rulings shown on
+a member's GenLayer Identity card.

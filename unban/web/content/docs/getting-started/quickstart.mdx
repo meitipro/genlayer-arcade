@@ -1,0 +1,66 @@
+---
+title: "Quickstart: open a court"
+description: Open a court for your community, connect the bot and take your first appeal, in about ten minutes.
+---
+
+## 1. Get a wallet on Studio Next
+
+Unban runs on GenLayer Studio Next, chain 61997. Any page with a form adds the network to MetaMask for you and offers test GEN
+from Studio's faucet when the wallet is empty.
+
+## 2. Open a court
+
+The quickest way is the [Open a court](/new) page: start from a template, edit the rules and the ladder, list your moderators,
+and sign. The same call from code:
+
+<Tabs items={["TypeScript (genlayer-js)", "Python (genlayer-py)"]}>
+<Tab value="TypeScript (genlayer-js)">
+
+```ts title="web/components/OpenCourtForm.tsx"
+const args = [
+  name.trim(),
+  JSON.stringify(rules.map((r) => ({ text: r.text.trim(), first: r.first, repeat: r.repeat }))),
+  JSON.stringify(ladder.map((l) => l.trim())),
+  JSON.stringify(modList),
+  feeWei,
+  compWei,
+  hoursN,
+];
+const { hash, receipt } = await send(address!, { address: contract, functionName: "open_court", args, value: poolWei }, (phase, hash) => setTx({ phase, hash }));
+```
+
+`send` (in `web/lib/wallet.ts`) estimates the fee deposit with Studio's own simulation, signs in the wallet, waits for the
+validators' decision and throws the contract's sentence when the write is refused.
+
+</Tab>
+<Tab value="Python (genlayer-py)">
+
+```python title="scripts/seed.py"
+kiln = owner.send(contract, "open_court", ["Kiln Discord", json.dumps(court["rules"]), json.dumps(court["ladder"]),
+                                           json.dumps([mod]), 2 * GEN, 5 * GEN, 48], value=40 * GEN)
+```
+
+`Chain.send` (in `scripts/chain.py`) does the same as the site: fee estimate, write, wait, and a success test that refuses to
+call a refusal a success.
+
+</Tab>
+</Tabs>
+
+Each rule is `{"text", "first", "repeat"}`: the rule and the ladder level (1 is P1) for a first offence and for a repeat.
+Limits: 1 to 12 rules in 2,500 characters, 1 to 6 ladder levels of up to 24 characters, 1 to 10 moderators, a fee above zero,
+and a response window of 12 to 96 hours. The value you send is the first pool funding.
+
+## 3. Connect the bot
+
+```bash
+cd unban/bot
+npm install
+UNBAN_CONTRACT=0x... UNBAN_COURT=1 DISCORD_TOKEN=... DISCORD_GUILD=... npm start
+```
+
+The bot reads rulings, never signs anything and holds no wallet key. See [Bot configuration](/docs/reference/bot-configuration).
+
+## 4. Take your first appeal
+
+Share the court page. When a member appeals, it shows up on the [moderator desk](/mod) with a timer. Answer with the rule, the
+level and the exact messages before the window closes.
