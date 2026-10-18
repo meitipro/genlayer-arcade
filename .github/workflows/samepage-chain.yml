@@ -1,0 +1,24 @@
+name: samepage-chain
+# Runs the Samepage scripts that talk to Studio Next (chain 61997). The
+# development container cannot reach the GenLayer RPC, a GitHub runner can.
+on:
+  push:
+    branches: [claude/project-deploy-test-t7j87s]
+    paths: ["samepage/chain/**", ".github/workflows/samepage-chain.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: samepage-chain
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - name: probe
+        run: |
+          curl -sS -m 20 -X POST https://studio-next.genlayer.com/api -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]}'
