@@ -104,7 +104,13 @@ Two Playwright browser contexts with stand-in wallets signing through `window.et
   - round2.r1.seal_a: [`0xd79bb41e…6d2e05`](https://explorer-studio-dev.genlayer.com/tx/0xd79bb41e7318270a841263bda1e236367102420c7b60a2a7ed6473241e6d2e05)
   - round2.r1.seal_b: [`0xdd87cb8b…b8c262`](https://explorer-studio-dev.genlayer.com/tx/0xdd87cb8bbaf98f1c59c1dd8daba517f54dc6f0c5988f586de10b987918b8c262)
 
-## Balances read back after finality (2026-10-19T01:41:54Z)
+## No-show settled
 
-- `0x71b8DddE7A4bF0338dA4a652A387dD6805B8Ce49`: wallet 99.999323 GEN, in Samepage 0.000000 GEN
-- `0xdcB849f078915713f89005aEA474E0A93B3D6F25`: wallet 99.999164 GEN, in Samepage 0.000000 GEN
+- Page #20: SEALING -> NO_SHOW, absent 0x95f0583b6f2aca1128e06dd47d96661656ff1c9e, settled by a stranger in [`0xc5b36977…8d7c31`](https://explorer-studio-dev.genlayer.com/tx/0xc5b36977f35aa3417eddb7f7a5c8ba1b5c9096e663652b22de84c53c7a8d7c31)
+- Balances inside the contract before {'0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E': '0', '0xf7636BCf2AFB273B008926A279Dbe85c9e57a535': '0'} and after {'0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E': '0', '0xf7636BCf2AFB273B008926A279Dbe85c9e57a535': '20000000000000000000'}
+- A second settle refused: "[EXPECTED] this page is closed" [`0x87890e24…ebadbc`](https://explorer-studio-dev.genlayer.com/tx/0x87890e249f475f1745e7b4d23432ff17bc5f4e5aa5c61ccda588723e3aebadbc)
+
+## Balances read back after finality (2026-10-19T07:38:14Z)
+
+- `0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E`: wallet 109.999243 GEN, in Samepage 0.000000 GEN
+- `0xf7636BCf2AFB273B008926A279Dbe85c9e57a535`: wallet 109.999164 GEN, in Samepage 20.000000 GEN

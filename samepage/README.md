@@ -22,6 +22,7 @@ The two sides of a deal each write it in their own words, sealed so neither can 
 | Reviewer's path | page #21 through the site's own signing code: two rounds, five refusals on chain, both withdrawals exact to the wei ([chain/out/site-e2e.json](chain/out/site-e2e.json)) |
 | Real browser | page #22, 11 transactions signed in Playwright through `window.ethereum`, open to withdraw ([screens](chain/out/screens)) |
 | Site and docs | [`web/`](web), a static Next.js export with genlayer-js 2.0.0-rc.1 and Fumadocs, deployed as this branch's Vercel preview |
+| No-show | page #20: the counterparty joined and never sealed; after the window a stranger settled it and both deposits went to the side that showed up ([chain/out/no-show.json](chain/out/no-show.json)) |
 | Every link | [submission/EVIDENCE.md](submission/EVIDENCE.md), generated from the run records |
 
 ## How it works

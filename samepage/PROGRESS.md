@@ -18,3 +18,4 @@ One line per step, newest last.
 - Balances read back after finality: both site-run payees hold 99.999 GEN (100 funded, 20 deposited, 20 withdrawn, fees spent). The site run had read kiln's wallet before the payout showed; it now waits for the wallet too.
 - UI: the page's side panel now sits beside the main column on desktop; the countdown says UTC.
 - `submission/`: 512 px logo, portal text with every field under its limit, X post, silent demo script, `EVIDENCE.md` generated from the run records.
+- No-show settled after its window (runner run 6): page #20 SEALING -> NO_SHOW, Sera recorded absent, both 10 GEN deposits (20 GEN) moved to Kiln's balance inside the contract, settled by a stranger in `0xc5b36977…`; a second settle refused with "this page is closed". Moving money here is balances only; Kiln's 20 GEN stays withdrawable by Kiln.
