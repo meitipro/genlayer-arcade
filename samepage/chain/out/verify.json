@@ -1,0 +1,8 @@
+{
+  "address": "0x6654e80CA0656CC007991D073a274D1067F82999",
+  "chain_sha256": "1f9759d02722c651e42ae7fbdeb17113c81c248deaffe97c5c152762dc49cf80",
+  "lint": "lint: exit 0 ✓ Lint passed (3 checks)\nvalidate: exit 0 ✓ Validation passed /   Contract: Samepage /   Methods: 10 (2 view, 8 write)",
+  "match": true,
+  "note": "byte for byte",
+  "repo_sha256": "1f9759d02722c651e42ae7fbdeb17113c81c248deaffe97c5c152762dc49cf80"
+}

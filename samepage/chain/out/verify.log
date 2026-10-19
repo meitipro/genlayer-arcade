@@ -1,0 +1,6 @@
+0x6654e80CA0656CC007991D073a274D1067F82999: MATCH (byte for byte)
+  repo  sha256 1f9759d02722c651e42ae7fbdeb17113c81c248deaffe97c5c152762dc49cf80  31362 bytes
+  chain sha256 1f9759d02722c651e42ae7fbdeb17113c81c248deaffe97c5c152762dc49cf80  31362 bytes
+  genvm-lint over the deployed bytes:
+  lint: exit 0 ✓ Lint passed (3 checks)
+  validate: exit 0 ✓ Validation passed /   Contract: Samepage /   Methods: 10 (2 view, 8 write)

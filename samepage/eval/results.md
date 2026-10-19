@@ -1,0 +1,26 @@
+# Golden cases, through real consensus
+
+Contract `0x6654e80CA0656CC007991D073a274D1067F82999` on Studio Next (chain 61997).
+`eval/golden.json` sha256 `808b88a066398acfa237b0d95f0d5e981c26d86f5884cc1c798a4fdd4715009c`, committed before the first run (see `eval/GOLDEN.lock` and its commit).
+Scored on all six statuses. H1 to H3 are held out, have no expected answer, ran once, and are published as they came out.
+
+| case | expected | came out | six statuses (amount, deliverable, deadline, payment, rights, cancellation) | terms right | result | check transaction |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | SAME PAGE | SAME PAGE | MATCH · MATCH · MATCH · MATCH · ABSENT · ABSENT | 6 / 6 | pass | [0xab227456…](https://explorer-studio-dev.genlayer.com/tx/0xab227456bb845d8da9cffd9e89479c001c63ac3579370b1cf5b8e05acc46edbc) |
+| 2 | DIFFERENT | DIFFERENT · 1 | DIFFER · MATCH · MATCH · MATCH · ABSENT · ABSENT | 6 / 6 | pass | [0x1779b473…](https://explorer-studio-dev.genlayer.com/tx/0x1779b4730f1362e81439422f904b214b6aa3d7565c8d688beba52da3a0bb813b) |
+| 3 | DIFFERENT | DIFFERENT · 1 | MATCH · MATCH · MATCH · DIFFER · ABSENT · ABSENT | 6 / 6 | pass | [0x66bb16a1…](https://explorer-studio-dev.genlayer.com/tx/0x66bb16a130123b664c3fd41d47ada509598ddbf0c7ebb4ab9f26800c0a2b16fc) |
+| 4 | DIFFERENT | DIFFERENT · 2 | MATCH · DIFFER · DIFFER · ABSENT · ABSENT · ABSENT | 6 / 6 | pass | [0xcd88a24a…](https://explorer-studio-dev.genlayer.com/tx/0xcd88a24aa8237527463abd8a23ab8fc9908c44811556085f305184a27a1f8589) |
+| 5 | GAPS | GAPS · 2 | ABSENT · MATCH · ABSENT · ABSENT · ABSENT · ABSENT | 6 / 6 | pass | [0x5cbf4f99…](https://explorer-studio-dev.genlayer.com/tx/0x5cbf4f99af37504122f28fe8549a8cfca4e88ee47566703a843941a1a9443781) |
+| 6 | SAME PAGE | DIFFERENT · 1 | MATCH · MATCH · MATCH · DIFFER · ABSENT · ABSENT | 5 / 6 | **miss** | [0x7adf2693…](https://explorer-studio-dev.genlayer.com/tx/0x7adf2693bb461c862db84b585089ffa8f6e34086251437644d6f493e7e2eab6d) |
+| 7 | DIFFERENT | DIFFERENT · 1 | MATCH · MATCH · MATCH · DIFFER · ABSENT · ABSENT | 6 / 6 | pass | [0xb326069d…](https://explorer-studio-dev.genlayer.com/tx/0xb326069d55622e7c9acceaa2f78bac6356466cebdfb560aaed66dafdff8787dd) |
+| 8 | DIFFERENT | DIFFERENT · 1 | DIFFER · MATCH · MATCH · MATCH · ABSENT · ABSENT | 6 / 6 | pass | [0x916cfa31…](https://explorer-studio-dev.genlayer.com/tx/0x916cfa31f8f7d8668dd35fd2c0b2d735a243e8d9dc50e45d6e8181708a0c5977) |
+| 9 | DIFFERENT | DIFFERENT · 1 | MATCH · MATCH · MATCH · MATCH · DIFFER · ABSENT | 6 / 6 | pass | [0xc3c14d59…](https://explorer-studio-dev.genlayer.com/tx/0xc3c14d59790cf815d8bd1eda9b692348991e9754c0648cfbcb64789b6e6c4fef) |
+| H1 | EITHER | DIFFERENT · 2 | MATCH · MATCH · DIFFER · DIFFER · ABSENT · ABSENT |  | held out (3 attempts) | [0x69aa9104…](https://explorer-studio-dev.genlayer.com/tx/0x69aa910402687d98d38482cb42545e716c44440c3808eb15c6ad4a7f8a7ac730) |
+| H2 | EITHER | DIFFERENT · 2 | DIFFER · MATCH · MATCH · DIFFER · ABSENT · ABSENT |  | held out | [0x40b6c388…](https://explorer-studio-dev.genlayer.com/tx/0x40b6c388200b5bf8c6a8c904d381dc054744313ba2ae7a02f491a9c83f986ced) |
+| H3 | EITHER | DIFFERENT · 1 | MATCH · DIFFER · MATCH · MATCH · ABSENT · ABSENT |  | held out | [0x168f34a5…](https://explorer-studio-dev.genlayer.com/tx/0x168f34a5da7b9ca89319238cde56f654169d9fa7ca4499a0db7e3791341590e9) |
+
+**8 of 9** scored cases matched on all six statuses.
+
+Terms the two presentation orders read differently, stored as DIFFER: case H1: payment; case H2: amount; case H3: deliverable.
+
+Every step of every case (open, join, two seals, two opens, check) is in `eval/results.json` with its transaction hash.

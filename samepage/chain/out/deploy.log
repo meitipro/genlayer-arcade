@@ -1,0 +1,22 @@
+contract contracts/samepage.py  31362 bytes  sha256 1f9759d02722c651e42ae7fbdeb17113c81c248deaffe97c5c152762dc49cf80
+live runtime accepts it: 10 methods ['check', 'get_page', 'join', 'list_pages', 'no_show', 'open_page', 'reveal', 'seal', 'sign', 'withdraw']
+accounts
+  deployer   0xF034f7C121Fb84a0ff2733e98BDc39F41DE0C8f4
+  funded 0xF034f7C1 0.00 -> 100.00 GEN
+deployed 0x6654e80CA0656CC007991D073a274D1067F82999
+  https://explorer-studio-dev.genlayer.com/tx/0x582486afa6be2e8cb8ff1a54f35d8f4bb3cdd5c07bac5224c4db19ea84a5a726
+source read back from the chain: MATCH byte for byte
+{
+  "network": "studio-next",
+  "chain_id": 61997,
+  "address": "0x6654e80CA0656CC007991D073a274D1067F82999",
+  "deploy_tx": "0x582486afa6be2e8cb8ff1a54f35d8f4bb3cdd5c07bac5224c4db19ea84a5a726",
+  "explorer": "https://explorer-studio-dev.genlayer.com/address/0x6654e80CA0656CC007991D073a274D1067F82999",
+  "deploy_tx_url": "https://explorer-studio-dev.genlayer.com/tx/0x582486afa6be2e8cb8ff1a54f35d8f4bb3cdd5c07bac5224c4db19ea84a5a726",
+  "sha256": "1f9759d02722c651e42ae7fbdeb17113c81c248deaffe97c5c152762dc49cf80",
+  "bytes": 31362,
+  "source_matches": true,
+  "deployed_from_commit": "d5d93380eedef3e7a1e50cc6b6f3133e88585895",
+  "deployed_at": "2026-10-18T23:39:33Z",
+  "deployer": "0xF034f7C121Fb84a0ff2733e98BDc39F41DE0C8f4"
+}

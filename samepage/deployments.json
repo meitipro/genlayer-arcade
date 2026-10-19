@@ -1,0 +1,32 @@
+{
+  "current": {
+    "address": "0x6654e80CA0656CC007991D073a274D1067F82999",
+    "bytes": 31362,
+    "chain_id": 61997,
+    "deploy_tx": "0x582486afa6be2e8cb8ff1a54f35d8f4bb3cdd5c07bac5224c4db19ea84a5a726",
+    "deploy_tx_url": "https://explorer-studio-dev.genlayer.com/tx/0x582486afa6be2e8cb8ff1a54f35d8f4bb3cdd5c07bac5224c4db19ea84a5a726",
+    "deployed_at": "2026-10-18T23:39:33Z",
+    "deployed_from_commit": "d5d93380eedef3e7a1e50cc6b6f3133e88585895",
+    "deployer": "0xF034f7C121Fb84a0ff2733e98BDc39F41DE0C8f4",
+    "explorer": "https://explorer-studio-dev.genlayer.com/address/0x6654e80CA0656CC007991D073a274D1067F82999",
+    "network": "studio-next",
+    "sha256": "1f9759d02722c651e42ae7fbdeb17113c81c248deaffe97c5c152762dc49cf80",
+    "source_matches": true
+  },
+  "history": [
+    {
+      "address": "0x6654e80CA0656CC007991D073a274D1067F82999",
+      "bytes": 31362,
+      "chain_id": 61997,
+      "deploy_tx": "0x582486afa6be2e8cb8ff1a54f35d8f4bb3cdd5c07bac5224c4db19ea84a5a726",
+      "deploy_tx_url": "https://explorer-studio-dev.genlayer.com/tx/0x582486afa6be2e8cb8ff1a54f35d8f4bb3cdd5c07bac5224c4db19ea84a5a726",
+      "deployed_at": "2026-10-18T23:39:33Z",
+      "deployed_from_commit": "d5d93380eedef3e7a1e50cc6b6f3133e88585895",
+      "deployer": "0xF034f7C121Fb84a0ff2733e98BDc39F41DE0C8f4",
+      "explorer": "https://explorer-studio-dev.genlayer.com/address/0x6654e80CA0656CC007991D073a274D1067F82999",
+      "network": "studio-next",
+      "sha256": "1f9759d02722c651e42ae7fbdeb17113c81c248deaffe97c5c152762dc49cf80",
+      "source_matches": true
+    }
+  ]
+}
