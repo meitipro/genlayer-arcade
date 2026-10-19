@@ -1,5 +1,9 @@
 {
-  "tasks": ["seed", "site-e2e", "browser-e2e"],
-  "note": "seed the front page, walk the reviewer's path through lib/chain.ts, then the full loop in a real browser",
+  "tasks": [
+    "seed",
+    "site-e2e",
+    "browser-e2e"
+  ],
+  "note": "second attempt: the first run's records were lost when the commit step refused a dirty checkout; seed again, the reviewer's path, the browser",
   "stop_on_failure": []
 }

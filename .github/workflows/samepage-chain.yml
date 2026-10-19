@@ -45,6 +45,13 @@ jobs:
           GENVM_VERSION: v0.6.0-rc5
           PYTHONUNBUFFERED: "1"
         run: python scripts/runner.py
+      - name: keep the records as an artifact too
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: samepage-chain-out-${{ github.run_id }}
+          path: samepage/chain/out
+          if-no-files-found: ignore
       - name: commit results
         if: always()
         run: |
@@ -54,7 +61,7 @@ jobs:
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git commit -q -m "Samepage runner: $(jq -r '.tasks | join(", ")' chain/REQUEST.json) on Studio Next"
           for i in 1 2 3 4; do
-            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            git pull -q --rebase --autostash origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
             sleep $((i * 5))
           done
           exit 1

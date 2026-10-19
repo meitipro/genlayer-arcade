@@ -147,6 +147,36 @@ async function accepted(person, timeout = 300_000) {
   if (/Refused:|declined|did not answer|was not accepted/.test(text)) throw new Error(text.match(/(Refused:[^\n]*|[^\n]*did not answer[^\n]*|[^\n]*not accepted[^\n]*)/)?.[0] ?? 'write failed');
 }
 
+/**
+ * One write through the page: open it, fill what the step needs, click, and
+ * wait for the decision. A transient RPC failure is retried after a pause, but
+ * only after re-reading the page: if the button is gone, the write landed.
+ */
+async function write(person, url, button, fill) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    await person.page.goto(url);
+    await person.page.waitForFunction(() => !/Reading (the page number|page #)/.test(document.body.innerText), null, { timeout: 60_000 });
+    await person.page.waitForTimeout(1500);
+    const control = person.page.getByRole('button', { name: button });
+    if (attempt > 1 && (await control.count()) === 0) {
+      log.steps.push({ who: person.label, note: `the button "${button}" is gone on re-read, so attempt ${attempt - 1} landed` });
+      return;
+    }
+    if (fill) await fill();
+    await control.click();
+    try {
+      await accepted(person);
+      return;
+    } catch (error) {
+      const text = String(error?.message ?? error);
+      log.steps.push({ who: person.label, attempt, transient: text.slice(0, 300) });
+      save();
+      if (!/did not answer/.test(text) || attempt === 3) throw error;
+      await person.page.waitForTimeout(20_000);
+    }
+  }
+}
+
 async function main() {
   const server = await serve(4610);
   const base = 'http://localhost:4610';
@@ -180,9 +210,7 @@ async function main() {
   save();
 
   await step(sera, 'joins from the link', async () => {
-    await sera.page.goto(`${base}/p/${id}`);
-    await sera.page.getByRole('button', { name: /Join with 2 GEN/ }).click();
-    await accepted(sera);
+    await write(sera, `${base}/p/${id}`, /Join with 2 GEN/);
     await photo(sera, 'joined');
   });
 
@@ -192,18 +220,15 @@ async function main() {
   };
   for (const p of [kiln, sera]) {
     await step(p, 'writes and seals round 1', async () => {
-      await p.page.goto(`${base}/p/${id}`);
-      await p.page.getByLabel('The deal, in your own words').fill(accounts[p.label]);
-      await photo(p, 'writing');
-      await p.page.getByRole('button', { name: 'Seal my account' }).click();
-      await accepted(p);
+      await write(p, `${base}/p/${id}`, 'Seal my account', async () => {
+        await p.page.getByLabel('The deal, in your own words').fill(accounts[p.label]);
+        await photo(p, 'writing');
+      });
     });
   }
   for (const p of [kiln, sera]) {
     await step(p, 'opens their account', async () => {
-      await p.page.goto(`${base}/p/${id}`);
-      await p.page.getByRole('button', { name: 'Open my account' }).click();
-      await accepted(p);
+      await write(p, `${base}/p/${id}`, 'Open my account');
     });
   }
   await step(kiln, 'runs the check', async () => {
@@ -223,9 +248,7 @@ async function main() {
   if (log.round1 === 'SAME PAGE') {
     for (const p of [kiln, sera]) {
       await step(p, 'signs', async () => {
-        await p.page.goto(`${base}/p/${id}`);
-        await p.page.getByRole('button', { name: 'Sign the record' }).click();
-        await accepted(p);
+        await write(p, `${base}/p/${id}`, 'Sign the record');
       });
     }
     await step(kiln, 'reads the agreed record', async () => {
@@ -236,8 +259,8 @@ async function main() {
     for (const p of [kiln, sera]) {
       await step(p, 'withdraws the deposit', async () => {
         await p.page.goto(`${base}/me`);
-        await p.page.getByRole('button', { name: /Withdraw 2/ }).click();
-        await accepted(p);
+        await p.page.getByRole('button', { name: /Withdraw 2/ }).waitFor({ timeout: 60_000 });
+        await write(p, `${base}/me`, /Withdraw 2/);
         await photo(p, 'withdrawn');
       });
     }

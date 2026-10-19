@@ -53,8 +53,8 @@ export function useTx() {
         : /User rejected|denied/i.test(String(e?.message))
           ? 'You declined in the wallet. Nothing was sent.'
           : isTransient(e)
-            ? 'Studio did not answer. Wait a minute and try again.'
-            : String(e?.shortMessage ?? e?.message ?? e).slice(0, 220);
+            ? `Studio did not answer (${String(e?.shortMessage ?? e?.message ?? e).split('\n')[0].slice(0, 140)}). Wait a minute and try again.`
+            : String(e?.shortMessage ?? e?.message ?? e).split('\n')[0].slice(0, 220);
       setState({ kind: 'failed', message, hash: e instanceof Refused ? e.hash : undefined });
     }
   }
