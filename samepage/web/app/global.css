@@ -1,0 +1,176 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+/*
+ * Samepage: the Recourse dark ground with one accent. Teal marks matching
+ * terms and agreed records, differences are hatched with both sides shown,
+ * absent terms stay grey, no-shows are dotted. 4 px radius, no gradients.
+ */
+:root,
+.dark {
+  --ground: #0b0d0f;
+  --raised: #121518;
+  --raised-2: #181c20;
+  --line: #262b31;
+  --line-strong: #39404a;
+  --ink: #e8ecef;
+  --ink-2: #a9b1b9;
+  --ink-3: #7a838c;
+  --teal: #2dd4bf;
+  --teal-ink: #062b27;
+  --teal-soft: rgba(45, 212, 191, 0.1);
+  --differ: #f2b46d;
+  --differ-soft: rgba(242, 180, 109, 0.09);
+  --absent: #6b737b;
+  --danger: #f08a8a;
+  --radius: 4px;
+
+  --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif: 'IBM Plex Serif', ui-serif, Georgia, serif;
+
+  --color-fd-background: var(--ground);
+  --color-fd-foreground: var(--ink);
+  --color-fd-muted: var(--raised);
+  --color-fd-muted-foreground: var(--ink-2);
+  --color-fd-popover: var(--raised);
+  --color-fd-popover-foreground: var(--ink);
+  --color-fd-card: var(--raised);
+  --color-fd-card-foreground: var(--ink);
+  --color-fd-border: var(--line);
+  --color-fd-primary: var(--teal);
+  --color-fd-primary-foreground: var(--teal-ink);
+  --color-fd-secondary: var(--raised-2);
+  --color-fd-secondary-foreground: var(--ink);
+  --color-fd-accent: var(--raised-2);
+  --color-fd-accent-foreground: var(--ink);
+  --color-fd-ring: var(--teal);
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+}
+
+html {
+  scrollbar-gutter: stable;
+  background: var(--ground);
+  color-scheme: dark;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: var(--font-mono); }
+.serif { font-family: var(--font-serif); }
+
+/* -- site primitives ------------------------------------------------------ */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px) { .wrap { padding: 0 16px; } }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.panel {
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding: 0 16px; border-radius: var(--radius);
+  font-weight: 500; font-size: 15px; border: 1px solid var(--line-strong);
+  color: var(--ink); background: transparent; cursor: pointer; white-space: nowrap;
+  transition: border-color .15s, background-color .15s;
+}
+.btn:hover { border-color: var(--ink-3); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-solid { background: var(--teal); color: var(--teal-ink); border-color: var(--teal); }
+.btn-solid:hover { background: #5ee6d4; border-color: #5ee6d4; }
+.btn-sm { height: 32px; padding: 0 12px; font-size: 14px; }
+
+.input, .textarea, .select {
+  width: 100%; background: var(--ground); color: var(--ink);
+  border: 1px solid var(--line-strong); border-radius: var(--radius);
+  padding: 10px 12px; font-size: 15px; font-family: var(--font-sans);
+}
+.input:focus, .textarea:focus, .select:focus { outline: 2px solid var(--teal); outline-offset: 1px; border-color: transparent; }
+.textarea { min-height: 170px; resize: vertical; line-height: 1.55; }
+.label { display: block; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 9px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em;
+  border: 1px solid var(--line-strong); color: var(--ink-2);
+}
+.dot { width: 7px; height: 7px; border-radius: 999px; background: var(--teal); display: inline-block; }
+
+/* statuses */
+.st { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; font-weight: 600; }
+.st-MATCH { color: var(--teal); }
+.st-DIFFER { color: var(--differ); }
+.st-ABSENT { color: var(--absent); }
+
+.row-DIFFER {
+  background-color: var(--differ-soft);
+  background-image: repeating-linear-gradient(135deg, rgba(242, 180, 109, 0.09) 0 6px, transparent 6px 12px);
+}
+.row-MATCH { box-shadow: inset 3px 0 0 var(--teal); }
+.row-ABSENT { color: var(--ink-3); }
+
+.verdict {
+  display: inline-flex; align-items: center; height: 30px; padding: 0 12px;
+  font-family: var(--font-mono); font-weight: 600; font-size: 13px; letter-spacing: .1em;
+  border-radius: var(--radius); border: 1px solid;
+}
+.verdict-SAME_PAGE, .verdict-AGREED { color: var(--teal); border-color: var(--teal); background: var(--teal-soft); }
+.verdict-DIFFERENT { color: var(--differ); border-color: var(--differ);
+  background-image: repeating-linear-gradient(135deg, rgba(242, 180, 109, 0.12) 0 5px, transparent 5px 10px); }
+.verdict-GAPS { color: var(--ink-2); border-color: var(--line-strong); }
+.verdict-NO_SHOW { color: var(--ink-2); border: 1px dotted var(--ink-3); }
+.verdict-NOT_AGREED { color: var(--ink-2); border-color: var(--line-strong); }
+
+.noshow { border: 1px dotted var(--ink-3) !important; }
+
+a.link { color: var(--teal); text-underline-offset: 3px; }
+a.link:hover { text-decoration: underline; }
+.muted { color: var(--ink-2); }
+.faint { color: var(--ink-3); }
+
+.notice { border-left: 3px solid var(--teal); background: var(--raised); padding: 12px 14px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 14.5px; }
+.notice-warn { border-left-color: var(--differ); }
+.notice-bad { border-left-color: var(--danger); }
+
+table.terms { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+table.terms th { text-align: left; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; font-weight: 500; color: var(--ink-3); padding: 10px 12px; border-bottom: 1px solid var(--line); text-transform: uppercase; }
+table.terms td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.terms tr:last-child td { border-bottom: 0; }
+
+.account-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; line-height: 1.6; }
+.hash { font-family: var(--font-mono); font-size: 12.5px; overflow-wrap: anywhere; }
+
+.spin { width: 14px; height: 14px; border: 2px solid var(--line-strong); border-top-color: var(--teal); border-radius: 999px; animation: spin .8s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* docs: Fumadocs uses its own radius variables in places */
+#nd-docs-layout, #nd-page { --radius: 4px; }

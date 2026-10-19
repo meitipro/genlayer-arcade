@@ -25,7 +25,9 @@ class Side:
 
 
 def open_page(side: Side, address: str, title: str, other: str, deposit: int, hours: int) -> tuple[int, dict]:
+    # region: open-page
     outcome = side.chain.send(address, "open_page", [title, other, deposit, hours], value=deposit)
+    # endregion
     page = outcome["result"]
     if not isinstance(page, int):
         # Older receipts may not carry the return value; the newest page of the opener is it.
@@ -39,14 +41,18 @@ def join(side: Side, address: str, page: int, deposit: int) -> dict:
 
 
 def seal(side: Side, address: str, page: int, round_no: int, text: str) -> dict:
-    salt = new_salt()
+    # region: seal
+    salt = new_salt()  # 32 hex characters, kept with the text as the ticket
     side.tickets[round_no] = (text, salt)
     return side.chain.send(address, "seal", [page, seal_of(text, salt, side.address)])
+    # endregion
 
 
 def reveal(side: Side, address: str, page: int, round_no: int) -> dict:
+    # region: reveal
     text, salt = side.tickets[round_no]
     return side.chain.send(address, "reveal", [page, text, salt])
+    # endregion
 
 
 def check(caller: Side, address: str, page: int) -> dict:

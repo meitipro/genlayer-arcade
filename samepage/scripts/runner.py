@@ -24,11 +24,9 @@ TASKS = {
     "verify": [sys.executable, "scripts/verify.py"],
     "golden": [sys.executable, "eval/run_golden.py"],
     "golden-report": [sys.executable, "eval/run_golden.py", "--report"],
-    "e2e": [sys.executable, "scripts/e2e.py"],
     "seed": [sys.executable, "scripts/seed.py"],
-    "site-e2e": ["node", "--experimental-strip-types", "scripts/site-e2e.mts"],
-    "browser-e2e": ["node", "web/e2e/browser.mjs"],
-    "no-show-open": [sys.executable, "scripts/no_show.py", "open"],
+    "site-e2e": ["bash", "-c", "cd web && node scripts/generate.mjs && npx tsx e2e/site.mts"],
+    "browser-e2e": ["bash", "-c", "cd web && npm i --no-save --no-audit --no-fund playwright@1.64.1 && npx playwright install --with-deps chromium && rm -rf .next out && npm run build && node e2e/browser.mjs"],
     "no-show-settle": [sys.executable, "scripts/no_show.py", "settle"],
 }
 

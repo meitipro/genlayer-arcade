@@ -1,0 +1,24 @@
+---
+title: FAQ and changelog
+description: Short answers, and what changed.
+---
+
+## FAQ
+
+**Is it a contract?** It is a record both sides wrote and signed: both accounts, six statuses and two signatures, public and timestamped. It is not legal advice and holds no payment for the work.
+
+**Who sees my account?** Nobody until both have sealed; the chain holds only a hash. Once both open, both accounts are public.
+
+**What if they ghost?** A side that misses a window loses its deposit to the other, and anyone can settle it once the window closes.
+
+**Can one side keep their round 1 text in round 2?** Yes. Either side may reseal the same text.
+
+**Can the model decide the result?** No. The model labels six terms; the contract computes SAME PAGE, DIFFERENT or GAPS from the labels, and validators must agree on every label.
+
+**What if the check never finishes?** After the check window closes, `no_show` closes the page NOT AGREED and returns both deposits.
+
+**Which network?** GenLayer Studio Next, chain 61997.
+
+## Changelog
+
+- **v0.1.0**: the ten methods of the build spec, deployed to Studio Next; the golden cases run through real consensus; the site and these docs.

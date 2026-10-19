@@ -1,18 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nextjs",
-  "crons": [
-    {
-      "path": "/api/cron/daily",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron/oracle",
-      "schedule": "0 18 * * *"
-    },
-    {
-      "path": "/api/cron/season",
-      "schedule": "5 0 * * 1"
-    }
+  "framework": null,
+  "installCommand": "cd samepage/web && npm ci --no-audit --no-fund",
+  "buildCommand": "node samepage/scripts/vercel-guard.mjs && cd samepage/web && npm run build",
+  "outputDirectory": "samepage/web/out",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/p/:id/record", "destination": "/record.html" },
+    { "source": "/p/:id", "destination": "/p.html" }
   ]
 }

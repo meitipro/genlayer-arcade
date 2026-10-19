@@ -466,10 +466,12 @@ def save_json(path: pathlib.Path, data) -> None:
     tmp.replace(path)
 
 
+# region: seal_of
 def seal_of(text: str, salt: str, address: str) -> str:
     import hashlib
 
     return hashlib.sha256((text + "|" + salt + "|" + address.lower()).encode("utf-8")).hexdigest()
+# endregion
 
 
 def new_salt() -> str:

@@ -1,0 +1,21 @@
+---
+title: Signing an agreed record
+description: What a signature means, when deposits come back, and how to withdraw.
+---
+
+A round that comes back **SAME PAGE** opens the signing step. Signing makes three things the record: both full accounts, the six statuses, and both signatures. The leader's one-line notes are a reading aid and are never part of what is signed.
+
+1. Read both accounts side by side on the page. The notes summarise; the texts are the deal.
+2. Sign inside the window. The page shows who has signed.
+3. When both have signed the page is **AGREED** and both deposits move into the two balances. Nothing is paid out yet: `sign` moves balances, never money.
+4. Withdraw from [My pages](/me). `withdraw` is its own top-level transaction that pays your whole balance.
+
+<Callout>On consensus v0.6 a value transfer is funded only at the root of a transaction's fee allocation, so a payout nested under a judgment would fail. That is why the contract never pays inside `check`, `sign` or `no_show`, and why the site sends `withdraw` with an External allocation naming you as the payee.</Callout>
+
+## If the other side will not sign
+
+A SAME PAGE record that one side refuses to sign is walking away. After the signing window closes anyone can call `no_show`, and the deposit of the side that did not sign goes to the side that did. See [Deposits and no-shows](/docs/concepts/deposits).
+
+## Sharing the record
+
+Every page has a printable record at `/p/<id>/record`: both addresses, both accounts in full, the six statuses, the signatures and the contract it lives in. It needs no wallet to read.

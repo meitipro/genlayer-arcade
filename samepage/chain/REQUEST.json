@@ -1,5 +1,5 @@
 {
-  "tasks": ["probe", "deploy", "verify", "golden", "golden-report"],
-  "note": "first deploy and the golden run",
-  "stop_on_failure": ["deploy"]
+  "tasks": ["seed", "site-e2e", "browser-e2e"],
+  "note": "seed the front page, walk the reviewer's path through lib/chain.ts, then the full loop in a real browser",
+  "stop_on_failure": []
 }

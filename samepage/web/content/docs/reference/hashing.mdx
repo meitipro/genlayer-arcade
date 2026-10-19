@@ -1,0 +1,69 @@
+---
+title: Hashing, with test vectors
+description: The exact bytes a seal is computed over, in the contract and in the browser, and the shared vectors.
+---
+
+A seal is the lower-case hex sha256 of the UTF-8 bytes of `text|salt|address`:
+
+<Tabs items={['Contract (Python)', 'Browser (TypeScript)', 'Scripts (Python)']}>
+<Tab value="Contract (Python)">
+
+```python title="contracts/samepage.py"
+def seal_of(text: str, salt: str, address_hex: str) -> str:
+    """
+    sha256 over the UTF-8 bytes of "text|salt|address", the address lower case
+    with its 0x. The browser computes the same bytes; tests/vectors.json holds
+    the shared vectors.
+
+    The address is inside the hash, so a seal copied from the other side can
+    never be opened by the side that copied it. The salt is hex only, so it can
+    never contain the separator, and the split of a preimage into text and salt
+    is unique: a writer cannot seal "A|B" and later choose whether their
+    account was "A" or "A|B".
+    """
+    return hashlib.sha256((text + "|" + salt + "|" + address_hex.lower()).encode("utf-8")).hexdigest()
+```
+
+</Tab>
+<Tab value="Browser (TypeScript)">
+
+```ts title="web/lib/chain.ts"
+/** sha256 over the UTF-8 bytes of "text|salt|address", the address lower case. Same bytes as the contract. */
+export async function sealOf(text: string, salt: string, address: string): Promise<string> {
+  const bytes = new TextEncoder().encode(`${text}|${salt}|${address.toLowerCase()}`);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+```
+
+</Tab>
+<Tab value="Scripts (Python)">
+
+```python title="scripts/chain.py"
+def seal_of(text: str, salt: str, address: str) -> str:
+    import hashlib
+
+    return hashlib.sha256((text + "|" + salt + "|" + address.lower()).encode("utf-8")).hexdigest()
+```
+
+</Tab>
+</Tabs>
+
+- The address is lower-cased on both sides, with its `0x`.
+- The salt must be 16 to 64 lower-case hex characters; `reveal` refuses anything else, so the preimage splits into text and salt in exactly one way.
+- Text is hashed exactly as written. Nothing is trimmed or normalised, so a trailing space or a different apostrophe is a different seal.
+- `seal` accepts the hash with or without `0x` and in either case, and stores it lower case without `0x`.
+
+## Test vectors
+
+`tests/vectors.json` is shared: `tests/test_direct.py` checks every vector against the contract's `seal_of`, and `web/scripts/vectors.test.mjs` checks them against the browser's `sealOf`.
+
+The rule, as `tests/vectors.json` states it: sha256 over the UTF-8 bytes of text + '|' + salt + '|' + lower-case address with 0x; salt is 16 to 64 lower-case hex characters.
+
+| text | salt | address | seal |
+| --- | --- | --- | --- |
+| I write 3 posts and one thread on X about the Kiln launch… | `5f2c9a7e01b4d3c6` | `0x9C4E8a51e7D2b6F03a1c4d5E6f708192A3b4b207` | `8bc2a90f6d1c33869d232be9abf98b03dafcd2a58685b0a641a1ec4010980015` |
+| 3 posts about the launch, 600 USDC, half before I start a… | `00112233445566778899aabbccddeeff` | `0x00000000000000000000000000000000000000a1` | `ff36eb5bb046a417010f01e33b18b0169a5bd8e023a1a633addda8effc414845` |
+| سه پست درباره‌ی عرضه‌ی Kiln، ۶۰۰ USDC، پرداخت پس از تحویل… | `deadbeefdeadbeef` | `0xb2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2` | `444bde3956e725957985ab6a1a822cd33ea4ac446bc30ddc5a4bb5e10b4d9030` |
+| a \| pipe \| inside \| the text⏎and a second line | `0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef` | `0xA1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1A1` | `dad95c285123c3422182d01856283b3145f4ddfc98d6541968b3909acc9d9360` |
+| Logo PNGs, by Oct 16 🎨 | `abcdefabcdefabcd` | `0x1234567890AbCdEf1234567890aBcDeF12345678` | `3278cd30340ab64b7a9404cdcb36b75cacd0e904bd98ab13ae277e3536eb5f2a` |

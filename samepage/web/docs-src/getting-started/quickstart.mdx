@@ -1,0 +1,64 @@
+---
+title: "Quickstart: your first page"
+description: Open a page with your counterparty, seal your account and read the result, in about five minutes.
+---
+
+<Callout type="warn">Accounts are public once opened. Never put anything in a deal you would not post.</Callout>
+
+You need a browser wallet on [Studio Next](/docs/reference/addresses), chain 61997. The site adds the network for you and tops up your GEN from the Studio faucet when a write needs more than you hold. Every sample on this page is copied, when the docs build, from code that runs in the repository: the Python from `scripts/flow.py`, which the golden run uses, and the TypeScript from `web/e2e/site.mts`, which walks this exact path through the site's own signing code.
+
+## 1. Open a page
+
+Name the deal, the counterparty's address, the deposit each side pays (possibly zero) and the window each step may take, 6 to 96 hours. On the site this is [Open a page](/new).
+
+<Tabs items={['TypeScript', 'Python']}>
+<Tab value="TypeScript">
+
+{/* include: web/e2e/site.mts#open-page */}
+
+</Tab>
+<Tab value="Python">
+
+{/* include: scripts/flow.py#open-page */}
+
+</Tab>
+</Tabs>
+
+The counterparty opens the link and joins with the same deposit. Only that address can join.
+
+## 2. Seal your account
+
+Write the deal in your own words: what is delivered, for how much, by when, how it is paid, who may use the result, and what happens if either side backs out. Then seal it. The seal is a hash of your text, a fresh salt and your address, so the other side sees nothing until both have sealed, and a seal copied from them could never be opened by you.
+
+<Tabs items={['TypeScript', 'Python']}>
+<Tab value="TypeScript">
+
+{/* include: web/e2e/site.mts#seal */}
+
+</Tab>
+<Tab value="Python">
+
+{/* include: scripts/flow.py#seal */}
+
+</Tab>
+</Tabs>
+
+The site keeps the text and the salt, your **ticket**, in your browser and offers it as a download. Without it your account cannot be opened, which counts as a no-show.
+
+## 3. Open and check
+
+When both have sealed, each side opens: the contract recomputes the hash and refuses an account that does not match its seal.
+
+<Tabs items={['Python']}>
+<Tab value="Python">
+
+{/* include: scripts/flow.py#reveal */}
+
+</Tab>
+</Tabs>
+
+Once both are open, anyone runs `check`. Validators compare the accounts on six terms and the result follows from their six labels: [SAME PAGE, DIFFERENT or GAPS](/docs/concepts/results).
+
+## 4. Sign, or write round 2
+
+On SAME PAGE both sides sign and both deposits go back into their balances, to withdraw from [My pages](/me). On DIFFERENT or GAPS, each side writes round 2, with the terms that differed shown as a reminder; either may keep their text. See [Signing an agreed record](/docs/getting-started/signing).

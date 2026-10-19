@@ -1,0 +1,21 @@
+---
+title: The four results
+description: SAME PAGE, DIFFERENT, GAPS and NO SHOW, and what each does to the deposits.
+---
+
+The validators return six labels. The result is computed from them in the contract, never from the model's words, so SAME PAGE means the same thing on every page.
+
+{/* include: contracts/samepage.py#def:verdict_of */}
+
+| result | meaning | deposits | record |
+| --- | --- | --- | --- |
+| **SAME PAGE** | every term matches or is absent from both, and amount, deliverable and deadline are stated | back when both sign | an agreed record with both texts |
+| **DIFFERENT · N** | N terms are stated differently, or by only one side | stay for round 2 | the differing terms, side by side |
+| **GAPS · N** | no differences, but N of amount, deliverable and deadline are missing from both | stay for round 2 | the missing terms named |
+| **NO SHOW** | a side missed a window to join, seal, open or sign | the absent side's deposit goes to the other | recorded against the address |
+
+Each page has at most two rounds. If round 2 is not SAME PAGE either, the page closes **NOT AGREED** and both deposits come back, because disagreeing honestly is not ghosting.
+
+## Both orders
+
+The contract asks the rubric twice inside one block, once with each account first. A term the two orders read differently is stored as DIFFER, and the page says which terms split. Position bias is invisible to consensus otherwise: every validator builds the prompt the same way and would lean the same way.

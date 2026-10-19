@@ -1,0 +1,36 @@
+---
+title: Sealing and opening
+description: Why neither side can copy the other, and why a seal includes the address.
+---
+
+A page goes through each round in two steps: everyone seals, then everyone opens. Neither side can open before both have sealed.
+
+## What a seal is
+
+```text
+seal = sha256( UTF-8 bytes of  text + "|" + salt + "|" + address )
+```
+
+- `text` is the account exactly as written, up to 1,200 characters (counted as characters, not bytes).
+- `salt` is 16 to 64 **lower-case hex** characters, fresh for every seal.
+- `address` is the writer's address, lower case, with its `0x`.
+
+The browser computes it with Web Crypto and the contract with `hashlib`, over the same bytes. [Hashing, with test vectors](/docs/reference/hashing) has the shared vectors both are tested against.
+
+## Three attacks the seal closes
+
+| attack | why it fails |
+| --- | --- |
+| Waiting to read the other account, then writing to match | Nothing is readable until both have sealed, and a seal cannot change afterwards |
+| Copying the other side's seal | The contract refuses a seal identical to the other side's; and a seal of their text under their address can never be opened by you, because opening hashes with *your* address |
+| Sealing `A|B`, then choosing later whether the account was `A` or `A|B` | The salt is hex only, so it cannot contain `|`, and the split of what was hashed into text and salt is unique |
+
+The third one is easy to miss: with a free-form salt, a writer could seal `"3 posts|thread"` with salt `"x"` and later open it either as text `"3 posts|thread"` or as text `"3 posts"` with salt `"thread|x"`, picking whichever suits after reading the other account. `tests/test_direct.py::test_the_salt_cannot_carry_the_separator` keeps it closed.
+
+## Opening
+
+`reveal(page_id, text, salt)` recomputes the seal and refuses an account that does not match. Storage keeps exactly what each side wrote. When both have opened, the page is ready to check.
+
+## The ticket
+
+The text and the salt together are your ticket. The site saves it in your browser before the seal is sent, and offers it as a file. If it is lost before you open, your account cannot be opened, which is a no-show when the window closes.

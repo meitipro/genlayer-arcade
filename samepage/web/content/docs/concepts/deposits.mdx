@@ -1,0 +1,27 @@
+---
+title: Deposits and no-shows
+description: The good-faith deposit, every window, and where money goes when someone walks away.
+---
+
+Both sides pay the same deposit, set by the opener when the page opens and possibly zero. It is a good-faith deposit, never the payment for the work.
+
+## Windows
+
+The opener chooses one window, 6 to 96 hours, that every step gets in turn: joining, sealing, opening, checking, signing. The window restarts at each step, measured by chain time (`gl.message.raw["datetime"]`), which is identical on every validator.
+
+## When a window closes
+
+After a window closes, **anyone** may call `no_show`. The caller cannot change the outcome: who was absent is read from what is on chain.
+
+| step that was missed | outcome |
+| --- | --- |
+| the counterparty never joined | the opener gets their own deposit back; the counterparty is recorded |
+| one side did not seal, open or sign | both deposits go to the side that did |
+| both sides missed the same step | each gets their own deposit back; both are recorded |
+| nobody ran the check in time | the page closes NOT AGREED and both deposits come back |
+
+The last row exists so that a judgment that never lands cannot hold anyone's money.
+
+## Money moves only in withdraw
+
+`check`, `sign` and `no_show` move balances inside the contract. `withdraw()` is the only call that pays, as a top-level transfer of the caller's whole balance. [My pages](/me) shows your balance and the button.

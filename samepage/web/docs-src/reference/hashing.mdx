@@ -1,0 +1,35 @@
+---
+title: Hashing, with test vectors
+description: The exact bytes a seal is computed over, in the contract and in the browser, and the shared vectors.
+---
+
+A seal is the lower-case hex sha256 of the UTF-8 bytes of `text|salt|address`:
+
+<Tabs items={['Contract (Python)', 'Browser (TypeScript)', 'Scripts (Python)']}>
+<Tab value="Contract (Python)">
+
+{/* include: contracts/samepage.py#def:seal_of */}
+
+</Tab>
+<Tab value="Browser (TypeScript)">
+
+{/* include: web/lib/chain.ts#sealOf */}
+
+</Tab>
+<Tab value="Scripts (Python)">
+
+{/* include: scripts/chain.py#seal_of */}
+
+</Tab>
+</Tabs>
+
+- The address is lower-cased on both sides, with its `0x`.
+- The salt must be 16 to 64 lower-case hex characters; `reveal` refuses anything else, so the preimage splits into text and salt in exactly one way.
+- Text is hashed exactly as written. Nothing is trimmed or normalised, so a trailing space or a different apostrophe is a different seal.
+- `seal` accepts the hash with or without `0x` and in either case, and stores it lower case without `0x`.
+
+## Test vectors
+
+`tests/vectors.json` is shared: `tests/test_direct.py` checks every vector against the contract's `seal_of`, and `web/scripts/vectors.test.mjs` checks them against the browser's `sealOf`.
+
+{/* vectors */}

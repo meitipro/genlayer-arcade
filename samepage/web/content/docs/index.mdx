@@ -1,0 +1,30 @@
+---
+title: Introduction
+description: Two accounts of one deal, checked before anyone signs.
+---
+
+Samepage is a deal check on GenLayer. The two sides of a deal, a project and a creator, a client and a freelancer, two traders, each write the deal in their own words without seeing the other's. Both accounts are sealed until both are in. GenLayer validators then compare the two accounts on six terms and say exactly where they match, where they differ and what neither mentions. Both sides fix the misunderstanding before the work starts, sign a record that holds both texts, and get back a good-faith deposit that a side who walks away loses to the other.
+
+<Cards>
+  <Card title="Quickstart" href="/docs/getting-started/quickstart" description="Open a page, seal your account and read the result." />
+  <Card title="The six terms" href="/docs/concepts/terms" description="Amount, deliverable, deadline, payment, rights, cancellation." />
+  <Card title="Contract reference" href="/docs/reference/contract" description="Generated from the contract source." />
+  <Card title="Evaluation" href="/docs/more/evaluation" description="The golden cases, run through real consensus." />
+</Cards>
+
+## Why it needs GenLayer
+
+The decision is a reading judgment: two people describe the same deal in different words, in a different order, sometimes in different languages, and the question is whether each term means the same thing. Either side could run a model on the two texts, but then one side picked the model, ran it, and could run it again until it agreed. On GenLayer several validators compare the accounts the same way and must agree on every term, and the result is a record neither side controlled.
+
+The rest is contract logic that only works on chain: both accounts are sealed until both are in, the record holds both texts and both signatures, and the deposit moves by rule when someone walks away.
+
+## What it is not
+
+| | |
+| --- | --- |
+| Not an escrow | It holds a good-faith deposit, never the payment for the work |
+| Not a lawyer | It checks that two accounts agree, not that the deal is fair or legal |
+| Not a dispute court | It runs before the work; a dispute service can use the record afterwards |
+| Not private | Both accounts are public once opened, so it suits deals that can be public |
+
+<Callout type="warn">Accounts are public once opened. Never put anything in a deal you would not post.</Callout>

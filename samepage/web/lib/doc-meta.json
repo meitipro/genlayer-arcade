@@ -1,0 +1,62 @@
+{
+  "index.mdx": {
+    "updated": "",
+    "source": "web/docs-src/index.mdx"
+  },
+  "concepts/deposits.mdx": {
+    "updated": "",
+    "source": "web/docs-src/concepts/deposits.mdx"
+  },
+  "concepts/results.mdx": {
+    "updated": "",
+    "source": "web/docs-src/concepts/results.mdx"
+  },
+  "concepts/sealing.mdx": {
+    "updated": "",
+    "source": "web/docs-src/concepts/sealing.mdx"
+  },
+  "concepts/terms.mdx": {
+    "updated": "",
+    "source": "web/docs-src/concepts/terms.mdx"
+  },
+  "getting-started/quickstart.mdx": {
+    "updated": "",
+    "source": "web/docs-src/getting-started/quickstart.mdx"
+  },
+  "getting-started/signing.mdx": {
+    "updated": "",
+    "source": "web/docs-src/getting-started/signing.mdx"
+  },
+  "more/faq.mdx": {
+    "updated": "",
+    "source": "web/docs-src/more/faq.mdx"
+  },
+  "more/limitations.mdx": {
+    "updated": "",
+    "source": "web/docs-src/more/limitations.mdx"
+  },
+  "reference/hashing.mdx": {
+    "updated": "",
+    "source": "web/docs-src/reference/hashing.mdx"
+  },
+  "reference/contract.mdx": {
+    "updated": "2026-10-18T23:38:23+00:00",
+    "source": "contracts/samepage.py"
+  },
+  "reference/errors.mdx": {
+    "updated": "2026-10-18T23:38:23+00:00",
+    "source": "contracts/samepage.py"
+  },
+  "reference/addresses.mdx": {
+    "updated": "2026-10-19T00:01:16+00:00",
+    "source": "deployments.json"
+  },
+  "more/judge-prompt.mdx": {
+    "updated": "2026-10-18T23:38:23+00:00",
+    "source": "tests/judge_prompt.txt"
+  },
+  "more/evaluation.mdx": {
+    "updated": "2026-10-19T00:01:16+00:00",
+    "source": "eval/results.json"
+  }
+}

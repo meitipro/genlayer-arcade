@@ -1,0 +1,14 @@
+{
+  "title": "Samepage",
+  "pages": [
+    "---Getting started---",
+    "index",
+    "...getting-started",
+    "---Concepts---",
+    "...concepts",
+    "---Reference---",
+    "...reference",
+    "---More---",
+    "...more"
+  ]
+}
