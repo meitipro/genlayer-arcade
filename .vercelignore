@@ -1,0 +1,11 @@
+# This branch's Vercel build serves Samepage (samepage/web, a static export).
+# The arcade's root middleware would otherwise be deployed in front of it as
+# Edge Middleware and fail every request.
+/middleware.ts
+/app
+/components
+/lib
+/contracts
+/data
+/docs
+/tests
