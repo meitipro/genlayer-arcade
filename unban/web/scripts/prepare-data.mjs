@@ -25,7 +25,7 @@ const ROOT = path.join(WEB, "..");
 const DOCS = path.join(WEB, "content", "docs");
 const GEN_DIR = path.join(WEB, "generated");
 const EXPLORER = "https://explorer-studio-dev.genlayer.com";
-const REPO_BLOB = "https://github.com/meitipro/genlayer-arcade/blob/claude/inspiring-dijkstra-6cskv8/unban";
+const REPO_BLOB = "https://github.com/meitipro/genlayer-unban/blob/main";
 
 fs.mkdirSync(GEN_DIR, { recursive: true });
 

@@ -57,4 +57,4 @@ Contract and transaction links: PENDING, copy the "Links for the portal form" bo
 ## 7. Send people to it
 
 - Website: https://use-unban.vercel.app
-- GitHub: https://github.com/meitipro/genlayer-arcade/tree/claude/inspiring-dijkstra-6cskv8/unban
+- GitHub: https://github.com/meitipro/genlayer-unban

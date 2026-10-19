@@ -9,7 +9,6 @@ The build session's network policy answered 403 for `studio-next.genlayer.com`, 
 `vercel.com`. Allow those hosts (or run the commands below on your own machine):
 
 ```bash
-cd unban
 python -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt
 python scripts/deploy.py          # validates against the live runtime, deploys, writes deployment.json
 python scripts/verify_source.py   # the deployed source equals contracts/unban.py
@@ -24,23 +23,22 @@ git add deployment.json eval/results.* evidence/ && git commit -m "Deployment an
 
 ## 2. Vercel, then everything else from the browser
 
-1. https://vercel.com/new, import `meitipro/genlayer-arcade`. Project name `use-unban` (the site is then https://use-unban.vercel.app), Root Directory `unban/web`
+1. https://vercel.com/new, import `meitipro/genlayer-unban`. Project name `use-unban` (the site is then https://use-unban.vercel.app), Root Directory `web`
    (Edit, pick the folder), framework Next.js, leave the build settings as they are. Deploy.
-2. Settings, Git, Production Branch: `claude/inspiring-dijkstra-6cskv8`. Settings, Advanced: Skew Protection off.
+2. Production Branch stays `main`. Settings, Advanced: Skew Protection off.
 3. Deployments, the latest one, Redeploy, so production is built from that branch. Open the site.
 4. Open `/run` on the site and press Run. It deploys the contract with a throwaway test account, walks the reviewer's path,
    runs the 12 golden cases through consensus and seeds two courts (about 30 to 45 minutes, keep the tab open).
 5. Settings, Environment Variables: `NEXT_PUBLIC_UNBAN_CONTRACT` = the address `/run` shows, for Production. Optional:
    `NEXT_PUBLIC_SITE_URL` = the site's URL. Then Deployments, Redeploy.
-6. Download deployment.json, results.json, walk.json and seed.json from `/run` and commit them as `unban/deployment.json`,
-   `unban/eval/results.json`, `unban/evidence/walk.json`, `unban/evidence/seed.json`. The next build puts them in the docs
+6. Download deployment.json, results.json, walk.json and seed.json from `/run` and commit them as `deployment.json`,
+   `eval/results.json`, `evidence/walk.json`, `evidence/seed.json`. The next build puts them in the docs
    (Evaluation, Addresses), and then the environment variable is no longer needed. The "Links for the portal form" box on
    `/run` has every link the form asks for.
 
 ## 3. A repository of its own
 
-The GitHub integration could not create `meitipro/genlayer-unban` (403). The project lives in `unban/` of this branch and is
-self-contained; to move it: `git subtree split -P unban -b unban-only` and push that branch to a new repository.
+Unban lives in its own repository, https://github.com/meitipro/genlayer-unban, with the project at the root.
 
 ## 4. Demo video
 
