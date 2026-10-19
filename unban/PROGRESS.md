@@ -9,3 +9,7 @@
 - Bug pass: withdraw's reclaim loop now writes through an indexed storage view like every other write; court lists read at most 12 courts per cold page (RPC budget); the docs theme switch is gone because the site is dark only; the court form's add buttons no longer stretch.
 - Bot: 3 tests pass.
 - Blocked: the session's network policy refuses studio-next.genlayer.com and vercel.com, so nothing was deployed or sent on chain from here. See HANDOFF.md.
+- 2026-10-19 recheck: 64 tests pass, `genvm-lint check` passes (12 methods), `npm ci && npm run build` passes (29 static pages).
+  Studio Next and the explorer are still refused by the session's network policy (403 at the proxy), and the Vercel
+  connection can list team `mahdighs-projects` but gets 403 when creating the `use-unban` project. So there is still no
+  deployment, no golden score, no walk and no live site; nothing was invented to fill those gaps. See HANDOFF.md.

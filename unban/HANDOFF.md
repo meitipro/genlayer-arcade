@@ -3,6 +3,28 @@
 Everything that does not need the network is built and tested. These steps need hosts this build environment could not reach.
 Nothing below has been run, and no address, hash or ruling has been written anywhere as if it had.
 
+## Rechecked on 2026-10-19
+
+| Check | Result |
+| --- | --- |
+| `eth_chainId` on `https://studio-next.genlayer.com/api` | **blocked**: the session's egress proxy answered 403 to CONNECT (`connect_rejected`) |
+| `explorer-studio-dev.genlayer.com`, `use-unban.vercel.app` | **blocked** the same way, so no explorer link could be opened from here |
+| Vercel: list team `mahdighs-projects` | works |
+| Vercel: create project `use-unban` (both `POST /v11/projects` and the Git-linked create) | **403 forbidden**: "You don't have permission to create the project." No project named `use-unban` exists yet |
+| `python -m pytest tests -q` | 64 passed |
+| `GENVM_VERSION=v0.6.0-rc6 genvm-lint check contracts/unban.py` | lint passed, validation passed, 12 methods (3 view, 9 write) |
+| `npm ci && npm run build` in `web/` | passes, 29 static pages |
+
+What only you can do:
+
+1. **Network access.** In the cloud environment's settings (environment menu, Edit, Network access), allow
+   `studio-next.genlayer.com` and `explorer-studio-dev.genlayer.com`, and `*.vercel.app` if the live site should be tested
+   from a session. Or run section 1 below on your own machine.
+2. **Vercel permission.** The Vercel connection can read team `mahdighs-projects` but not create projects in it. Either give
+   that connection a role that can create projects (Owner or Member), or do section 2 below in the dashboard yourself.
+
+Nothing below has been run since: no address, hash, verdict or score was produced or written.
+
 ## 1. Network access (blocking deploy, golden run, seed, walk)
 
 The build session's network policy answered 403 for `studio-next.genlayer.com`, `explorer-studio-dev.genlayer.com` and
