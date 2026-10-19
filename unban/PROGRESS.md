@@ -13,3 +13,6 @@
   Studio Next and the explorer are still refused by the session's network policy (403 at the proxy), and the Vercel
   connection can list team `mahdighs-projects` but gets 403 when creating the `use-unban` project. So there is still no
   deployment, no golden score, no walk and no live site; nothing was invented to fill those gaps. See HANDOFF.md.
+- Unban is its own project, not part of the arcade. Every GitHub link (site nav, docs Edit on GitHub, contract source
+  links, portal field) now points at `github.com/meitipro/genlayer-unban` on `main` with Unban at the root, and the folder
+  has its own `.gitignore`. Creating that repository was refused to this session (403), so it waits on the owner.

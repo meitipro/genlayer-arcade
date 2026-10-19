@@ -12,4 +12,5 @@ Build order from section 11 of the spec. Ticked means done and checked in this r
 - [x] 5. `/docs` with Fumadocs: grouped sidebar, on this page, local Cmd+K search, breadcrumbs, prev/next, Edit on GitHub, last updated, copy buttons, tabs, callouts, Studio Next badge; contract reference, errors, judge prompt and addresses generated from source; `/llms.txt`, `/llms-full.txt`; build fails on a broken internal link
 - [x] 6. `bot/` read-only Discord bot with tests; `scripts/seed.py`, `scripts/walk.py`, `scripts/verify_source.py`; README; `submission/`
 - [ ] 6. Seed, walk the reviewer's path to finality, and fill the evidence links (blocked here, see HANDOFF.md)
+- [ ] Move Unban to its own repository `meitipro/genlayer-unban` (GitHub refused to create it from this session; links already point there, see HANDOFF.md step 0)
 - [ ] Deploy the site on Vercel as `use-unban` (rechecked 2026-10-19: the Vercel connection may read the team but gets 403 on project creation, see HANDOFF.md)

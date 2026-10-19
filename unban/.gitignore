@@ -1,7 +1,19 @@
 # test account keys: never commit
 .accounts.json
+accounts.json
+*.key
+*.pem
+.env*
+!.env.example
+
+# python
 __pycache__/
 *.pyc
+.pytest_cache/
 .venv/
 venv/
+
+# node
 node_modules/
+.vercel
+*.tsbuildinfo

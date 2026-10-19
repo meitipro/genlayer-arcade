@@ -18,9 +18,9 @@ export default async function Page({ params }: { params: Promise<{ slug?: string
       lastUpdate={page.data.lastModified}
       editOnGithub={{
         owner: "meitipro",
-        repo: "genlayer-arcade",
-        sha: "claude/inspiring-dijkstra-6cskv8",
-        path: `unban/web/content/docs/${page.path}`,
+        repo: "genlayer-unban",
+        sha: "main",
+        path: `web/content/docs/${page.path}`,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>

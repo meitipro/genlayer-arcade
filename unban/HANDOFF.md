@@ -17,6 +17,19 @@ Nothing below has been run, and no address, hash or ruling has been written anyw
 
 What only you can do:
 
+0. **Unban's own repository (do this first).** Unban is a separate project, not part of the arcade. GitHub refused to let
+   this session create a repository (`POST /user/repos`: 403 "Resource not accessible by integration"). Create an **empty**
+   public repository `meitipro/genlayer-unban` at https://github.com/new (no README, no license, no .gitignore), and give the
+   Claude GitHub app access to it (https://github.com/apps/claude/installations/select_target). Then either ask a session to
+   push it, or from a clone of this branch run:
+
+   ```bash
+   git subtree split -P unban -b unban-only
+   git push https://github.com/meitipro/genlayer-unban.git unban-only:main
+   ```
+
+   The code already points at that repository: the site's GitHub links, Edit on GitHub in the docs, the contract source
+   links and the portal's GitHub field all read `github.com/meitipro/genlayer-unban` (branch `main`, Unban at the root).
 1. **Network access.** In the cloud environment's settings (environment menu, Edit, Network access), allow
    `studio-next.genlayer.com` and `explorer-studio-dev.genlayer.com`, and `*.vercel.app` if the live site should be tested
    from a session. Or run section 1 below on your own machine.
@@ -46,23 +59,25 @@ git add deployment.json eval/results.* evidence/ && git commit -m "Deployment an
 
 ## 2. Vercel, then everything else from the browser
 
-1. https://vercel.com/new, import `meitipro/genlayer-arcade`. Project name `use-unban` (the site is then https://use-unban.vercel.app), Root Directory `unban/web`
+1. https://vercel.com/new, import `meitipro/genlayer-unban`. Project name `use-unban` (the site is then https://use-unban.vercel.app), Root Directory `web`
    (Edit, pick the folder), framework Next.js, leave the build settings as they are. Deploy.
-2. Settings, Git, Production Branch: `claude/inspiring-dijkstra-6cskv8`. Settings, Advanced: Skew Protection off.
-3. Deployments, the latest one, Redeploy, so production is built from that branch. Open the site.
+2. Settings, Git, Production Branch: `main`. Settings, Advanced: Skew Protection off.
+3. Deployments, the latest one, Redeploy if it was not built from `main`. Open the site.
 4. Open `/run` on the site and press Run. It deploys the contract with a throwaway test account, walks the reviewer's path,
    runs the 12 golden cases through consensus and seeds two courts (about 30 to 45 minutes, keep the tab open).
 5. Settings, Environment Variables: `NEXT_PUBLIC_UNBAN_CONTRACT` = the address `/run` shows, for Production. Optional:
    `NEXT_PUBLIC_SITE_URL` = the site's URL. Then Deployments, Redeploy.
-6. Download deployment.json, results.json, walk.json and seed.json from `/run` and commit them as `unban/deployment.json`,
-   `unban/eval/results.json`, `unban/evidence/walk.json`, `unban/evidence/seed.json`. The next build puts them in the docs
+6. Download deployment.json, results.json, walk.json and seed.json from `/run` and commit them as `deployment.json`,
+   `eval/results.json`, `evidence/walk.json`, `evidence/seed.json` at the root of `genlayer-unban`. The next build puts them in the docs
    (Evaluation, Addresses), and then the environment variable is no longer needed. The "Links for the portal form" box on
    `/run` has every link the form asks for.
 
 ## 3. A repository of its own
 
-The GitHub integration could not create `meitipro/genlayer-unban` (403). The project lives in `unban/` of this branch and is
-self-contained; to move it: `git subtree split -P unban -b unban-only` and push that branch to a new repository.
+See step 0 above. Until `meitipro/genlayer-unban` exists, the only copy is `unban/` on branch
+`claude/inspiring-dijkstra-6cskv8` of `meitipro/genlayer-arcade`, kept there only as a staging area. Once it has moved,
+that branch can be deleted; nothing in the arcade depends on it. The folder carries its own `.gitignore`, so the keys file
+stays ignored after the split.
 
 ## 4. Demo video
 

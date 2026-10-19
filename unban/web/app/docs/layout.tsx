@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ]}
       // The site is dark only, so the theme switch would do nothing.
       themeSwitch={{ enabled: false }}
-      githubUrl="https://github.com/meitipro/genlayer-arcade/tree/claude/inspiring-dijkstra-6cskv8/unban"
+      githubUrl="https://github.com/meitipro/genlayer-unban"
     >
       {children}
     </DocsLayout>

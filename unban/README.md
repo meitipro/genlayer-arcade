@@ -19,6 +19,7 @@ to the member. A read-only bot applies the ruling.
 | Site and docs | `web/`, `npm run build` passes, checked at desktop and phone width |
 | Bot | `bot/`, 3 tests pass |
 | Deployment, golden run, walk | **not run yet** (rechecked 2026-10-19): the build environment cannot reach Studio Next. See [HANDOFF.md](HANDOFF.md) |
+| Repository | its own: `github.com/meitipro/genlayer-unban` (to be created by the owner, see [HANDOFF.md](HANDOFF.md)) |
 | Live site | **not deployed yet**: the Vercel connection may not create the `use-unban` project. See [HANDOFF.md](HANDOFF.md) |
 
 No address, transaction hash or verdict appears anywhere in this repository until a script has read it from the chain.

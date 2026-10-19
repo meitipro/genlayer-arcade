@@ -48,7 +48,7 @@ export function SiteFooter({ contract }: { contract: string }) {
               Contract {contract.slice(0, 8)}…
             </a>
           ) : null}
-          <a className="muted" href="https://github.com/meitipro/genlayer-arcade/tree/claude/inspiring-dijkstra-6cskv8/unban" target="_blank" rel="noreferrer">GitHub</a>
+          <a className="muted" href="https://github.com/meitipro/genlayer-unban" target="_blank" rel="noreferrer">GitHub</a>
         </span>
       </div>
     </footer>
