@@ -18,7 +18,7 @@ Samepage is a deal check on GenLayer. The two sides of a deal, a project and a c
 
 ### 1. Connect a wallet (353 characters)
 
-Open https://genlayergamehub-git-claude-project-dep-a7433e-mahdighs-projects.vercel.app and select Connect wallet; the site adds GenLayer Studio Next (chain 61997) to the wallet. Nothing else is needed: before any write, if the wallet holds less GEN than the deposit and fee need, the site tops it up from the Studio faucet and shows the balance moving.
+Open https://usesamepage.xyz and select Connect wallet; the site adds GenLayer Studio Next (chain 61997) to the wallet. Nothing else is needed: before any write, if the wallet holds less GEN than the deposit and fee need, the site tops it up from the Studio faucet and shows the balance moving.
 
 ### 2. Open a page (294 characters)
 
@@ -46,6 +46,6 @@ On SAME PAGE both sides select Sign the record; the page turns AGREED and /p/<id
 
 **Contract link:** https://explorer-studio-dev.genlayer.com/address/0x6654e80CA0656CC007991D073a274D1067F82999
 
-**Website:** https://genlayergamehub-git-claude-project-dep-a7433e-mahdighs-projects.vercel.app
+**Website:** https://usesamepage.xyz
 
 **GitHub:** https://github.com/meitipro/genlayer-arcade/tree/claude/project-deploy-test-t7j87s/samepage

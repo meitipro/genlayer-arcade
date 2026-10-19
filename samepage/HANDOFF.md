@@ -13,6 +13,10 @@ That project has Vercel Authentication on its previews, so a visitor who is not 
 - **Recommended, a dedicated project:** Vercel, Add New, Project, import `meitipro/genlayer-arcade`, set **Root Directory** to `samepage/web`, Framework **Other** (it reads `samepage/web/vercel.json`), Production Branch `claude/project-deploy-test-t7j87s`, Deploy. No environment variables are needed. You get a public `*.vercel.app` URL.
 - **Or:** in `genlayergamehub`, Settings, Deployment Protection, set Vercel Authentication to off (or "Only Production Deployments" is not enough; it protects previews). This makes every preview of the arcade public too.
 
+## 1b. The domain usesamepage.xyz
+
+The submission text uses `https://usesamepage.xyz`. On 2026-10-19 it was available and not yet registered (usesamepage.com is taken). This session cannot buy a domain or attach one. In the dedicated project from step 1: Settings, Domains, add `usesamepage.xyz` and buy it there (it then needs no DNS setup), and add `www.usesamepage.xyz` redirecting to it.
+
 ## 2. A dedicated GitHub repository (optional)
 
 This session's GitHub integration cannot create repositories (403), so Samepage lives in `samepage/` of `meitipro/genlayer-arcade`, branch `claude/project-deploy-test-t7j87s`. Moving it is copying this folder and `.github/workflows/samepage-chain.yml`.
