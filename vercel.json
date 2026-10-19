@@ -6,7 +6,7 @@
   "outputDirectory": "samepage/web/out",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/p/:id/record", "destination": "/record.html" },
-    { "source": "/p/:id", "destination": "/p.html" }
+    { "source": "/p/:id/record", "destination": "/record" },
+    { "source": "/p/:id", "destination": "/p" }
   ]
 }
