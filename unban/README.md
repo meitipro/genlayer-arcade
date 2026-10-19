@@ -18,7 +18,8 @@ to the member. A read-only bot applies the ruling.
 | Golden set | 9 cases + 3 held out, sealed before any run (`eval/golden.sha256`) |
 | Site and docs | `web/`, `npm run build` passes, checked at desktop and phone width |
 | Bot | `bot/`, 3 tests pass |
-| Deployment, golden run, walk | **not run yet**: the build environment could not reach Studio Next. See [HANDOFF.md](HANDOFF.md) |
+| Deployment, golden run, walk | **not run yet** (rechecked 2026-10-19): the build environment cannot reach Studio Next. See [HANDOFF.md](HANDOFF.md) |
+| Live site | **not deployed yet**: the Vercel connection may not create the `use-unban` project. See [HANDOFF.md](HANDOFF.md) |
 
 No address, transaction hash or verdict appears anywhere in this repository until a script has read it from the chain.
 
