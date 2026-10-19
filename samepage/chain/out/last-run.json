@@ -1,15 +1,16 @@
 {
   "request": {
     "tasks": [
+      "no-show-settle",
       "balances"
     ],
     "args": {
       "balances": [
-        "0xdcB849f078915713f89005aEA474E0A93B3D6F25",
-        "0x71b8DddE7A4bF0338dA4a652A387dD6805B8Ce49"
+        "0xf7636BCf2AFB273B008926A279Dbe85c9e57a535",
+        "0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E"
       ]
     },
-    "note": "re-read the site-e2e payees' wallets after finality: kiln's wallet was read before its payout showed",
+    "note": "settle the seeded no-show page after its window, then read both sides' balances inside the contract",
     "stop_on_failure": []
   },
   "failed": []

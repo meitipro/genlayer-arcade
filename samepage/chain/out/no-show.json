@@ -1,0 +1,22 @@
+{
+  "absent": [
+    "0x95f0583b6f2aca1128e06dd47d96661656ff1c9e"
+  ],
+  "balance_after": {
+    "0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E": "0",
+    "0xf7636BCf2AFB273B008926A279Dbe85c9e57a535": "20000000000000000000"
+  },
+  "balance_before": {
+    "0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E": "0",
+    "0xf7636BCf2AFB273B008926A279Dbe85c9e57a535": "0"
+  },
+  "early": null,
+  "page": 20,
+  "second_call_refused": "[EXPECTED] this page is closed",
+  "second_call_tx": "0x87890e249f475f1745e7b4d23432ff17bc5f4e5aa5c61ccda588723e3aebadbc",
+  "settled_by": "0xF30b3733Dd26Dbb75836CA8230727ae680c4309d",
+  "step_after": "NO_SHOW",
+  "step_before": "SEALING",
+  "tx": "0xc5b36977f35aa3417eddb7f7a5c8ba1b5c9096e663652b22de84c53c7a8d7c31",
+  "url": "https://explorer-studio-dev.genlayer.com/tx/0xc5b36977f35aa3417eddb7f7a5c8ba1b5c9096e663652b22de84c53c7a8d7c31"
+}
