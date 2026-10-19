@@ -1,0 +1,40 @@
+generated 15 docs pages; 10 contract methods; deployment 0x6654e80CA0656CC007991D073a274D1067F82999
+contract 0x6654e80CA0656CC007991D073a274D1067F82999
+accounts
+  kiln         0xdcB849f078915713f89005aEA474E0A93B3D6F25
+  sera         0x71b8DddE7A4bF0338dA4a652A387dD6805B8Ce49
+  stranger     0x090904778Ee08d12ec20a91597eBC0F3127d8e34
+  funded kiln 0 -> 100000000000000000000
+  funded sera 0 -> 100000000000000000000
+  funded stranger 0 -> 100000000000000000000
+  ok   open the page #21                https://explorer-studio-dev.genlayer.com/tx/0x825ce6d1b94f5cecb37b3196cbd7d12aa775bb842e31decf7d2d4da713ac9eac
+GenLayer RPC error (sim_estimateTransactionFees): execution failed
+  refused as expected a stranger tries to join "only the named counterparty can join" https://explorer-studio-dev.genlayer.com/tx/0x8b23a1beace0e3c2efd5efa2037abd757f533736521ea9e7f760ee376dce72a1
+  ok   sera joins with the same deposit   https://explorer-studio-dev.genlayer.com/tx/0x082d1ad59dbde1dbc2ae05e47f79cb77c317b9cd6faaa546d997e06dbc376e84
+  ok   kiln seals round 1                 https://explorer-studio-dev.genlayer.com/tx/0xe9b32b5eeb4faf4be75a80b0865f128cb04dd04ccde8bbd0370350740fa10e65
+GenLayer RPC error (sim_estimateTransactionFees): execution failed
+  refused as expected sera tries to open before both sealed "accounts open only after both sides have sealed" https://explorer-studio-dev.genlayer.com/tx/0xc8534b4155e57ee33b9550622e6eddd292838504adc06d476af4d2d43f675ec5
+  ok   sera seals round 1                 https://explorer-studio-dev.genlayer.com/tx/0x797da1dec2b0c5ef84a971c9246af9ffca076aab259552a82b6e182e2f99946c
+GenLayer RPC error (sim_estimateTransactionFees): execution failed
+  refused as expected kiln tries to open a different text "this account does not match your seal" https://explorer-studio-dev.genlayer.com/tx/0x134e6f4f5f52477aa2545892fc3dc76f01e5476654a0bc9ead3e8daeea75eead
+  ok   kiln opens round 1                 https://explorer-studio-dev.genlayer.com/tx/0x675899c6baf0ec0340011dea6de6fd1cb15ead07399b7e5fa8a47c8d36275161
+  ok   sera opens round 1                 https://explorer-studio-dev.genlayer.com/tx/0xf4142bb3f6650d8e6303a62e24418648261388ebabe112a7958fab143a9f03d7
+  ok   the stranger runs the check, round 1 https://explorer-studio-dev.genlayer.com/tx/0x7e0fb160be9d077e0ffef9a098681172202ac0b914cc0a851890bde7b1f5525e
+  round 1: DIFFERENT MATCH,DIFFER,MATCH,DIFFER,ABSENT,ABSENT
+  ok   kiln seals round 2                 https://explorer-studio-dev.genlayer.com/tx/0xe67eb1b5bdb411b2e162c0f0cb89ba585181a687d4059e617e89deb7fea581bc
+  ok   sera seals round 2                 https://explorer-studio-dev.genlayer.com/tx/0xb3a986fd67bb284f631c0898e0dc7fb7681b271280082cb04e660592818029e3
+  ok   kiln opens round 2                 https://explorer-studio-dev.genlayer.com/tx/0xa99a5ff95949dd6d316b88fee733cdd0d63302dabf81a2c3f294743f6837c888
+  ok   sera opens round 2                 https://explorer-studio-dev.genlayer.com/tx/0x34dceaea89a1d090e0b2e3a6d47bb3874a407354fbd2aff1505c650a08f4ee1a
+  ok   kiln runs the check, round 2       https://explorer-studio-dev.genlayer.com/tx/0xd67ff7b4de606293185a086a69482b52b03c6e3cb7a98628c7f121225d04be6e
+  round 2: SAME_PAGE MATCH,MATCH,MATCH,MATCH,MATCH,ABSENT
+GenLayer RPC error (sim_estimateTransactionFees): execution failed
+  refused as expected the stranger tries to sign "not a side of this page" https://explorer-studio-dev.genlayer.com/tx/0x65f9bd9f21b20339c2623c78d576a66b31b6ba1b9d8425c11bd33b256066a2e0
+  ok   kiln signs                         https://explorer-studio-dev.genlayer.com/tx/0x27faba54eb61808f9baaa1e8c27cd71e503071715450259835acd24de550e66e
+  ok   sera signs                         https://explorer-studio-dev.genlayer.com/tx/0xda2396056a8d5f5ee3ec95f6ae819c640462e563e0dffd7b59d7f8913641db28
+  page #21 is AGREED
+  ok   kiln withdraws                     https://explorer-studio-dev.genlayer.com/tx/0x191e7c37178d974cfeaba10eab88429d6b24aa55fd2da65799f9f69afadea5fe
+  kiln: contract paid out 20000000000000000000 wei of 20000000000000000000 owed (exact)
+  ok   sera withdraws                     https://explorer-studio-dev.genlayer.com/tx/0x67f404e690de3c68ef448689a61e98bc408b6d94cd4839706e268b92ee41b890
+  sera: contract paid out 20000000000000000000 wei of 20000000000000000000 owed (exact)
+  refused as expected kiln tries to withdraw twice "nothing to withdraw" https://explorer-studio-dev.genlayer.com/tx/0x9f0cb3824bd7eaa28d8b2a92f92f8474962ac2f60261d1d4725f171a578aeee0
+done: every balance exact

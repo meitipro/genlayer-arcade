@@ -1,0 +1,285 @@
+{
+  "agreed": {
+    "id": 18,
+    "page": {
+      "absent": [],
+      "closed_at": 1792373232,
+      "counterparty": "0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E",
+      "created_at": 1792373063,
+      "deadline": 1792546002,
+      "deposit": "20000000000000000000",
+      "id": 18,
+      "opener": "0xf7636BCf2AFB273B008926A279Dbe85c9e57a535",
+      "required": [
+        "amount",
+        "deliverable",
+        "deadline"
+      ],
+      "round": 2,
+      "rounds": [
+        {
+          "a_opened": true,
+          "a_salt": "2d677a53939b86cd8287b03bad55430c",
+          "a_seal": "9722af6460336fa43bdf1c00a3982976a1cd6e0568abb823caa8264e36ad570c",
+          "a_sealed": true,
+          "a_signed": false,
+          "a_text": "Sera writes 3 posts and a thread on X about the Kiln launch, all live by Oct 24. Kiln pays 600 USDC, all of it after the last post is live.",
+          "b_opened": true,
+          "b_salt": "d11c162f42553d29c6ed3271ca9d9e52",
+          "b_seal": "c34c22d3b8c098bfcc6b31c8eaed93adbbd439ad7150a9e9d1f13cd6120da871",
+          "b_sealed": true,
+          "b_signed": false,
+          "b_text": "I write 3 posts on X about the Kiln launch, all live by Oct 24, for 600 USDC: half before I start and half after the last post.",
+          "checked_at": 1792373123,
+          "n": 1,
+          "notes": {
+            "amount": "Both: 600 USDC for the deal.",
+            "cancellation": "Neither account mentions cancellation terms.",
+            "deadline": "Both: all posts live by Oct 24.",
+            "deliverable": "Both: 3 posts on X about the Kiln launch (Account A also mentions a thread, but Account B does not contradict this).",
+            "payment": "Account A: full 600 USDC after the last post is live. Account B: half before starting, half after the last post.",
+            "rights": "Neither account mentions ownership or usage rights."
+          },
+          "opened_at": 1792373100,
+          "sealed_at": 1792373085,
+          "split": [
+            "deliverable"
+          ],
+          "statuses": [
+            "MATCH",
+            "DIFFER",
+            "MATCH",
+            "DIFFER",
+            "ABSENT",
+            "ABSENT"
+          ],
+          "verdict": "DIFFERENT"
+        },
+        {
+          "a_opened": true,
+          "a_salt": "9416417699516eda92d95e31124e36d0",
+          "a_seal": "a3ffc7daad37fa38cbff43638d6f2d6c56465f827472440829bac80e56667b8e",
+          "a_sealed": true,
+          "a_signed": true,
+          "a_text": "Sera writes 3 posts and one thread on X about the Kiln launch, all live by Oct 24. Kiln pays 600 USDC, half before Sera starts and half after the thread is live. Kiln may repost and quote them.",
+          "b_opened": true,
+          "b_salt": "d30286ed20febe8655db92d870fdd821",
+          "b_seal": "fb7da1f8d6ee6690d66e39a88a59297eeb8a30ea997088c7e6dd020f73c01beb",
+          "b_sealed": true,
+          "b_signed": true,
+          "b_text": "I write three posts and one thread on X about Kiln's launch, all live by Oct 24, for 600 USDC: half before I start and half after the thread is live. Kiln can repost and quote them.",
+          "checked_at": 1792373202,
+          "n": 2,
+          "notes": {
+            "amount": "Both agree on 600 USDC.",
+            "cancellation": "Neither account mentions cancellation terms.",
+            "deadline": "Both agree all content must be live by Oct 24.",
+            "deliverable": "Both agree on 3 posts and 1 thread on X.",
+            "payment": "Both agree on 50% upfront and 50% after the thread is live.",
+            "rights": "Both agree Kiln can repost and quote the content."
+          },
+          "opened_at": 1792373180,
+          "sealed_at": 1792373164,
+          "split": [],
+          "statuses": [
+            "MATCH",
+            "MATCH",
+            "MATCH",
+            "MATCH",
+            "MATCH",
+            "ABSENT"
+          ],
+          "verdict": "SAME_PAGE"
+        }
+      ],
+      "step": "AGREED",
+      "terms": [
+        "amount",
+        "deliverable",
+        "deadline",
+        "payment",
+        "rights",
+        "cancellation"
+      ],
+      "title": "Kiln launch posts",
+      "window_hours": 48
+    }
+  },
+  "contract": "0x6654e80CA0656CC007991D073a274D1067F82999",
+  "noshow": {
+    "absent": "0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E",
+    "id": 20,
+    "page": {
+      "absent": [],
+      "closed_at": 0,
+      "counterparty": "0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E",
+      "created_at": 1792373430,
+      "deadline": 1792395039,
+      "deposit": "10000000000000000000",
+      "id": 20,
+      "opener": "0xf7636BCf2AFB273B008926A279Dbe85c9e57a535",
+      "required": [
+        "amount",
+        "deliverable",
+        "deadline"
+      ],
+      "round": 1,
+      "rounds": [
+        {
+          "a_opened": false,
+          "a_salt": "",
+          "a_seal": "abababababababababababababababababababababababababababababababab",
+          "a_sealed": true,
+          "a_signed": false,
+          "a_text": "",
+          "b_opened": false,
+          "b_salt": "",
+          "b_seal": "",
+          "b_sealed": false,
+          "b_signed": false,
+          "b_text": "",
+          "checked_at": 0,
+          "n": 1,
+          "notes": {},
+          "opened_at": 0,
+          "sealed_at": 0,
+          "split": [],
+          "statuses": [],
+          "verdict": ""
+        }
+      ],
+      "step": "SEALING",
+      "terms": [
+        "amount",
+        "deliverable",
+        "deadline",
+        "payment",
+        "rights",
+        "cancellation"
+      ],
+      "title": "OTC 40k ARB for USDC",
+      "window_hours": 6
+    },
+    "present": "0xf7636BCf2AFB273B008926A279Dbe85c9e57a535",
+    "settle_after": 1792395039
+  },
+  "recorded_at": "2026-10-19T01:30:53Z",
+  "round2": {
+    "id": 19,
+    "page": {
+      "absent": [],
+      "closed_at": 0,
+      "counterparty": "0x37D14083157998e4aBD649c7871851097C11B820",
+      "created_at": 1792373321,
+      "deadline": 1792718979,
+      "deposit": "5000000000000000000",
+      "id": 19,
+      "opener": "0x9A4E51900E10074D4adaD18b674Cd2e562C95799",
+      "required": [
+        "amount",
+        "deliverable",
+        "deadline"
+      ],
+      "round": 2,
+      "rounds": [
+        {
+          "a_opened": true,
+          "a_salt": "90f637dbc0efc71827e2c62b4d4481b8",
+          "a_seal": "3e67141433d055faa04a03ea884681908db31268a4ca4f1216f89a037daa4296",
+          "a_sealed": true,
+          "a_signed": false,
+          "a_text": "A logo for Kiln, 300 USDC paid when the final PNGs are delivered, by Oct 30. Two concepts to choose from.",
+          "b_opened": true,
+          "b_salt": "94a020fcb50ac771411084b3db15c23b",
+          "b_seal": "c1d115a497c5081c91f9d15da4aa7ebc89689fcd386ece0963ac36af9a16eea1",
+          "b_sealed": true,
+          "b_signed": false,
+          "b_text": "Mina designs a logo for Kiln: 3 concepts, then the final mark as SVG and PNG with the source files. 300 USDC, half upfront, half on the final files, by Oct 30.",
+          "checked_at": 1792373379,
+          "n": 1,
+          "notes": {
+            "amount": "A: 300 USDC. B: 300 USDC.",
+            "cancellation": "Neither account mentions cancellation terms.",
+            "deadline": "A: by Oct 30. B: by Oct 30.",
+            "deliverable": "A: Two concepts, final PNGs. B: Three concepts, final mark as SVG and PNG with source files.",
+            "payment": "A: 300 USDC paid when final PNGs delivered. B: Half upfront, half on final files.",
+            "rights": "Neither account mentions ownership or usage rights."
+          },
+          "opened_at": 1792373357,
+          "sealed_at": 1792373342,
+          "split": [],
+          "statuses": [
+            "MATCH",
+            "DIFFER",
+            "MATCH",
+            "DIFFER",
+            "ABSENT",
+            "ABSENT"
+          ],
+          "verdict": "DIFFERENT"
+        },
+        {
+          "a_opened": false,
+          "a_salt": "",
+          "a_seal": "",
+          "a_sealed": false,
+          "a_signed": false,
+          "a_text": "",
+          "b_opened": false,
+          "b_salt": "",
+          "b_seal": "",
+          "b_sealed": false,
+          "b_signed": false,
+          "b_text": "",
+          "checked_at": 0,
+          "n": 2,
+          "notes": {},
+          "opened_at": 0,
+          "sealed_at": 0,
+          "split": [],
+          "statuses": [],
+          "verdict": ""
+        }
+      ],
+      "step": "SEALING",
+      "terms": [
+        "amount",
+        "deliverable",
+        "deadline",
+        "payment",
+        "rights",
+        "cancellation"
+      ],
+      "title": "Logo for Kiln",
+      "window_hours": 96
+    }
+  },
+  "tx": {
+    "agreed.join": "0xe1de293b23882eb254f394bb459c1a087fdc95ff139f75766e0d566a4469bb0c",
+    "agreed.open_page": "0x84ceb3d05bbf9fcc2a58092cd62bc29ae857f94f251c7d77fd6cf078554e68b7",
+    "agreed.r1.check": "0xf49ce86255d200d05bde5784ab16ca2ab174b61e17d03a531652ec066746cf4d",
+    "agreed.r1.reveal_a": "0x7506819deb5b8412504924ab333390122a5dc3c45d20cba6fbe1d89242b41ec9",
+    "agreed.r1.reveal_b": "0x72643d58dd1baf536a37562692f8a1efcb818e44c735d85f9264812bd7c8e333",
+    "agreed.r1.seal_a": "0x583b977508c9f80791a4bb156026a765c071734f2c33289fa19db0a35c492ccc",
+    "agreed.r1.seal_b": "0x612fd62d0f6c2789f5e194a00cf8ed5922bf66f43fbb6931561535e103a5d51c",
+    "agreed.r2.check": "0x65acea3b54215b398a275aa863013834145aee14c3ae0ee34abe4a7e013f0e07",
+    "agreed.r2.reveal_a": "0x16991ff588d6f33754b1934f65d83c7d6b668d28cc0eb45ff7274cd8ce26cfb7",
+    "agreed.r2.reveal_b": "0x69bcf56b615ae67c2d0a1858780d9ce0601d8055c40887e28f3a1d52c9812f37",
+    "agreed.r2.seal_a": "0xa8a3aea1b89a7d0e9690b3200ff550bfd723b2d89c2c10dd14e03f05168995b0",
+    "agreed.r2.seal_b": "0xb3e35374fb501300a8fac0e85e470223fa036a80d63c32c6342625e0c365b570",
+    "agreed.sign.kiln": "0x91c0e215e147021740810f36e18b220c4763ffbf87861614d284a4b8785c7097",
+    "agreed.sign.sera": "0xfb8385863a33bb5ddb633ffaf014e86dde18890d3ad0e5c742403e6634df026c",
+    "agreed.withdraw.kiln": "0x908a79ce0459b80ec4df34cc6eb476eb44cc9787b2ce0839dada99a2ad18a8ae",
+    "agreed.withdraw.sera": "0x6ecf11010cee4b8d29437a7b62f4e9e0c9d0b4d0889927b92aaa8aee09f3364e",
+    "noshow.join": "0x94ffced0a3e62d923869f76293d0cfdaaace84cba87ffb32b1febb208fcee804",
+    "noshow.open_page": "0xc5fa25c4aef12c50ac22719a12c69e911e1a05f489923e40929abfbeecb95a65",
+    "noshow.seal.kiln": "0x8f13b7352f4ffb6d66cf66195fa0524e564b9feb27b56f16f4a94ad6fab70e1d",
+    "round2.join": "0x451c52ee74cd5c2f92414d1915f8bac151d77f8784118444a26047c48f8870f4",
+    "round2.open_page": "0xc437703d80d674b3f766c20c4ddda2da49832200a01109037bed3988c2c96f0b",
+    "round2.r1.check": "0x76ed254d676cc670015c5d7d23e04f16a253852e12156a92cea300002a307fe1",
+    "round2.r1.reveal_a": "0xcb371d9dfbb41956d28bff5861c18e61a44a2af6364b3118c37cf57fde1179da",
+    "round2.r1.reveal_b": "0x6be5b8a15a72aaa99d144a168a9834c0cbfa1307e97ac67f2a4fbad6361f281e",
+    "round2.r1.seal_a": "0xd79bb41e7318270a841263bda1e236367102420c7b60a2a7ed6473241e6d2e05",
+    "round2.r1.seal_b": "0xdd87cb8bbaf98f1c59c1dd8daba517f54dc6f0c5988f586de10b987918b8c262"
+  }
+}

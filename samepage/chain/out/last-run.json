@@ -1,16 +1,12 @@
 {
   "request": {
     "tasks": [
-      "probe",
-      "deploy",
-      "verify",
-      "golden",
-      "golden-report"
+      "seed",
+      "site-e2e",
+      "browser-e2e"
     ],
-    "note": "first deploy and the golden run",
-    "stop_on_failure": [
-      "deploy"
-    ]
+    "note": "second attempt: the first run's records were lost when the commit step refused a dirty checkout; seed again, the reviewer's path, the browser",
+    "stop_on_failure": []
   },
   "failed": []
 }

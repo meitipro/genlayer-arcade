@@ -1,0 +1,40 @@
+accounts
+  kiln       0xf7636BCf2AFB273B008926A279Dbe85c9e57a535
+  sera       0x95F0583b6F2aCa1128e06dD47d96661656fF1C9E
+  mina       0x37D14083157998e4aBD649c7871851097C11B820
+  client     0x9A4E51900E10074D4adaD18b674Cd2e562C95799
+  funded 0xf7636BCf 0.00 -> 120.00 GEN
+  funded 0x95F0583b 0.00 -> 120.00 GEN
+  funded 0x37D14083 0.00 -> 120.00 GEN
+  funded 0x9A4E5190 0.00 -> 120.00 GEN
+  agreed.open_page             https://explorer-studio-dev.genlayer.com/tx/0x84ceb3d05bbf9fcc2a58092cd62bc29ae857f94f251c7d77fd6cf078554e68b7
+  agreed.join                  https://explorer-studio-dev.genlayer.com/tx/0xe1de293b23882eb254f394bb459c1a087fdc95ff139f75766e0d566a4469bb0c
+  agreed.r1.seal_a             https://explorer-studio-dev.genlayer.com/tx/0x583b977508c9f80791a4bb156026a765c071734f2c33289fa19db0a35c492ccc
+  agreed.r1.seal_b             https://explorer-studio-dev.genlayer.com/tx/0x612fd62d0f6c2789f5e194a00cf8ed5922bf66f43fbb6931561535e103a5d51c
+  agreed.r1.reveal_a           https://explorer-studio-dev.genlayer.com/tx/0x7506819deb5b8412504924ab333390122a5dc3c45d20cba6fbe1d89242b41ec9
+  agreed.r1.reveal_b           https://explorer-studio-dev.genlayer.com/tx/0x72643d58dd1baf536a37562692f8a1efcb818e44c735d85f9264812bd7c8e333
+  agreed.r1.check              https://explorer-studio-dev.genlayer.com/tx/0xf49ce86255d200d05bde5784ab16ca2ab174b61e17d03a531652ec066746cf4d
+  round 1: DIFFERENT ['MATCH', 'DIFFER', 'MATCH', 'DIFFER', 'ABSENT', 'ABSENT']
+  agreed.r2.seal_a             https://explorer-studio-dev.genlayer.com/tx/0xa8a3aea1b89a7d0e9690b3200ff550bfd723b2d89c2c10dd14e03f05168995b0
+  agreed.r2.seal_b             https://explorer-studio-dev.genlayer.com/tx/0xb3e35374fb501300a8fac0e85e470223fa036a80d63c32c6342625e0c365b570
+  agreed.r2.reveal_a           https://explorer-studio-dev.genlayer.com/tx/0x16991ff588d6f33754b1934f65d83c7d6b668d28cc0eb45ff7274cd8ce26cfb7
+  agreed.r2.reveal_b           https://explorer-studio-dev.genlayer.com/tx/0x69bcf56b615ae67c2d0a1858780d9ce0601d8055c40887e28f3a1d52c9812f37
+  agreed.r2.check              https://explorer-studio-dev.genlayer.com/tx/0x65acea3b54215b398a275aa863013834145aee14c3ae0ee34abe4a7e013f0e07
+  round 2: SAME_PAGE ['MATCH', 'MATCH', 'MATCH', 'MATCH', 'MATCH', 'ABSENT']
+  agreed.sign.kiln             https://explorer-studio-dev.genlayer.com/tx/0x91c0e215e147021740810f36e18b220c4763ffbf87861614d284a4b8785c7097
+  agreed.sign.sera             https://explorer-studio-dev.genlayer.com/tx/0xfb8385863a33bb5ddb633ffaf014e86dde18890d3ad0e5c742403e6634df026c
+  agreed.withdraw.kiln         https://explorer-studio-dev.genlayer.com/tx/0x908a79ce0459b80ec4df34cc6eb476eb44cc9787b2ce0839dada99a2ad18a8ae
+  agreed.withdraw.sera         https://explorer-studio-dev.genlayer.com/tx/0x6ecf11010cee4b8d29437a7b62f4e9e0c9d0b4d0889927b92aaa8aee09f3364e
+  page #18 is AGREED
+  round2.open_page             https://explorer-studio-dev.genlayer.com/tx/0xc437703d80d674b3f766c20c4ddda2da49832200a01109037bed3988c2c96f0b
+  round2.join                  https://explorer-studio-dev.genlayer.com/tx/0x451c52ee74cd5c2f92414d1915f8bac151d77f8784118444a26047c48f8870f4
+  round2.r1.seal_a             https://explorer-studio-dev.genlayer.com/tx/0xd79bb41e7318270a841263bda1e236367102420c7b60a2a7ed6473241e6d2e05
+  round2.r1.seal_b             https://explorer-studio-dev.genlayer.com/tx/0xdd87cb8bbaf98f1c59c1dd8daba517f54dc6f0c5988f586de10b987918b8c262
+  round2.r1.reveal_a           https://explorer-studio-dev.genlayer.com/tx/0xcb371d9dfbb41956d28bff5861c18e61a44a2af6364b3118c37cf57fde1179da
+  round2.r1.reveal_b           https://explorer-studio-dev.genlayer.com/tx/0x6be5b8a15a72aaa99d144a168a9834c0cbfa1307e97ac67f2a4fbad6361f281e
+  round2.r1.check              https://explorer-studio-dev.genlayer.com/tx/0x76ed254d676cc670015c5d7d23e04f16a253852e12156a92cea300002a307fe1
+  page #19 round 1: DIFFERENT ['MATCH', 'DIFFER', 'MATCH', 'DIFFER', 'ABSENT', 'ABSENT'], now SEALING
+  noshow.open_page             https://explorer-studio-dev.genlayer.com/tx/0xc5fa25c4aef12c50ac22719a12c69e911e1a05f489923e40929abfbeecb95a65
+  noshow.join                  https://explorer-studio-dev.genlayer.com/tx/0x94ffced0a3e62d923869f76293d0cfdaaace84cba87ffb32b1febb208fcee804
+  noshow.seal.kiln             https://explorer-studio-dev.genlayer.com/tx/0x8f13b7352f4ffb6d66cf66195fa0524e564b9feb27b56f16f4a94ad6fab70e1d
+  page #20: sera never seals; settle after 1792395039

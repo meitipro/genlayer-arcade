@@ -1,0 +1,221 @@
+{
+  "started": "2026-10-19T01:36:59.320Z",
+  "steps": [
+    {
+      "who": "kiln",
+      "step": "landing renders with live data",
+      "ok": true,
+      "seconds": 3
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "step": "opens a page from /new",
+      "ok": true,
+      "seconds": 8,
+      "tx": "0x2102f91a89fb26ecce70894788caf240f4debf18ba26ea12460779a49c1a7290"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "sera",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "sera",
+      "step": "joins from the link",
+      "ok": true,
+      "seconds": 12,
+      "tx": "0x2e929aebcd706fd02c4cb58839cb5c7ec5aacfa7c54ee0421a136912a88d2736"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "step": "writes and seals round 1",
+      "ok": true,
+      "seconds": 12,
+      "tx": "0x3789fc419108e57a01a0dd20e24654167be6efdb0be545c59714777681c7b166"
+    },
+    {
+      "who": "sera",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "sera",
+      "step": "writes and seals round 1",
+      "ok": true,
+      "seconds": 12,
+      "tx": "0xa8e2a7009d717a7e46aa16d1023b0009346a15ae6b901022d1e06eb90de694bb"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "step": "opens their account",
+      "ok": true,
+      "seconds": 9,
+      "tx": "0x73c3ee64b52e101caf056e8fca8213e7ed3e0ec8a19fafc6a57aaa47ebe0f55c"
+    },
+    {
+      "who": "sera",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "sera",
+      "console_error": "Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+      "who": "sera",
+      "console_error": "GenLayer RPC error (sim_estimateTransactionFees): Rate limit exceeded: 30 requests per minute"
+    },
+    {
+      "who": "sera",
+      "step": "opens their account",
+      "ok": true,
+      "seconds": 14,
+      "tx": "0xd23342b55a2cad3e233df0d101831e4cca497a84a371b9de1bff35cd557356af"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "step": "runs the check",
+      "ok": true,
+      "seconds": 39,
+      "tx": "0xd91d456b59b9081785ca52c8d1b00612ad2183a4da6571674e1ebe6fb69e788c"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "step": "signs",
+      "ok": true,
+      "seconds": 12,
+      "tx": "0x405d09aa0579639bccedd09b9323048f4e8c8453ae7cb0e90385a59753e94790"
+    },
+    {
+      "who": "sera",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "sera",
+      "step": "signs",
+      "ok": true,
+      "seconds": 12,
+      "tx": "0x20ad838269321de721a89e71b006422b6ab538624ef37ee94010f24001e229ab"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "step": "reads the agreed record",
+      "ok": true,
+      "seconds": 1,
+      "tx": "0x405d09aa0579639bccedd09b9323048f4e8c8453ae7cb0e90385a59753e94790"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "kiln",
+      "step": "withdraws the deposit",
+      "ok": true,
+      "seconds": 14,
+      "tx": "0xdaebd66290907a869a17f2b70a9188a29ad193f7e14dbd6e4466087eccf0626e"
+    },
+    {
+      "who": "sera",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "sera",
+      "console_error": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "who": "sera",
+      "step": "withdraws the deposit",
+      "ok": true,
+      "seconds": 19,
+      "tx": "0x9cbe5e71554eea407aaa1f26e30c2a8b03bcb469d9464df718527b9229b5d89b"
+    },
+    {
+      "who": "kiln",
+      "step": "docs render",
+      "ok": true,
+      "seconds": 1,
+      "tx": "0xdaebd66290907a869a17f2b70a9188a29ad193f7e14dbd6e4466087eccf0626e"
+    }
+  ],
+  "shots": [
+    "01-kiln-landing.png",
+    "02-kiln-new-page-form.png",
+    "03-sera-joined.png",
+    "04-kiln-writing.png",
+    "05-sera-writing.png",
+    "06-kiln-validators-comparing.png",
+    "07-kiln-result.png",
+    "08-kiln-record.png",
+    "09-kiln-withdrawn.png",
+    "10-sera-withdrawn.png",
+    "11-kiln-docs-quickstart.png",
+    "12-kiln-docs-evaluation.png"
+  ],
+  "kiln": "0x9CaDbd115bC1FCA29da4CC28bcE11414dB248AcC",
+  "sera": "0x0B85a2849836DB43B381f7bd22B34b4b977DB02f",
+  "kiln_funded": "50000000000000000000",
+  "sera_funded": "50000000000000000000",
+  "page": 22,
+  "round1": "SAME PAGE",
+  "transactions": {
+    "kiln": [
+      "0x2102f91a89fb26ecce70894788caf240f4debf18ba26ea12460779a49c1a7290",
+      "0x3789fc419108e57a01a0dd20e24654167be6efdb0be545c59714777681c7b166",
+      "0x73c3ee64b52e101caf056e8fca8213e7ed3e0ec8a19fafc6a57aaa47ebe0f55c",
+      "0xd91d456b59b9081785ca52c8d1b00612ad2183a4da6571674e1ebe6fb69e788c",
+      "0x405d09aa0579639bccedd09b9323048f4e8c8453ae7cb0e90385a59753e94790",
+      "0xdaebd66290907a869a17f2b70a9188a29ad193f7e14dbd6e4466087eccf0626e"
+    ],
+    "sera": [
+      "0x2e929aebcd706fd02c4cb58839cb5c7ec5aacfa7c54ee0421a136912a88d2736",
+      "0xa8e2a7009d717a7e46aa16d1023b0009346a15ae6b901022d1e06eb90de694bb",
+      "0xd23342b55a2cad3e233df0d101831e4cca497a84a371b9de1bff35cd557356af",
+      "0x20ad838269321de721a89e71b006422b6ab538624ef37ee94010f24001e229ab",
+      "0x9cbe5e71554eea407aaa1f26e30c2a8b03bcb469d9464df718527b9229b5d89b"
+    ]
+  },
+  "finished": "2026-10-19T01:39:49.819Z",
+  "ok": true
+}

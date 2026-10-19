@@ -1,0 +1,295 @@
+{
+  "contract": "0x6654e80CA0656CC007991D073a274D1067F82999",
+  "started": "2026-10-19T01:30:55.257Z",
+  "steps": [
+    {
+      "name": "open the page with a 20 GEN deposit",
+      "by": "kiln",
+      "method": "open_page",
+      "tx": "0x825ce6d1b94f5cecb37b3196cbd7d12aa775bb842e31decf7d2d4da713ac9eac",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x825ce6d1b94f5cecb37b3196cbd7d12aa775bb842e31decf7d2d4da713ac9eac",
+      "ok": true
+    },
+    {
+      "name": "a stranger tries to join",
+      "by": "stranger",
+      "method": "join",
+      "tx": "0x8b23a1beace0e3c2efd5efa2037abd757f533736521ea9e7f760ee376dce72a1",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x8b23a1beace0e3c2efd5efa2037abd757f533736521ea9e7f760ee376dce72a1",
+      "ok": false,
+      "refused": "only the named counterparty can join"
+    },
+    {
+      "name": "sera joins with the same deposit",
+      "by": "sera",
+      "method": "join",
+      "tx": "0x082d1ad59dbde1dbc2ae05e47f79cb77c317b9cd6faaa546d997e06dbc376e84",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x082d1ad59dbde1dbc2ae05e47f79cb77c317b9cd6faaa546d997e06dbc376e84",
+      "ok": true,
+      "seconds": 10
+    },
+    {
+      "name": "kiln seals round 1",
+      "by": "kiln",
+      "method": "seal",
+      "tx": "0xe9b32b5eeb4faf4be75a80b0865f128cb04dd04ccde8bbd0370350740fa10e65",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0xe9b32b5eeb4faf4be75a80b0865f128cb04dd04ccde8bbd0370350740fa10e65",
+      "ok": true,
+      "seconds": 13
+    },
+    {
+      "name": "sera tries to open before both sealed",
+      "by": "sera",
+      "method": "reveal",
+      "tx": "0xc8534b4155e57ee33b9550622e6eddd292838504adc06d476af4d2d43f675ec5",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0xc8534b4155e57ee33b9550622e6eddd292838504adc06d476af4d2d43f675ec5",
+      "ok": false,
+      "refused": "accounts open only after both sides have sealed"
+    },
+    {
+      "name": "sera seals round 1",
+      "by": "sera",
+      "method": "seal",
+      "tx": "0x797da1dec2b0c5ef84a971c9246af9ffca076aab259552a82b6e182e2f99946c",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x797da1dec2b0c5ef84a971c9246af9ffca076aab259552a82b6e182e2f99946c",
+      "ok": true,
+      "seconds": 6
+    },
+    {
+      "name": "kiln tries to open a different text",
+      "by": "kiln",
+      "method": "reveal",
+      "tx": "0x134e6f4f5f52477aa2545892fc3dc76f01e5476654a0bc9ead3e8daeea75eead",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x134e6f4f5f52477aa2545892fc3dc76f01e5476654a0bc9ead3e8daeea75eead",
+      "ok": false,
+      "refused": "this account does not match your seal"
+    },
+    {
+      "name": "kiln opens round 1",
+      "by": "kiln",
+      "method": "reveal",
+      "tx": "0x675899c6baf0ec0340011dea6de6fd1cb15ead07399b7e5fa8a47c8d36275161",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x675899c6baf0ec0340011dea6de6fd1cb15ead07399b7e5fa8a47c8d36275161",
+      "ok": true,
+      "seconds": 6
+    },
+    {
+      "name": "sera opens round 1",
+      "by": "sera",
+      "method": "reveal",
+      "tx": "0xf4142bb3f6650d8e6303a62e24418648261388ebabe112a7958fab143a9f03d7",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0xf4142bb3f6650d8e6303a62e24418648261388ebabe112a7958fab143a9f03d7",
+      "ok": true,
+      "seconds": 10
+    },
+    {
+      "name": "the stranger runs the check, round 1",
+      "by": "stranger",
+      "method": "check",
+      "tx": "0x7e0fb160be9d077e0ffef9a098681172202ac0b914cc0a851890bde7b1f5525e",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x7e0fb160be9d077e0ffef9a098681172202ac0b914cc0a851890bde7b1f5525e",
+      "ok": true,
+      "seconds": 37
+    },
+    {
+      "name": "kiln seals round 2",
+      "by": "kiln",
+      "method": "seal",
+      "tx": "0xe67eb1b5bdb411b2e162c0f0cb89ba585181a687d4059e617e89deb7fea581bc",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0xe67eb1b5bdb411b2e162c0f0cb89ba585181a687d4059e617e89deb7fea581bc",
+      "ok": true,
+      "seconds": 9
+    },
+    {
+      "name": "sera seals round 2",
+      "by": "sera",
+      "method": "seal",
+      "tx": "0xb3a986fd67bb284f631c0898e0dc7fb7681b271280082cb04e660592818029e3",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0xb3a986fd67bb284f631c0898e0dc7fb7681b271280082cb04e660592818029e3",
+      "ok": true,
+      "seconds": 12
+    },
+    {
+      "name": "kiln opens round 2",
+      "by": "kiln",
+      "method": "reveal",
+      "tx": "0xa99a5ff95949dd6d316b88fee733cdd0d63302dabf81a2c3f294743f6837c888",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0xa99a5ff95949dd6d316b88fee733cdd0d63302dabf81a2c3f294743f6837c888",
+      "ok": true,
+      "seconds": 9
+    },
+    {
+      "name": "sera opens round 2",
+      "by": "sera",
+      "method": "reveal",
+      "tx": "0x34dceaea89a1d090e0b2e3a6d47bb3874a407354fbd2aff1505c650a08f4ee1a",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x34dceaea89a1d090e0b2e3a6d47bb3874a407354fbd2aff1505c650a08f4ee1a",
+      "ok": true,
+      "seconds": 6
+    },
+    {
+      "name": "kiln runs the check, round 2",
+      "by": "kiln",
+      "method": "check",
+      "tx": "0xd67ff7b4de606293185a086a69482b52b03c6e3cb7a98628c7f121225d04be6e",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0xd67ff7b4de606293185a086a69482b52b03c6e3cb7a98628c7f121225d04be6e",
+      "ok": true,
+      "seconds": 37
+    },
+    {
+      "name": "the stranger tries to sign",
+      "by": "stranger",
+      "method": "sign",
+      "tx": "0x65f9bd9f21b20339c2623c78d576a66b31b6ba1b9d8425c11bd33b256066a2e0",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x65f9bd9f21b20339c2623c78d576a66b31b6ba1b9d8425c11bd33b256066a2e0",
+      "ok": false,
+      "refused": "not a side of this page"
+    },
+    {
+      "name": "kiln signs",
+      "by": "kiln",
+      "method": "sign",
+      "tx": "0x27faba54eb61808f9baaa1e8c27cd71e503071715450259835acd24de550e66e",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x27faba54eb61808f9baaa1e8c27cd71e503071715450259835acd24de550e66e",
+      "ok": true,
+      "seconds": 6
+    },
+    {
+      "name": "sera signs",
+      "by": "sera",
+      "method": "sign",
+      "tx": "0xda2396056a8d5f5ee3ec95f6ae819c640462e563e0dffd7b59d7f8913641db28",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0xda2396056a8d5f5ee3ec95f6ae819c640462e563e0dffd7b59d7f8913641db28",
+      "ok": true,
+      "seconds": 39
+    },
+    {
+      "name": "kiln withdraws",
+      "by": "kiln",
+      "method": "withdraw",
+      "tx": "0x191e7c37178d974cfeaba10eab88429d6b24aa55fd2da65799f9f69afadea5fe",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x191e7c37178d974cfeaba10eab88429d6b24aa55fd2da65799f9f69afadea5fe",
+      "ok": true,
+      "seconds": 33
+    },
+    {
+      "name": "sera withdraws",
+      "by": "sera",
+      "method": "withdraw",
+      "tx": "0x67f404e690de3c68ef448689a61e98bc408b6d94cd4839706e268b92ee41b890",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x67f404e690de3c68ef448689a61e98bc408b6d94cd4839706e268b92ee41b890",
+      "ok": true,
+      "seconds": 36
+    },
+    {
+      "name": "kiln tries to withdraw twice",
+      "by": "kiln",
+      "method": "withdraw",
+      "tx": "0x9f0cb3824bd7eaa28d8b2a92f92f8474962ac2f60261d1d4725f171a578aeee0",
+      "url": "https://explorer-studio-dev.genlayer.com/tx/0x9f0cb3824bd7eaa28d8b2a92f92f8474962ac2f60261d1d4725f171a578aeee0",
+      "ok": false,
+      "refused": "nothing to withdraw"
+    }
+  ],
+  "deposit": "20000000000000000000",
+  "page": 21,
+  "round1": {
+    "a_opened": true,
+    "a_salt": "08eea2eb61f4ca9262b59bc3630d6e91",
+    "a_seal": "a83546e3fe2788411469a99aaee54b924a3203ec76405ff70747f1dc4961123b",
+    "a_sealed": true,
+    "a_signed": false,
+    "a_text": "Sera writes 3 posts and a thread on X about the Kiln launch, all live by Oct 24. Kiln pays 600 USDC, all of it after the last post is live.",
+    "b_opened": true,
+    "b_salt": "cab74416897256b7add12ef425de4d8e",
+    "b_seal": "e10a8f748bca14cb6bb65449cf867078dec5c6d9be0b287da901f9878f80f5f8",
+    "b_sealed": true,
+    "b_signed": false,
+    "b_text": "I write 3 posts on X about the Kiln launch, all live by Oct 24. 600 USDC, half before I start and half after the last post.",
+    "checked_at": 1792373550,
+    "n": 1,
+    "notes": {
+      "amount": "Both say 600 USDC for the work described.",
+      "cancellation": "Neither account addresses what happens if either side backs out.",
+      "deadline": "Both say all posts live by Oct 24.",
+      "deliverable": "A says 3 posts plus a thread on X; B says 3 posts on X only — no thread mentioned.",
+      "payment": "A says full 600 USDC paid after the last post is live; B says half before starting and half after the last post.",
+      "rights": "Neither account addresses ownership or usage rights."
+    },
+    "opened_at": 1792373529,
+    "sealed_at": 1792373508,
+    "split": [],
+    "statuses": [
+      "MATCH",
+      "DIFFER",
+      "MATCH",
+      "DIFFER",
+      "ABSENT",
+      "ABSENT"
+    ],
+    "verdict": "DIFFERENT"
+  },
+  "round2": {
+    "a_opened": true,
+    "a_salt": "5e6ee1808caceb4429ab40cc81534970",
+    "a_seal": "6b981cd0a7150a3bb1e0e93223dcb60bfea37eb9508ce28d498903fd76ff4915",
+    "a_sealed": true,
+    "a_signed": false,
+    "a_text": "Sera writes 3 posts and one thread on X about the Kiln launch, all live by Oct 24. Kiln pays 600 USDC: half before Sera starts and half after the thread is live. Kiln may repost and quote them.",
+    "b_opened": true,
+    "b_salt": "f1c5887436ee069224708f52627b5ef5",
+    "b_seal": "233066c89680aaeb1dacca340e254e57399e9b430a20180ad9147fb56e9b37b5",
+    "b_sealed": true,
+    "b_signed": false,
+    "b_text": "I write three posts and one thread on X about Kiln's launch, all live by Oct 24, for 600 USDC: half before I start, half after the thread is live. Kiln can repost and quote them.",
+    "checked_at": 1792373624,
+    "n": 2,
+    "notes": {
+      "amount": "Both say 600 USDC total.",
+      "cancellation": "Neither account says what happens if either side backs out.",
+      "deadline": "Both say all content goes live by Oct 24.",
+      "deliverable": "Both say 3 posts and 1 thread on X about the Kiln launch.",
+      "payment": "Both say half is paid before work starts and half after the thread is live.",
+      "rights": "Both say Kiln may repost and quote the posts/thread."
+    },
+    "opened_at": 1792373606,
+    "sealed_at": 1792373584,
+    "split": [],
+    "statuses": [
+      "MATCH",
+      "MATCH",
+      "MATCH",
+      "MATCH",
+      "MATCH",
+      "ABSENT"
+    ],
+    "verdict": "SAME_PAGE"
+  },
+  "final_step": "AGREED",
+  "balances": {
+    "kiln": {
+      "owed_in_contract": "20000000000000000000",
+      "contract_balance_before": "104000000000000000000",
+      "contract_balance_after": "84000000000000000000",
+      "contract_paid_out": "20000000000000000000",
+      "exact_to_the_wei": true,
+      "account_before": "79999368868249991416",
+      "account_after": "79999242563249988593",
+      "account_gained_net_of_fees": "-126305000002823",
+      "balance_left_in_contract": "0"
+    },
+    "sera": {
+      "owed_in_contract": "20000000000000000000",
+      "contract_balance_before": "84000000000000000000",
+      "contract_balance_after": "64000000000000000000",
+      "contract_paid_out": "20000000000000000000",
+      "exact_to_the_wei": true,
+      "account_before": "79999449590499992004",
+      "account_after": "99999323285499989181",
+      "account_gained_net_of_fees": "19999873694999997177",
+      "balance_left_in_contract": "0"
+    }
+  },
+  "finished": "2026-10-19T01:36:19.956Z",
+  "ok": true
+}
