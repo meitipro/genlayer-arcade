@@ -44,7 +44,6 @@ The build session's network policy answered 403 for `studio-next.genlayer.com`, 
 `vercel.com`. Allow those hosts (or run the commands below on your own machine):
 
 ```bash
-cd unban
 python -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt
 python scripts/deploy.py          # validates against the live runtime, deploys, writes deployment.json
 python scripts/verify_source.py   # the deployed source equals contracts/unban.py
@@ -61,8 +60,8 @@ git add deployment.json eval/results.* evidence/ && git commit -m "Deployment an
 
 1. https://vercel.com/new, import `meitipro/genlayer-unban`. Project name `use-unban` (the site is then https://use-unban.vercel.app), Root Directory `web`
    (Edit, pick the folder), framework Next.js, leave the build settings as they are. Deploy.
-2. Settings, Git, Production Branch: `main`. Settings, Advanced: Skew Protection off.
-3. Deployments, the latest one, Redeploy if it was not built from `main`. Open the site.
+2. Production Branch stays `main`. Settings, Advanced: Skew Protection off.
+3. Open the site when the first deployment is Ready.
 4. Open `/run` on the site and press Run. It deploys the contract with a throwaway test account, walks the reviewer's path,
    runs the 12 golden cases through consensus and seeds two courts (about 30 to 45 minutes, keep the tab open).
 5. Settings, Environment Variables: `NEXT_PUBLIC_UNBAN_CONTRACT` = the address `/run` shows, for Production. Optional:

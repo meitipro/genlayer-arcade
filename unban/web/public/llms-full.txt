@@ -2,7 +2,7 @@
 
 URL: /docs/concepts/bot
 
-The bot in `unban/bot` polls `list_appeals(court_id, "DONE", 0, 50)` every minute and, for each ruling it has not applied yet:
+The bot in `bot/` polls `list_appeals(court_id, "DONE", 0, 50)` every minute and, for each ruling it has not applied yet:
 
 | Ruling | What the bot does in Discord |
 | --- | --- |
@@ -207,7 +207,7 @@ and a response window of 12 to 96 hours. The value you send is the first pool fu
 ## 3. Connect the bot
 
 ```bash
-cd unban/bot
+cd bot
 npm install
 UNBAN_CONTRACT=0x... UNBAN_COURT=1 DISCORD_TOKEN=... DISCORD_GUILD=... npm start
 ```
@@ -409,14 +409,14 @@ URL: /docs/reference/addresses
 URL: /docs/reference/bot-configuration
 
 ```bash
-cd unban/bot
+cd bot
 npm install
 UNBAN_CONTRACT=0x... UNBAN_COURT=1 DISCORD_TOKEN=... DISCORD_GUILD=... npm start
 ```
 
 | Variable | Required | Meaning |
 | --- | --- | --- |
-| `UNBAN_CONTRACT` | yes, unless `unban/deployment.json` exists | the Unban contract address |
+| `UNBAN_CONTRACT` | yes, unless `deployment.json` exists | the Unban contract address |
 | `UNBAN_COURT` | yes | the court number this server uses |
 | `DISCORD_TOKEN` | yes | the server's bot token, with the Ban Members and Moderate Members permissions |
 | `DISCORD_GUILD` | yes | the server id |

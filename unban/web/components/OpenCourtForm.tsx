@@ -108,7 +108,7 @@ export function OpenCourtForm({ contract }: { contract: string }) {
         <TxStatus tx={tx} />
         <span className="eyebrow amber">Next: install the bot</span>
         <p className="muted" style={{ margin: 0 }}>The bot reads rulings for court #{opened} and applies them in your Discord server with your own bot token. It never holds a wallet key.</p>
-        <pre className="quote">{`cd unban/bot\nUNBAN_COURT=${opened} DISCORD_TOKEN=... DISCORD_GUILD=... npm start`}</pre>
+        <pre className="quote">{`cd bot\nUNBAN_COURT=${opened} DISCORD_TOKEN=... DISCORD_GUILD=... npm start`}</pre>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <Link className="btn solid" href={`/c/${opened}`}>Open the court page</Link>
           <Link className="btn" href="/docs/reference/bot-configuration">Bot configuration</Link>

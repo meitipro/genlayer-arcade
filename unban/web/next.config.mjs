@@ -12,7 +12,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
-  // The site lives in web/ beside the contract and scripts; trace from here, not from the repo root.
+  // The site lives in web/ beside contracts/ and scripts/; trace from here, not from the repo root.
   outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
   // tsc runs in the build; the repository root's ESLint config belongs to another app.
   eslint: { ignoreDuringBuilds: true },

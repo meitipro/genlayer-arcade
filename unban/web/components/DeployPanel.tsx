@@ -51,7 +51,7 @@ export function DeployPanel({ current }: { current: string }) {
       {made ? (
         <div className="note">
           Point the site at it: set <code>NEXT_PUBLIC_UNBAN_CONTRACT={made}</code> in the Vercel project, or write the address into
-          <code> unban/deployment.json</code> with <code>python scripts/deploy.py</code>, then redeploy.
+          <code> deployment.json</code> with <code>python scripts/deploy.py</code>, then redeploy.
         </div>
       ) : null}
     </div>

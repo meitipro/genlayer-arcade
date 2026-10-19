@@ -4,14 +4,14 @@ description: Every environment variable the read-only Discord bot reads.
 ---
 
 ```bash
-cd unban/bot
+cd bot
 npm install
 UNBAN_CONTRACT=0x... UNBAN_COURT=1 DISCORD_TOKEN=... DISCORD_GUILD=... npm start
 ```
 
 | Variable | Required | Meaning |
 | --- | --- | --- |
-| `UNBAN_CONTRACT` | yes, unless `unban/deployment.json` exists | the Unban contract address |
+| `UNBAN_CONTRACT` | yes, unless `deployment.json` exists | the Unban contract address |
 | `UNBAN_COURT` | yes | the court number this server uses |
 | `DISCORD_TOKEN` | yes | the server's bot token, with the Ban Members and Moderate Members permissions |
 | `DISCORD_GUILD` | yes | the server id |
