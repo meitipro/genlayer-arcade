@@ -13,6 +13,10 @@ export default function Deploy() {
         own wallet. No key ever reaches this server.
       </p>
       <DeployPanel current={CONTRACT} />
+      <p className="muted" style={{ margin: 0 }}>
+        No wallet at hand? <a href="/run" style={{ color: "var(--amber)" }}>Run the evidence</a> deploys with a throwaway test account,
+        then walks the reviewer&apos;s path and runs the golden cases.
+      </p>
     </section>
   );
 }

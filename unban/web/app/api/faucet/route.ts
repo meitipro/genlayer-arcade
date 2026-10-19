@@ -14,11 +14,13 @@ export const dynamic = "force-dynamic";
  * Limits live in this instance's memory, per address and per IP: they slow a
  * loop down rather than enforce anything across instances.
  */
-const AMOUNT = (50n * 10n ** 18n).toString();
+const AMOUNT = (100n * 10n ** 18n).toString();
 const PER_ADDRESS_MS = 10 * 60 * 1000;
-const PER_IP_MS = 60 * 1000;
+// The /run page funds about twenty fresh test accounts in one sitting.
+const PER_IP_WINDOW_MS = 10 * 60 * 1000;
+const PER_IP_MAX = 40;
 const lastByAddress = new Map<string, number>();
-const lastByIp = new Map<string, number>();
+const recentByIp = new Map<string, number[]>();
 
 async function rpc(method: string, params: unknown[]) {
   const response = await fetch(RPC, {
@@ -49,14 +51,17 @@ export async function POST(request: Request) {
   }
   const now = Date.now();
   const ip = (request.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
-  const wait = Math.max((lastByAddress.get(address) ?? 0) + PER_ADDRESS_MS - now, (lastByIp.get(ip) ?? 0) + PER_IP_MS - now);
+  const recent = (recentByIp.get(ip) ?? []).filter((t) => t > now - PER_IP_WINDOW_MS);
+  const waitAddress = (lastByAddress.get(address) ?? 0) + PER_ADDRESS_MS - now;
+  const waitIp = recent.length >= PER_IP_MAX ? recent[0] + PER_IP_WINDOW_MS - now : 0;
+  const wait = Math.max(waitAddress, waitIp);
   if (wait > 0) {
     return Response.json({ message: `The faucet funded this wallet or connection recently. Try again in ${Math.ceil(wait / 1000)} seconds.` }, { status: 429 });
   }
   lastByAddress.set(address, now);
-  lastByIp.set(ip, now);
+  recentByIp.set(ip, [...recent, now]);
   if (lastByAddress.size > 5000) lastByAddress.clear();
-  if (lastByIp.size > 5000) lastByIp.clear();
+  if (recentByIp.size > 5000) recentByIp.clear();
 
   const before = await balance(address);
   try {
@@ -71,7 +76,7 @@ export async function POST(request: Request) {
   }
   if (after <= before) {
     lastByAddress.delete(address);
-    lastByIp.delete(ip);
+    recentByIp.set(ip, recent);
     return Response.json({ message: "Studio's faucet was asked, but the balance has not moved. Try again in a moment." }, { status: 502 });
   }
   return Response.json({ funded: true, before: before.toString(), after: after.toString() });

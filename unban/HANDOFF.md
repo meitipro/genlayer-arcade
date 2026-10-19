@@ -22,11 +22,20 @@ git add deployment.json eval/results.* evidence/ && git commit -m "Deployment an
 
 `.accounts.json` holds the test keys and is ignored by git. Only addresses are printed.
 
-## 2. Vercel
+## 2. Vercel, then everything else from the browser
 
-Create a project from `meitipro/genlayer-arcade`, branch `claude/inspiring-dijkstra-6cskv8`, root directory `unban/web`,
-framework Next.js. No environment variable is required once `deployment.json` is committed; before that, set
-`NEXT_PUBLIC_UNBAN_CONTRACT` to the address `/deploy` gives you. Optional: `NEXT_PUBLIC_SITE_URL`. Turn Skew Protection off.
+1. https://vercel.com/new, import `meitipro/genlayer-arcade`. Project name `genlayer-unban`, Root Directory `unban/web`
+   (Edit, pick the folder), framework Next.js, leave the build settings as they are. Deploy.
+2. Settings, Git, Production Branch: `claude/inspiring-dijkstra-6cskv8`. Settings, Advanced: Skew Protection off.
+3. Deployments, the latest one, Redeploy, so production is built from that branch. Open the site.
+4. Open `/run` on the site and press Run. It deploys the contract with a throwaway test account, walks the reviewer's path,
+   runs the 12 golden cases through consensus and seeds two courts (about 30 to 45 minutes, keep the tab open).
+5. Settings, Environment Variables: `NEXT_PUBLIC_UNBAN_CONTRACT` = the address `/run` shows, for Production. Optional:
+   `NEXT_PUBLIC_SITE_URL` = the site's URL. Then Deployments, Redeploy.
+6. Download deployment.json, results.json, walk.json and seed.json from `/run` and commit them as `unban/deployment.json`,
+   `unban/eval/results.json`, `unban/evidence/walk.json`, `unban/evidence/seed.json`. The next build puts them in the docs
+   (Evaluation, Addresses), and then the environment variable is no longer needed. The "Links for the portal form" box on
+   `/run` has every link the form asks for.
 
 ## 3. A repository of its own
 

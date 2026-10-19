@@ -50,6 +50,16 @@ const results = readJson(path.join(ROOT, "eval", "results.json"), { cases: [] })
 write(path.join(GEN_DIR, "results.json"), JSON.stringify(results, null, 2) + "\n");
 const walk = readJson(path.join(ROOT, "evidence", "walk.json"), null);
 
+// The golden set, for /run. Its seal is checked here too, so a build never ships a set edited after sealing.
+{
+  const { createHash } = await import("node:crypto");
+  const goldenText = fs.readFileSync(path.join(ROOT, "eval", "golden.json"), "utf8");
+  const sealLine = fs.readFileSync(path.join(ROOT, "eval", "golden.sha256"), "utf8").trim();
+  const digest = createHash("sha256").update(goldenText).digest("hex");
+  if (!sealLine.startsWith(digest)) throw new Error("eval/golden.json no longer matches eval/golden.sha256; the golden set was edited after it was sealed");
+  write(path.join(GEN_DIR, "golden.json"), JSON.stringify({ seal: sealLine, ...JSON.parse(goldenText) }, null, 2) + "\n");
+}
+
 // ---- contract reference, parsed from the source ---------------------------------
 const lines = source.split("\n");
 const methods = [];
@@ -282,7 +292,7 @@ write(path.join(WEB, "public", "llms-full.txt"), parsed.map((p) => `# ${p.title}
 
 // ---- broken internal links fail the build --------------------------------------------------------
 const slugs = new Set(parsed.map((p) => p.slug));
-const SITE_ROUTES = ["/", "/courts", "/rulings", "/new", "/mod", "/deploy"];
+const SITE_ROUTES = ["/", "/courts", "/rulings", "/new", "/mod", "/deploy", "/run"];
 const broken = [];
 for (const p of parsed) {
   for (const m of p.body.matchAll(/\]\((\/[^)#\s]*)(#[^)]*)?\)|href="(\/[^"#]*)/g)) {

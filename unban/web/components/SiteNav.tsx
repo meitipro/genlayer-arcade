@@ -42,6 +42,7 @@ export function SiteFooter({ contract }: { contract: string }) {
         <span style={{ marginLeft: "auto", display: "flex", gap: 18, flexWrap: "wrap" }}>
           <Link href="/docs" className="muted">Docs</Link>
           <Link href="/docs/more/evaluation" className="muted">Evaluation</Link>
+          <Link href="/run" className="muted">Run the evidence</Link>
           {contract ? (
             <a className="muted mono" href={`https://explorer-studio-dev.genlayer.com/address/${contract}`} target="_blank" rel="noreferrer">
               Contract {contract.slice(0, 8)}…

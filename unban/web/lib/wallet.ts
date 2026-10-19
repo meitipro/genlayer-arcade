@@ -29,7 +29,19 @@ import { CHAIN_HEX, CHAIN_ID, CHAIN_NAME, EXPLORER, RPC } from "./network";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export const chain: any = { ...studioDevnet, id: CHAIN_ID, rpcUrls: { default: { http: [RPC] } } };
+/**
+ * The RPC the browser talks to: this site's own /api/rpc, which forwards to
+ * Studio Next. Studio does not reliably send CORS headers, and a browser read
+ * that fails on CORS looks exactly like a broken contract. The wallet's own
+ * signing still goes to the RPC the wallet was given.
+ */
+export function rpcUrl(): string {
+  return typeof window === "undefined" ? RPC : `${window.location.origin}/api/rpc`;
+}
+
+export function chainFor(): any {
+  return { ...studioDevnet, id: CHAIN_ID, rpcUrls: { default: { http: [rpcUrl()] } } };
+}
 
 export function ethereum(): any {
   const eth = (globalThis as any).ethereum;
@@ -72,7 +84,7 @@ export async function switchNetwork(): Promise<void> {
 }
 
 export async function balanceOf(address: string): Promise<bigint> {
-  const response = await fetch(RPC, {
+  const response = await fetch(rpcUrl(), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_getBalance", params: [address, "latest"] }),
@@ -81,11 +93,16 @@ export async function balanceOf(address: string): Promise<bigint> {
 }
 
 export function writer(address: string): any {
-  return createClient({ chain, account: address as `0x${string}`, provider: ethereum() });
+  return createClient({ chain: chainFor(), account: address as `0x${string}`, provider: ethereum() });
 }
 
 export function reader(): any {
-  return createClient({ chain });
+  return createClient({ chain: chainFor() });
+}
+
+/** A client that signs in the browser with an in-memory test account (the /run page). */
+export function localWriter(account: any): any {
+  return createClient({ chain: chainFor(), account });
 }
 
 /** The flat allocation for a write Studio cannot simulate. 600 is the most a phase may ask for. */
@@ -103,11 +120,11 @@ export function externalNode(recipient: string) {
   };
 }
 
-function transient(error: unknown): boolean {
+export function transient(error: unknown): boolean {
   return /fetch failed|ECONNRESET|network|timed out|timeout|busy|-32006|-32029|rate limit|429|502|503|504/i.test(String((error as Error)?.message ?? error));
 }
 
-async function retried<T>(fn: () => Promise<T>, attempts = 5): Promise<T> {
+export async function retried<T>(fn: () => Promise<T>, attempts = 5): Promise<T> {
   let wait = 1200;
   for (let i = 1; ; i++) {
     try {
@@ -206,7 +223,17 @@ export async function send(
   const eth = ethereum();
   const current = String(await eth.request({ method: "eth_chainId" })).toLowerCase();
   if (current !== CHAIN_HEX) await switchNetwork();
-  const client = writer(from);
+  return sendWith(writer(from), from, call, onPhase, waitUntil);
+}
+
+/** The write itself, for a wallet client or an in-memory account alike. */
+export async function sendWith(
+  client: any,
+  from: string,
+  call: { address: string; functionName: string; args: unknown[]; value?: bigint },
+  onPhase?: (phase: Phase, hash?: string) => void,
+  waitUntil: "decided" | "finalized" = "decided",
+): Promise<{ hash: string; receipt: any }> {
   const value = call.value ?? 0n;
   onPhase?.("estimating");
   const fees = await feesFor(client, { ...call, value, from });
@@ -240,7 +267,11 @@ export async function deployFromWallet(from: string, code: string, onPhase?: (ph
   const eth = ethereum();
   const current = String(await eth.request({ method: "eth_chainId" })).toLowerCase();
   if (current !== CHAIN_HEX) await switchNetwork();
-  const client = writer(from);
+  return deployWith(writer(from), code, onPhase);
+}
+
+/** The deploy itself, for a wallet client or an in-memory account alike. */
+export async function deployWith(client: any, code: string, onPhase?: (phase: Phase, hash?: string) => void): Promise<{ address: string; hash: string }> {
   onPhase?.("estimating");
   const estimate: any = await retried(() => client.estimateTransactionFees({ ...FLAT, totalMessageFees: 0n }));
   onPhase?.("signing");
@@ -253,7 +284,7 @@ export async function deployFromWallet(from: string, code: string, onPhase?: (ph
   return { address, hash };
 }
 
-function findAddress(node: any): string {
+export function findAddress(node: any): string {
   if (node && typeof node === "object") {
     for (const key of ["contract_address", "contractAddress"]) {
       const v = node[key];
