@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: { default: "Unban: ban appeals, ruled by the community's own rules", template: "%s · Unban" },
   description:
     "A ban appeal court for online communities on GenLayer. A community writes its rules and penalty ladder once, banned members appeal with a small fee, moderators answer with evidence, and validators rule by the written rules.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://unban.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://use-unban.vercel.app"),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

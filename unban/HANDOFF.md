@@ -24,7 +24,7 @@ git add deployment.json eval/results.* evidence/ && git commit -m "Deployment an
 
 ## 2. Vercel, then everything else from the browser
 
-1. https://vercel.com/new, import `meitipro/genlayer-arcade`. Project name `genlayer-unban`, Root Directory `unban/web`
+1. https://vercel.com/new, import `meitipro/genlayer-arcade`. Project name `use-unban` (the site is then https://use-unban.vercel.app), Root Directory `unban/web`
    (Edit, pick the folder), framework Next.js, leave the build settings as they are. Deploy.
 2. Settings, Git, Production Branch: `claude/inspiring-dijkstra-6cskv8`. Settings, Advanced: Skew Protection off.
 3. Deployments, the latest one, Redeploy, so production is built from that branch. Open the site.
