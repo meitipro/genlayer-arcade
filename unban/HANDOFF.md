@@ -48,7 +48,7 @@ git add deployment.json eval/results.* evidence/ && git commit -m "Deployment an
 1. https://vercel.com/new, import `meitipro/genlayer-unban`. Project name `use-unban` (the site is then https://use-unban.vercel.app), Root Directory `web`
    (Edit, pick the folder), framework Next.js, leave the build settings as they are. Deploy.
 2. Production Branch stays `main`. Settings, Advanced: Skew Protection off.
-3. Deployments, the latest one, Redeploy, so production is built from that branch. Open the site.
+3. Open the site when the first deployment is Ready.
 4. Open `/run` on the site and press Run. It deploys the contract with a throwaway test account, walks the reviewer's path,
    runs the 12 golden cases through consensus and seeds two courts (about 30 to 45 minutes, keep the tab open).
 5. Settings, Environment Variables: `NEXT_PUBLIC_UNBAN_CONTRACT` = the address `/run` shows, for Production. Optional:
