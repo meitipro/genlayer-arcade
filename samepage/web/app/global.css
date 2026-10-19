@@ -174,3 +174,7 @@ table.terms tr:last-child td { border-bottom: 0; }
 
 /* docs: Fumadocs uses its own radius variables in places */
 #nd-docs-layout, #nd-page { --radius: 4px; }
+
+/* the page: main column and the side panel, side by side from 1024 px */
+.page-grid { display: grid; gap: 28px; margin-top: 28px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) { .page-grid { grid-template-columns: minmax(0, 1fr) 330px; } }

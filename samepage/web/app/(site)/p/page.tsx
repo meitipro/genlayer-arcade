@@ -81,7 +81,7 @@ export default function PageView() {
         {side ? <> · you are the {side === 'a' ? 'opener' : 'counterparty'}</> : null}
       </p>
 
-      <div style={{ display: 'grid', gap: 28, marginTop: 28, gridTemplateColumns: 'minmax(0, 1fr)' }} className="lg:grid-cols-[minmax(0,1fr)_330px]">
+      <div className="page-grid">
         <div style={{ display: 'grid', gap: 22, alignContent: 'start' }}>
           <StepPanel page={page} round={round} previous={previous} side={side} expired={expired} reload={load} otherName={otherName} />
 

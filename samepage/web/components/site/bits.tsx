@@ -34,7 +34,7 @@ export function Countdown({ until }: { until: number }) {
     return () => clearInterval(t);
   }, []);
   const left = until - now;
-  const when = new Date(until * 1000).toUTCString().replace(':00 GMT', ' UTC');
+  const when = new Date(until * 1000).toUTCString().slice(5, 22) + ' UTC';
   if (left <= 0) return <span>Closed at {when}. Anyone may settle it.</span>;
   const h = Math.floor(left / 3600);
   const m = Math.floor((left % 3600) / 60);

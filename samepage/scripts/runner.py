@@ -28,6 +28,7 @@ TASKS = {
     "site-e2e": ["bash", "-c", "cd web && node scripts/generate.mjs && npx tsx e2e/site.mts"],
     "browser-e2e": ["bash", "-c", "cd web && npm i --no-save --no-audit --no-fund playwright@1.64.1 && npx playwright install --with-deps chromium && rm -rf .next out && npm run build && node e2e/browser.mjs"],
     "no-show-settle": [sys.executable, "scripts/no_show.py", "settle"],
+    "balances": [sys.executable, "scripts/balances.py"],
 }
 
 
