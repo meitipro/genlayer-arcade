@@ -1,11 +1,15 @@
 {
   "request": {
     "tasks": [
-      "seed",
-      "site-e2e",
-      "browser-e2e"
+      "balances"
     ],
-    "note": "second attempt: the first run's records were lost when the commit step refused a dirty checkout; seed again, the reviewer's path, the browser",
+    "args": {
+      "balances": [
+        "0xdcB849f078915713f89005aEA474E0A93B3D6F25",
+        "0x71b8DddE7A4bF0338dA4a652A387dD6805B8Ce49"
+      ]
+    },
+    "note": "re-read the site-e2e payees' wallets after finality: kiln's wallet was read before its payout showed",
     "stop_on_failure": []
   },
   "failed": []

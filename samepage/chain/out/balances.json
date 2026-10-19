@@ -1,0 +1,14 @@
+{
+  "0x71b8DddE7A4bF0338dA4a652A387dD6805B8Ce49": {
+    "in_contract_wei": "0",
+    "wallet_wei": "99999323285499989181"
+  },
+  "0xdcB849f078915713f89005aEA474E0A93B3D6F25": {
+    "in_contract_wei": "0",
+    "wallet_wei": "99999163935249985770"
+  },
+  "_contract": {
+    "wallet_wei": "64000000000000000000"
+  },
+  "_read_at": "2026-10-19T01:41:54Z"
+}
