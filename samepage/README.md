@@ -19,7 +19,10 @@ The two sides of a deal each write it in their own words, sealed so neither can 
 | Runtime | `py-genlayer:5jycge4q8k23462jtb0b9fyey1s9qz928sz2nbrd9mg4sxqg2qng`, from the Recourse Studio Next port |
 | Golden cases | 8 of 9 scored cases matched on all six statuses through real consensus; 3 held out; [eval/results.md](eval/results.md) |
 | Tests | 100 direct and static tests, 41 mutations none escaping ([tests/MUTATIONS.md](tests/MUTATIONS.md)) |
-| Site and docs | [`web/`](web), a static Next.js export with genlayer-js 2.0.0-rc.1 and Fumadocs |
+| Reviewer's path | page #21 through the site's own signing code: two rounds, five refusals on chain, both withdrawals exact to the wei ([chain/out/site-e2e.json](chain/out/site-e2e.json)) |
+| Real browser | page #22, 11 transactions signed in Playwright through `window.ethereum`, open to withdraw ([screens](chain/out/screens)) |
+| Site and docs | [`web/`](web), a static Next.js export with genlayer-js 2.0.0-rc.1 and Fumadocs, deployed as this branch's Vercel preview |
+| Every link | [submission/EVIDENCE.md](submission/EVIDENCE.md), generated from the run records |
 
 ## How it works
 

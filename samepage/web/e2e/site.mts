@@ -150,7 +150,13 @@ async function main() {
       await new Promise((r) => setTimeout(r, 3000));
       contractAfter = await balanceOf(CONTRACT);
     }
-    const mineAfter = await balanceOf(w.address);
+    // The payout lands at finality as its own message; the contract's balance
+    // can drop a moment before the payee's wallet shows it, so wait for both.
+    let mineAfter = await balanceOf(w.address);
+    for (let i = 0; i < 20 && mineAfter <= mineBefore; i++) {
+      await new Promise((r) => setTimeout(r, 3000));
+      mineAfter = await balanceOf(w.address);
+    }
     const left = BigInt((await listPages(w.address, 0, 1)).balance ?? '0');
     balances[w.label] = {
       owed_in_contract: owed,
