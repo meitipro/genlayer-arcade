@@ -1,0 +1,37 @@
+---
+title: The four rulings
+description: Upheld, reduced, overturned and defaulted, and what each one does.
+---
+
+| Ruling | When | Money | Record |
+|---|---|---|---|
+| OVERTURNED | The evidence does not show the cited rule, or any written rule, broken | Fee back plus the reserved compensation | The bot lifts the ban; counts against the moderator |
+| REDUCED · Pn | A rule was broken, but the ladder sets a lighter penalty than the one applied | Fee back; the reserve returns to the pool | The bot replaces the ban with the ladder's level |
+| UPHELD | The evidence shows the cited rule broken and the penalty fits the ladder | Fee and reserve go to the pool | The ban stays |
+| DEFAULTED | No moderator answered within the response window | Fee back plus the reserved compensation | The bot lifts the ban; never judged |
+
+## Lifecycle of one appeal
+
+```text
+FILED --respond--> ANSWERED --(reply or 24 h)--> judge --> OVERTURNED | REDUCED | UPHELD
+  |
+  +--(no answer in the window)--> default --> DEFAULTED
+```
+
+## What validators agree on
+
+Only the verdict and, for REDUCED, the ladder level. Those are what the bot applies, so they have to be agreed; the one-sentence reason is stored from the leader and shown on the appeal page. A REDUCED level that is not on the ladder, or is not lighter than the level applied, is rejected before it can be stored, so the bot only ever receives a real penalty.
+
+## Edge cases the rubric handles
+
+| Case | Expected |
+|---|---|
+| A civil question about the unlock schedule, banned under "no insults" | OVERTURNED |
+| A phishing link, banned under "no scam links, any offence P4" | UPHELD |
+| A first spam offence banned, the ladder sets P2 for a first offence | REDUCED · P2 |
+| Evidence quotes a different handle than the one appealing | OVERTURNED |
+| "He was spamming, trust me", with no quotes | OVERTURNED |
+| "I was hacked", and the evidence shows the scam link | UPHELD |
+| An appeal that tells the judge to overturn | UPHELD |
+
+These are the golden cases; [Evaluation results](/docs/more/evaluation) has the runs through real consensus.

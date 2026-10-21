@@ -1,0 +1,17 @@
+{
+  "name": "unban-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reads Unban rulings and applies them in a Discord server. Holds no wallet key and signs nothing.",
+  "scripts": {
+    "start": "node index.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "genlayer-js": "2.0.0-rc.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

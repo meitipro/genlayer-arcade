@@ -1,0 +1,31 @@
+---
+title: Rules and the penalty ladder
+description: What a court is, and how its rules are frozen against changes after the fact.
+---
+
+A court is its rules. Everything the validators may rule on is written here before any ban is appealed.
+
+## The ladder
+
+Up to six penalty levels, lightest first, each a short label (at most 24 characters). They are numbered P1 to P6 in order:
+
+| Level | Kiln template |
+|---|---|
+| P1 | warning |
+| P2 | 24h mute |
+| P3 | 7-day mute |
+| P4 | ban |
+
+## The rules
+
+Up to twelve numbered rules in 2,500 characters. Each says which level applies **for a first offence and for a repeat**; a repeat can never be lighter than a first offence. A moderator cites a rule by its number and picks a level from the ladder, and the contract refuses anything else.
+
+The judge reads the rules as `Rule n: text First offence Pa, repeat Pb.` and is told how many earlier upheld or reduced rulings the member already has in the court, which is what separates a first offence from a repeat.
+
+## Frozen while appeals are open
+
+`update_court` is refused while any appeal in the court is open. When it succeeds, it writes a new **version** of the rules that only judges bans made after the day it was written. A ban made the day the rules changed is still judged by the rules written before it, so nobody is judged by a rule written after the fact. Every appeal records the version it is judged by, and the appeal page shows it.
+
+## Moderators
+
+Up to ten addresses. Only a listed moderator can answer an appeal, and never their own. The list can change with `update_court` under the same freeze.

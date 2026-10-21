@@ -1,0 +1,33 @@
+---
+title: Bot configuration
+description: Every environment variable the bot reads, and the Discord permissions it needs.
+---
+
+```bash
+cd bot && npm install
+UNBAN_CONTRACT=0x… UNBAN_COURT=1 DISCORD_TOKEN=… DISCORD_GUILD=… npm start
+```
+
+| Variable | Required | Meaning |
+|---|---|---|
+| `UNBAN_CONTRACT` | yes | The Unban contract address on Studio Next |
+| `UNBAN_COURT` | yes | Your court's id |
+| `DISCORD_TOKEN` | yes | The server's bot token. Never committed; read from the environment only |
+| `DISCORD_GUILD` | yes | The server (guild) id |
+| `DISCORD_LOG_CHANNEL` | no | A channel id where each applied ruling is posted |
+| `UNBAN_SITE` | no | Base URL for links, default `https://use-unban.vercel.app` |
+| `UNBAN_POLL_SECONDS` | no | Poll interval, default 60 |
+| `UNBAN_STATE` | no | State file of applied appeal ids, default `bot/.applied.json` |
+| `UNBAN_DRY_RUN` | no | `1` logs what it would do and calls nothing on Discord |
+
+## Discord permissions
+
+The bot's role needs **Ban Members** (to remove a ban) and **Moderate Members** (to time out), and must sit above the members it acts on. **Send Messages** in the log channel if one is set.
+
+## Run the tests
+
+```bash
+cd bot && npm test
+```
+
+The tests run the bot's decision logic against recorded `list_appeals` rows with Discord mocked.

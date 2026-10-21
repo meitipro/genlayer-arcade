@@ -1,0 +1,320 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+@source "../node_modules/fumadocs-ui/dist/**/*.js";
+
+/*
+ * The Recourse dark ground with one accent: amber #FBBF24, 4 px radius, no
+ * gradients. Amber marks rulings for the member and money moving to them,
+ * reduced rulings are hatched, upheld ones stay grey, defaults are dotted.
+ */
+:root {
+  --bg: #0b0d12;
+  --panel: #10131a;
+  --panel-2: #151923;
+  --line: #232838;
+  --line-2: #2e3446;
+  --ink: #eef0f5;
+  --ink-2: #a9afbf;
+  --ink-3: #737a8c;
+  --amber: #fbbf24;
+  --amber-ink: #1a1405;
+  --amber-soft: #2a2208;
+  --bad: #f87171;
+  --radius: 4px;
+  --font-sans: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.dark {
+  --color-fd-background: #0b0d12;
+  --color-fd-foreground: #eef0f5;
+  --color-fd-muted: #151923;
+  --color-fd-muted-foreground: #a9afbf;
+  --color-fd-popover: #10131a;
+  --color-fd-popover-foreground: #eef0f5;
+  --color-fd-card: #10131a;
+  --color-fd-card-foreground: #eef0f5;
+  --color-fd-border: #232838;
+  --color-fd-primary: #fbbf24;
+  --color-fd-primary-foreground: #1a1405;
+  --color-fd-secondary: #151923;
+  --color-fd-secondary-foreground: #eef0f5;
+  --color-fd-accent: #1b2030;
+  --color-fd-accent-foreground: #eef0f5;
+  --color-fd-ring: #fbbf24;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Components sit in a layer so Tailwind utilities (mt-*, w-full…) can still override them. */
+@layer components {
+.mono,
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+}
+
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.eyebrow.amber {
+  color: var(--amber);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.quote {
+  background: #0d1016;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--ink-2);
+  padding: 10px 12px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid var(--line-2);
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--ink-3);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--amber-ink);
+}
+
+.btn.primary:hover {
+  background: #fcd34d;
+}
+
+.btn.small {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.field {
+  width: 100%;
+  background: #0d1016;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink);
+  padding: 9px 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+.field:focus {
+  border-color: var(--amber);
+}
+
+textarea.field {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  background: transparent;
+  cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--amber-ink);
+  font-weight: 700;
+}
+
+/* Verdict badges: amber for the member, hatched for reduced, grey for upheld, dotted for defaulted. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge.overturned {
+  background: var(--amber);
+  color: var(--amber-ink);
+}
+
+.badge.reduced {
+  color: var(--amber);
+  border: 1px solid #8a6a16;
+  background: repeating-linear-gradient(135deg, #2a2208 0 6px, #1a1608 6px 12px);
+}
+
+.badge.upheld {
+  color: #c9cdd8;
+  border: 1px solid var(--line-2);
+}
+
+.badge.defaulted {
+  color: var(--ink-3);
+  border: 1px dashed var(--ink-3);
+}
+
+.badge.waiting {
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+}
+
+.note {
+  border-left: 3px solid var(--amber);
+  background: var(--amber-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #f3e3b5;
+}
+
+.note.bad {
+  border-left-color: var(--bad);
+  background: #2a1214;
+  color: #f9c9c9;
+}
+
+.note.grey {
+  border-left-color: var(--line-2);
+  background: var(--panel-2);
+  color: var(--ink-2);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  color: var(--ink-2);
+}
+
+.link {
+  color: var(--amber);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #8a6a16;
+}
+
+.spin {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}

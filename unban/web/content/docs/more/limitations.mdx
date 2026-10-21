@@ -1,0 +1,19 @@
+---
+title: Limitations
+description: What Unban decides, and what it honestly cannot.
+---
+
+<Callout type="warn" title="Honest limits">
+Unban decides whether the record shows a written rule broken and whether the penalty fits the ladder, not what really happened in the chat. It trusts the quoted evidence unless the record contradicts itself, it covers a community's own rules rather than platform terms, and it only works as well as the rules a community is willing to write down.
+</Callout>
+
+| Risk | What happens | Answer in the design |
+|---|---|---|
+| Spam appeals | Banned raiders appeal in bulk | Each costs the fee, which an upheld ruling sends to the pool; one appeal per address per court per 7 days |
+| Moderators ignoring appeals | Nobody answers | DEFAULTED after the window: the ban is lifted and the pool pays compensation; answer times are public |
+| Fabricated evidence | A moderator invents a quote | The judge cannot read chat logs; the quote sits in public next to the moderator's address and the member's reply disputes it |
+| Rules written after the fact | A rule is added to justify an old ban | Rules freeze while appeals are open and a change only judges later bans |
+| A court that pays nothing | The owner never funds the pool | The court page shows the pool; the fee still comes back when the member is right |
+| Ignoring the ruling | The community keeps the ban | The bot applies rulings; without it the ruling and the refusal are both public |
+| Prompt injection | A quote or appeal tells the judge what to rule | Every text is fenced as data, the rubric says to ignore instructions inside, and golden case 9 tests it |
+| The ban date | The member states the date of the ban | It only chooses which version of the rules applies; a court whose rules never changed has one version |

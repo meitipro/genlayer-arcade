@@ -1,0 +1,21 @@
+---
+title: The bot and what it can do
+description: A read-only Discord bot that applies rulings with the server's own token.
+---
+
+The bot in `bot/` is a small Node program. Every interval it calls `list_appeals(court, "", 0, 50)` with no wallet, finds rulings it has not applied yet, and acts in the server through Discord's REST API with the server's bot token:
+
+| Ruling | Bot action |
+|---|---|
+| OVERTURNED, DEFAULTED | Removes the ban (`DELETE /guilds/{guild}/bans/{user}`) |
+| REDUCED to a mute level | Removes the ban, then times the member out for the ladder level's duration when they are back in the server |
+| REDUCED to a warning | Removes the ban |
+| UPHELD | Nothing |
+
+It finds the Discord user from the first 17 to 20 digit id in the appeal's case text, which is why the form asks for it. Every action is posted to a log channel with a link to the appeal page, and applied appeal ids are kept in a state file so nothing is applied twice.
+
+## What it cannot do
+
+It holds no wallet key, signs no transaction and cannot change a ruling. A community that ignores rulings can switch it off; the ruling and the refusal to apply it both stay public.
+
+Durations are read from the ladder label: `24h mute` is 24 hours, `7-day mute` is 7 days. A label with no duration it can read, such as `warning`, is applied as an unban only. Discord caps a timeout at 28 days.

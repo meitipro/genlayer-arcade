@@ -1,0 +1,41 @@
+---
+title: Introduction
+description: Ban appeals, decided by the community's own rules.
+---
+
+Unban gives a Discord, Telegram or X community an appeals court. The community writes its rules and a penalty ladder and funds a small compensation pool. A banned member files an appeal with a fee. A moderator answers with the rule broken and the quoted evidence. GenLayer validators then decide from the written rules alone whether the ban is **upheld**, **reduced** to the penalty the ladder sets, or **overturned**. The fee is refunded, with compensation, when the member was right, and a read-only bot applies the ruling in the server.
+
+<Callout type="warn" title="Appeals are public">
+Everything in an appeal is on chain: the statement, the quotes, the reply and the ruling. Write rules so that evidence never needs personal data.
+</Callout>
+
+## Who it is for
+
+<Cards>
+  <Card title="Community owners" href="/docs/quickstart">Open a court: rules, ladder, moderators, fee, compensation, window and pool.</Card>
+  <Card title="Members" href="/docs/file-an-appeal">File an appeal, read the evidence, reply once, see the ruling, withdraw.</Card>
+  <Card title="Moderators" href="/docs/concepts/rules-and-ladder">Answer from the desk with the rule, the level and the quotes.</Card>
+  <Card title="Developers" href="/docs/reference/contract">The contract reference, generated from the source, and the bot.</Card>
+</Cards>
+
+## The four rulings
+
+| Ruling | Meaning | Money | In the server |
+|---|---|---|---|
+| OVERTURNED | The evidence does not show the cited rule, or any written rule, broken | Fee back plus compensation from the pool | The bot lifts the ban |
+| REDUCED | A rule was broken, but the ladder sets a lighter penalty than the one applied | Fee back | The bot replaces the ban with the ladder's level |
+| UPHELD | The evidence shows the cited rule broken and the penalty fits the ladder | Fee goes to the pool | The ban stays |
+| DEFAULTED | No moderator answered within the response window | Fee back plus compensation | The bot lifts the ban, never judged |
+
+## Why GenLayer
+
+The decision is a reading judgment: does the quoted evidence show the rule the moderator cited, and is the penalty the one the community's own ladder sets? Moderators want to be right, members want to come back, and a single model run by the community is a model the community controls. On GenLayer several validators read the same rules and the same record, and a ruling stands only when they agree on the verdict and, for a reduced ban, the level.
+
+## What Unban is not
+
+| | |
+|---|---|
+| Not a moderation bot | Moderators still ban and mute; Unban reviews the call when a member appeals |
+| Not fact-finding | The judge works from the quoted evidence and cannot check what was really said in the chat |
+| Not a platform ban | It covers a community's own rules, not Discord's or Telegram's terms of service |
+| Not private | Appeals and evidence are public |

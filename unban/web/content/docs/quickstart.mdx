@@ -1,0 +1,64 @@
+---
+title: "Quickstart: open a court"
+description: Open a court for your community, connect the bot and take your first appeal.
+---
+
+<Callout type="warn">Appeals are public. Write rules so evidence never needs personal data.</Callout>
+
+## 1. Get a wallet on Studio Next
+
+Unban runs on GenLayer Studio Next, chain 61997. Connect any EVM wallet from the site header; it offers the network switch, and **Get test GEN** calls Studio's faucet for 100 test GEN. The balance is read back, so the button only says GEN arrived when it did.
+
+## 2. Open a court
+
+On [Open a court](/new), start from the template: five rules, a four-step ladder (warning, 24h mute, 7-day mute, ban), each rule with a level for a first offence and a repeat. Add your moderators' addresses, set the fee, the compensation, the response window (12 to 96 hours) and the first pool funding. The fee deposit is shown before you sign.
+
+The same call from code, as the site and the scripts in this repository make it:
+
+<Tabs items={["TypeScript (web/app/(site)/new/NewCourt.tsx)", "Python (scripts/e2e.py)"]}>
+<Tab value="TypeScript (web/app/(site)/new/NewCourt.tsx)">
+
+```ts
+call={() => ({
+  functionName: "open_court",
+  args: [
+    name.trim(),
+    JSON.stringify(rules.map((r) => ({ text: r.text.trim(), first: r.first, repeat: r.repeat }))),
+    JSON.stringify(ladder.map((l) => l.trim())),
+    JSON.stringify(modList),
+    toWei(fee),
+    toWei(comp),
+    hours,
+  ],
+  value: toWei(pool),
+})}
+```
+
+</Tab>
+<Tab value="Python (scripts/e2e.py)">
+
+```python
+record("open_court with 100 GEN", owner.send(contract, "open_court", [
+    "Kiln Discord", json.dumps(court["rules"]), json.dumps(court["ladder"]),
+    json.dumps([accounts["e2e_mod"].address]), 2 * GEN, 5 * GEN, 48], 100 * GEN))
+```
+
+</Tab>
+</Tabs>
+
+`rules` is a JSON list of `{"text", "first", "repeat"}`, at most 12 rules in 2,500 characters. `ladder` is a JSON list of up to six short labels, lightest first, which become P1 to P6. `mods` is a JSON list of addresses. Fee and compensation are in wei.
+
+## 3. Connect the bot
+
+The bot polls `list_appeals` for your court and applies each ruling with your server's own bot token. It holds no wallet key and signs nothing.
+
+```bash
+cd bot && npm install
+UNBAN_CONTRACT=0x… UNBAN_COURT=1 DISCORD_TOKEN=… DISCORD_GUILD=… npm start
+```
+
+See [Bot configuration](/docs/reference/bot-config) for every variable and the permissions it needs.
+
+## 4. Take your first appeal
+
+Share your court page, `/c/<id>`, in your ban message. A member files from **File an appeal**; your moderators see it on the [moderator desk](/mod) with the hours left. Once answered, the member may reply once within 24 hours, then anyone can call judge.

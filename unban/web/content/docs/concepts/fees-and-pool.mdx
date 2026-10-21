@@ -1,0 +1,28 @@
+---
+title: Fees, compensation and the pool
+description: Where every wei goes, and why a ruling for the member is never unpaid.
+---
+
+## Reserve on filing
+
+Filing an appeal moves one compensation from the court's pool into **reserved**. If the pool holds less, what is there is reserved; if it is empty, the appeal still runs with the fee as the only money at stake, and the form says so before you sign. A ruling for the member can therefore never find the pool empty.
+
+## Settlement
+
+`judge` and `default` only move balances inside the contract. Nothing is paid out by them.
+
+| Ruling | Member's balance | Pool |
+|---|---|---|
+| OVERTURNED, DEFAULTED | + fee + reserved | — |
+| REDUCED | + fee | + reserved |
+| UPHELD | — | + fee + reserved |
+
+## Withdraw
+
+`withdraw(0)` pays the caller's balance as one top-level transfer. An owner calling `withdraw(court_id)` also reclaims the court's unreserved pool, refused while any appeal there is open. Reserved compensation can never be reclaimed.
+
+On Studio Next a value transfer is funded only at the root of a transaction's fee allocation, so the payout is never nested inside another message: the site and the scripts attach one External allocation naming the caller as the recipient.
+
+## Fee deposits
+
+Every write on Studio Next carries a fee deposit. The site estimates it from Studio's own simulation of the call and shows it before you sign; the part consensus does not spend is refunded at finality. Time-unit allocations stay between 30 and 600.

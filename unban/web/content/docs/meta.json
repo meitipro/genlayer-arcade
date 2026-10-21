@@ -1,0 +1,15 @@
+{
+  "title": "Unban docs",
+  "pages": [
+    "---Getting started---",
+    "index",
+    "quickstart",
+    "file-an-appeal",
+    "---Concepts---",
+    "...concepts",
+    "---Reference---",
+    "...reference",
+    "---More---",
+    "...more"
+  ]
+}
